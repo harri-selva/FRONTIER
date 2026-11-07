@@ -62,6 +62,7 @@ LEADING_JUNK = {
     "further", "present", "current", "given", "specific", "general", "certain",
     "simple", "important", "significant",
     "main", "key", "efficient", "effective", "standard", "typical", "only",
+    "individual", "sufficient", "unique", "possible", "relevant", "certain",
 }
 
 # Whole phrases that pass the filters but carry no meaning. Grow this list
@@ -92,6 +93,9 @@ GENERIC_PHRASES = {
     "property", "characteristic", "response", "outcome", "output", "input",
     "data", "sequence data", "sample size", "large number", "wide range",
     "high", "low", "large", "small", "complex", "multiple", "qualitative",
+    # added after review round 2
+    "finding", "development", "comparison", "mean", "year", "contrast",
+    "nature", "deal", "square root", "information",
 }
 
 
@@ -125,6 +129,12 @@ def clean_chunk(chunk) -> str | None:
     if any(ch.isdigit() for ch in phrase):
         return None
     if phrase in GENERIC_PHRASES:
+        return None
+    # adjective(s) + generic noun is still generic:
+    # 'structural feature', 'biological observation', 'long time behavior'
+    if (words[-1] in GENERIC_PHRASES
+            and all(t.pos_ in {"ADJ", "ADV"} or t.lower_ in {"time", "long"}
+                    for t in tokens[:-1])):
         return None
     return phrase
 
