@@ -231,13 +231,50 @@ def stage_filter(args):
 
 
 # ---------------------------------------------------------------------------
+# Field spread: real concepts usually belong to one field, generic words
+# appear evenly in all of them.
+# ---------------------------------------------------------------------------
+
+FIELD_GROUPS = {"q-fin": "finance", "econ": "finance",
+                "q-bio": "biology", "physics.med-ph": "medicine"}
+
+
+def field_groups(categories: str) -> set[str]:
+    groups = set()
+    for c in categories.split():
+        for prefix, g in FIELD_GROUPS.items():
+            if c == prefix or c.startswith(prefix + "."):
+                groups.add(g)
+    return groups
+
+
+def add_spread(vocab: pd.DataFrame, group_freq: dict, group_docs: Counter) -> pd.DataFrame:
+    """Add each field's share of a concept (adjusted for field size) and a
+    'spread' score: 0 = only in one field, 1 = perfectly even across fields."""
+    import math
+    groups = sorted(group_docs)
+    if len(groups) < 2:
+        vocab["spread"] = float("nan")
+        return vocab
+    rates = pd.DataFrame({g: vocab["concept"].map(group_freq[g]).fillna(0) / group_docs[g]
+                          for g in groups})
+    shares = rates.div(rates.sum(axis=1), axis=0).fillna(0)
+    entropy = -(shares * shares.where(shares > 0, 1).map(math.log)).sum(axis=1)
+    for g in groups:
+        vocab[f"share_{g}"] = shares[g].round(2)
+    vocab["spread"] = (entropy / math.log(len(groups))).round(2).abs()
+    return vocab
+
+
+# ---------------------------------------------------------------------------
 # Stage 2: vocab
 # ---------------------------------------------------------------------------
 
 def stage_vocab(args):
     import spacy
 
-    df = pd.read_parquet(args.papers, columns=["id", "year", "title", "abstract"])
+    df = pd.read_parquet(args.papers, columns=["id", "year", "categories",
+                                               "title", "abstract"])
     pool = df[df["year"] <= args.cutoff_year]
     print(f"{len(pool):,} papers up to {args.cutoff_year} (vocabulary source)")
     if args.sample and len(pool) > args.sample:
@@ -249,10 +286,15 @@ def stage_vocab(args):
     texts = (pool["title"] + ". " + pool["abstract"]).tolist()
 
     doc_freq = Counter()         # number of papers each phrase appears in
+    groups_per_paper = [field_groups(c) for c in pool["categories"]]
+    group_docs = Counter(g for gs in groups_per_paper for g in gs)
+    group_freq = {g: Counter() for g in group_docs}
     for i, doc in enumerate(nlp.pipe(texts, batch_size=256, n_process=args.workers)):
         phrases = {p for p in (clean_chunk(c) for c in doc.noun_chunks) if p}
         phrases = {ALIASES.get(p, p) for p in phrases}
         doc_freq.update(phrases)
+        for g in groups_per_paper[i]:
+            group_freq[g].update(phrases)
         if (i + 1) % 5000 == 0:
             print(f"  parsed {i + 1:,} abstracts, {len(doc_freq):,} distinct phrases")
 
@@ -262,6 +304,7 @@ def stage_vocab(args):
     before = len(vocab)
     vocab = vocab[(vocab["doc_freq"] >= args.min_df) & (vocab["doc_freq"] <= max_df)]
     vocab = vocab.sort_values("doc_freq", ascending=False)
+    vocab = add_spread(vocab, group_freq, group_docs)
     vocab.to_csv(args.out, index=False)
 
     print(f"\n{before:,} candidate phrases -> {len(vocab):,} concepts "

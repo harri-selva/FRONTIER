@@ -24,7 +24,16 @@ python pipeline/frontier_data.py tag --papers data/papers.parquet --vocab data/v
     --out data/paper_concepts.parquet
 ```
 
+### Reviewing the concept list
+```bash
+python pipeline/review_vocab.py data/vocab.csv
+```
+Prints SUSPECTS (single words used evenly across finance, biology and medicine,
+which usually means generic) and the most common single words. Copy real junk
+into `GENERIC_PHRASES` in `pipeline/frontier_data.py`, rerun `vocab`, then `tag`.
+
 ### Key choices
 - Date = `versions[0].created` (first submission), never `update_date`.
 - Vocabulary built only from papers up to `--cutoff-year`, to avoid lookahead bias.
+- Field spread: real concepts usually belong to one field; evenly spread words are flagged for review, never auto-deleted.
 - Thresholds and junk lists (`GENERIC_PHRASES`, `ALIASES`) live at the top of the script.
