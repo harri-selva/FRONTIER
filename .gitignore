@@ -7,3 +7,8 @@ vocab*.csv
 venv/
 __pycache__/
 !data/README.md
+# keep the B1 drop-folder and its README, but never the data in it
+!data/real/
+data/real/*
+!data/real/README.md
+outputs/fake/

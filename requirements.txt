@@ -2,3 +2,5 @@ pandas
 pyarrow
 spacy
 pyahocorasick
+numpy
+scikit-learn
