@@ -7,3 +7,9 @@ vocab*.csv
 venv/
 __pycache__/
 !data/README.md
+# B1: keep the two data generator scripts, ignore generated data / outputs / venv
+!data/make_toy.py
+!data/make_synthetic.py
+outputs/
+.venv/
+.pytest_cache/
