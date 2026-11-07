@@ -37,6 +37,12 @@ python pipeline/frontier_data.py vocab --papers data/papers.parquet --cutoff-yea
 python pipeline/frontier_data.py tag --papers data/papers.parquet --vocab data/vocab.csv \
     --out data/paper_concepts.parquet
 ```
+Paper details (title, authors, first-published date, link) for the model,
+briefs and galaxy:
+```bash
+python pipeline/frontier_data.py metadata --papers data/papers.parquet \
+    --out data/paper_metadata.parquet
+```
 Optional review of the concept list:
 ```bash
 python pipeline/review_vocab.py data/vocab.csv

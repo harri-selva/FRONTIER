@@ -219,6 +219,19 @@ def first_submission_date(record: dict):
         return None
 
 
+def format_authors(record: dict) -> str:
+    """'Smith, John; Lee, Ann' style from authors_parsed, falling back to the raw string."""
+    parsed = record.get("authors_parsed")
+    if parsed:
+        names = []
+        for parts in parsed:
+            last = (parts[0] if len(parts) > 0 else "").strip()
+            first = (parts[1] if len(parts) > 1 else "").strip()
+            names.append(f"{first} {last}".strip())
+        return "; ".join(n for n in names if n)
+    return SPACES.sub(" ", record.get("authors", "")).strip()
+
+
 def stage_filter(args):
     wanted = set(args.cats)
     # prefix match lets you pass 'q-bio' to get every q-bio.* subcategory
@@ -246,6 +259,9 @@ def stage_filter(args):
                 "primary_cat": cats[0],
                 "categories": " ".join(cats),
                 "title": SPACES.sub(" ", rec.get("title", "")).strip(),
+                "authors": format_authors(rec),
+                "doi": rec.get("doi") or "",
+                "journal_ref": rec.get("journal-ref") or "",
                 "abstract": SPACES.sub(" ", rec.get("abstract", "")).strip(),
             })
             if seen % 500_000 == 0:
@@ -430,6 +446,28 @@ def stage_tag(args):
 
 
 # ---------------------------------------------------------------------------
+# Metadata: one slim table of paper details for the model, briefs and galaxy
+# ---------------------------------------------------------------------------
+
+def stage_metadata(args):
+    df = pd.read_parquet(args.papers)
+    if "authors" not in df.columns:
+        raise SystemExit("papers.parquet has no authors column. Rerun the filter step "
+                         "with the updated script first.")
+    df["first_author"] = df["authors"].str.split("; ").str[0]
+    df["n_authors"] = df["authors"].str.count("; ") + (df["authors"] != "").astype(int)
+    df["url"] = "https://arxiv.org/abs/" + df["id"]
+    cols = ["id", "title", "authors", "first_author", "n_authors", "first_date", "year",
+            "primary_cat", "categories", "doi", "journal_ref", "url"]
+    if args.with_abstract:
+        cols.append("abstract")
+    out = df[cols]
+    out.to_parquet(args.out, index=False)
+    print(f"Wrote {args.out}: {len(out):,} papers, columns: {', '.join(cols)}")
+    print(out.head(3)[["id", "title", "first_author", "first_date"]].to_string(index=False))
+
+
+# ---------------------------------------------------------------------------
 
 def main():
     p = argparse.ArgumentParser(description=__doc__,
@@ -462,8 +500,15 @@ def main():
     t.add_argument("--vocab", default="vocab.csv")
     t.add_argument("--out", default="paper_concepts.parquet")
 
+    m = sub.add_parser("metadata")
+    m.add_argument("--papers", default="papers.parquet")
+    m.add_argument("--with-abstract", action="store_true",
+                   help="also include the abstract (bigger file)")
+    m.add_argument("--out", default="paper_metadata.parquet")
+
     args = p.parse_args()
-    {"filter": stage_filter, "vocab": stage_vocab, "tag": stage_tag}[args.cmd](args)
+    {"filter": stage_filter, "vocab": stage_vocab, "tag": stage_tag,
+     "metadata": stage_metadata}[args.cmd](args)
 
 
 if __name__ == "__main__":
