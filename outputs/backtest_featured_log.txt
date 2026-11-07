@@ -1,0 +1,28 @@
+
+=== Medicine: featured rule, cutoff 2018 (4,792 pairs) ===
+  pairs 4,792  filled 1,514  base rate 0.3159  | LightGBM trained on 0 positives
+  ranker                     P@20  P@100        95% CI  P@1000    AUC lift@100
+  resource_allocation        0.80   0.67   [0.57-0.75]   0.502  0.680      2.1
+  preferential_attachment    0.45   0.38   [0.29-0.48]   0.433  0.619      1.2
+  common_neighbours          0.65   0.60   [0.50-0.69]   0.473  0.670      1.9
+  random                     0.15   0.24   [0.17-0.33]   0.310  0.498      0.8
+  secondary: resource_allocation P@100=0.32 AUC=0.722, preferential_attachment P@100=0.19 AUC=0.639, common_neighbours P@100=0.31 AUC=0.714, random P@100=0.09 AUC=0.500
+  HIT #  2 deposition + neutron -> 2021-02-25 (2.2 yrs) 2102.12743: Bragg-Curve Simulation of Carbon-Ion Beams for Particle-therapy Applic
+  HIT #  3 artery + elasticity -> 2019-12-13 (0.9 yrs) 1912.06408: Aortic and arterial mechanics
+  HIT #  6 intervention + kidney -> 2020-01-11 (1.0 yrs) 2001.03801: Dynamic Coronary Roadmapping via Catheter Tip Tracking in X-ray Fluoro
+  HIT #  8 pencil beam + VMAT -> 2022-11-16 (3.9 yrs) 2211.09038: Recent Advancements of Artificial Intelligence in Particle Therapy
+  HIT #  9 ultrasound imaging + wavelength -> 2019-02-05 (0.1 yrs) 1902.01608: 3-D Super-Resolution Ultrasound (SR-US) Imaging with a 2-D Sparse Arra
+
+=== Quant: featured rule, cutoff 2018 (183,319 pairs) ===
+  pairs 183,319  filled 19,956  base rate 0.1089  | LightGBM trained on 0 positives
+  ranker                     P@20  P@100        95% CI  P@1000    AUC lift@100
+  resource_allocation        0.55   0.49   [0.39-0.59]   0.379  0.688      4.5
+  preferential_attachment    0.20   0.22   [0.15-0.31]   0.226  0.602      2.0
+  common_neighbours          0.50   0.41   [0.32-0.51]   0.372  0.686      3.8
+  random                     0.10   0.07   [0.03-0.14]   0.105  0.500      0.6
+  secondary: resource_allocation P@100=0.28 AUC=0.750, preferential_attachment P@100=0.08 AUC=0.646, common_neighbours P@100=0.20 AUC=0.744, random P@100=0.02 AUC=0.498
+  HIT #  1 income distribution + labor -> 2021-08-23 (2.6 yrs) 2108.09981: Welfare Effects of Labor Income Tax Changes on Married Couples: A Suff
+  HIT #  3 asian option + local volatility -> 2019-11-29 (0.9 yrs) 1911.12944: Hedging short-maturity Asian options in local volatility models
+  HIT #  5 optimal policy + optimal trading strategy -> 2025-02-06 (6.1 yrs) 2502.04284: On the Effect of Alpha Decay and Transaction Costs on the Multi-period
+  HIT #  7 optimal consumption + utility maximization -> 2019-03-21 (0.2 yrs) 1903.08782: Epstein-Zin Utility Maximization on a Random Horizon
+  HIT # 13 household + productivity -> 2019-02-24 (0.1 yrs) 1902.10080: Meeting Global Cooling Demand with Photovoltaics during the 21st Centu

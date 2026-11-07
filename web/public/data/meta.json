@@ -1,0 +1,9 @@
+{
+ "built": "2026-11-07 20:01",
+ "content_mode": "template",
+ "data_end": "2026-10-29",
+ "sources": [
+  "arXiv metadata (export.arxiv.org API)",
+  "Person A concept tagging: data-pipeline branch, paper_concepts_2026.parquet, vocab_2026.csv"
+ ]
+}

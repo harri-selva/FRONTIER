@@ -1,4 +1,17 @@
+# --- Person A: data pipeline (pipeline/frontier_data.py) ---
 pandas
 pyarrow
 spacy
 pyahocorasick
+
+# --- B1: graph features + model (src/, data/make_*.py, tests/) ---
+duckdb
+numpy
+scipy
+networkx
+scikit-learn
+lightgbm
+pytest
+
+# --- optional: AI-written gap text at build time (needs ANTHROPIC_API_KEY) ---
+# anthropic

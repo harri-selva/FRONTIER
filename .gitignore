@@ -7,3 +7,20 @@ vocab*.csv
 venv/
 __pycache__/
 !data/README.md
+# B1: keep the two data generator scripts, ignore generated data / outputs / venv
+!data/make_toy.py
+!data/make_synthetic.py
+outputs/
+.venv/
+.pytest_cache/
+# FRONTIER build: raw/processed data and pipeline outputs are regenerated
+data/raw/
+data/processed/
+pipeline/cache/
+web/node_modules/
+web/dist/
+!web/public/data/**/*.json
+!web/package.json
+!web/package-lock.json
+!web/tsconfig.json
+*.tsbuildinfo

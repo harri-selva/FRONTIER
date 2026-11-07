@@ -1,0 +1,164 @@
+[
+ {
+  "id": 0,
+  "name": "Economics & Econometrics",
+  "papers": 5692,
+  "slug": "economics-econometrics",
+  "x": 0.5,
+  "y": 0.5,
+  "r": 0.0952,
+  "concepts": 1317,
+  "top_gaps": 31280,
+  "cross_land_gaps": 13,
+  "featured": [
+   "county + treatment effect",
+   "policy intervention + resident",
+   "county + public policy"
+  ],
+  "bytes": 364476
+ },
+ {
+  "id": 1,
+  "name": "Statistical Finance",
+  "papers": 3559,
+  "slug": "statistical-finance",
+  "x": 0.275,
+  "y": 0.4111,
+  "r": 0.0831,
+  "concepts": 690,
+  "top_gaps": 19041,
+  "cross_land_gaps": 54,
+  "featured": [
+   "gradient boosting + stock price prediction",
+   "deep learning technique + financial news",
+   "quantitative trading + stock price prediction"
+  ],
+  "bytes": 440914
+ },
+ {
+  "id": 2,
+  "name": "Mathematical Finance",
+  "papers": 2761,
+  "slug": "mathematical-finance",
+  "x": 0.7063,
+  "y": 0.3444,
+  "r": 0.0777,
+  "concepts": 319,
+  "top_gaps": 8076,
+  "cross_land_gaps": 121,
+  "featured": [
+   "integral equation + optimal trading strategy",
+   "asymptotic expansion + log price",
+   "asian option + volatility process"
+  ],
+  "bytes": 387753
+ },
+ {
+  "id": 3,
+  "name": "General Finance",
+  "papers": 2641,
+  "slug": "general-finance",
+  "x": 0.6813,
+  "y": 0.7333,
+  "r": 0.0768,
+  "concepts": 175,
+  "top_gaps": 2516,
+  "cross_land_gaps": 200,
+  "featured": [
+   "globalization + ukraine",
+   "globalization + road",
+   "australia + globalization"
+  ],
+  "bytes": 494120
+ },
+ {
+  "id": 4,
+  "name": "Computational Finance",
+  "papers": 2508,
+  "slug": "computational-finance",
+  "x": 0.8625,
+  "y": 0.5778,
+  "r": 0.0758,
+  "concepts": 249,
+  "top_gaps": 4704,
+  "cross_land_gaps": 157,
+  "featured": [
+   "barrier option + pricing problem",
+   "asymptotic expansion + log price",
+   "jump process + numerical scheme"
+  ],
+  "bytes": 415755
+ },
+ {
+  "id": 5,
+  "name": "Risk Management",
+  "papers": 2224,
+  "slug": "risk-management",
+  "x": 0.8875,
+  "y": 0.2,
+  "r": 0.0735,
+  "concepts": 193,
+  "top_gaps": 6337,
+  "cross_land_gaps": 152,
+  "featured": [
+   "gradient boosting + stock price prediction",
+   "infinite horizon + reinsurance",
+   "ordinary differential equation + reinsurance"
+  ],
+  "bytes": 413659
+ },
+ {
+  "id": 6,
+  "name": "Trading & Microstructure",
+  "papers": 1891,
+  "slug": "trading-microstructure",
+  "x": 0.3625,
+  "y": 0.8,
+  "r": 0.0707,
+  "concepts": 159,
+  "top_gaps": 6548,
+  "cross_land_gaps": 151,
+  "featured": [
+   "financial domain + trading signal",
+   "quantitative trading + stock price prediction",
+   "statistical arbitrage + trading agent"
+  ],
+  "bytes": 389227
+ },
+ {
+  "id": 7,
+  "name": "Portfolio Management",
+  "papers": 1887,
+  "slug": "portfolio-management",
+  "x": 0.1188,
+  "y": 0.1778,
+  "r": 0.0707,
+  "concepts": 144,
+  "top_gaps": 5503,
+  "cross_land_gaps": 145,
+  "featured": [
+   "integral equation + power utility",
+   "investment problem + optimal trading strategy",
+   "numerical scheme + wealth process"
+  ],
+  "bytes": 402251
+ },
+ {
+  "id": 8,
+  "name": "Pricing of Securities",
+  "papers": 1640,
+  "slug": "pricing-of-securities",
+  "x": 0.1,
+  "y": 0.5889,
+  "r": 0.0684,
+  "concepts": 98,
+  "top_gaps": 3718,
+  "cross_land_gaps": 156,
+  "featured": [
+   "pricing problem + vanilla option",
+   "barrier option + pricing problem",
+   "asian option + volatility process"
+  ],
+  "bytes": 389583
+ }
+]
