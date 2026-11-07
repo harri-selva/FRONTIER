@@ -107,6 +107,8 @@ GENERIC_PHRASES = {
     "lack", "tendency",
     # added after field-spread review (spread >= 0.9 and judged generic)
     "state", "prediction", "group", "resource", "achievement",
+    "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
+    "step procedure",
 }
 
 
