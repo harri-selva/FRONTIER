@@ -2,9 +2,8 @@
 
 Forecasting which research concepts will meet for the first time.
 
-The website (`web/`) shows a 3D galaxy of research concepts, a searchable list of
-forecast research gaps, the backtest results, and a side leaderboard (open/close)
-of upcoming gaps in **Medicine** and **Quant**.
+The website lives in its own repo: **Prarthana-sudeesh/FRONTIER-2.0**. This repo
+produces the `forecasts.json` file it reads.
 
 ## Data pipeline (Person A)
 
@@ -43,7 +42,7 @@ forecasts the website reads.
 
 ```bash
 python pipeline/frontier_model.py --concepts data/paper_concepts.parquet \
-    --t1 2013 --t2 2016 --end 2025 --out web/public/data/forecasts.json
+    --t1 2013 --t2 2016 --end 2025 --out outputs/forecasts.json
 ```
 - Train: features <= `t1`, labels = first links in (`t1`, `t2`].
 - Test: features <= `t2`, labels = first links in (`t2`, `end`]. Never used for tuning.
@@ -51,24 +50,7 @@ python pipeline/frontier_model.py --concepts data/paper_concepts.parquet \
 
 To get Medicine and Quant gaps, include `q-bio` and `q-fin` in the `filter --cats` step.
 
-## Website
-
-The site reads `web/public/data/forecasts.json`. Fill it from the team's B2 model with
-`python b2/export_web.py` (see `B2_GUIDE.md`), or from the end-to-end script above.
-
-
-```bash
-cd web
-npm install
-npm run dev      # local dev server
-npm run build    # type-check + production build into web/dist
-```
-Until the model is run on real data, `web/public/data/forecasts.json` holds clearly
-labelled **demo data** (a banner says so on the site).
-
-### Deploy
-The build is static and uses relative paths, so `web/dist` works on any host.
-- **GitHub Pages:** Settings -> Pages -> Source: *GitHub Actions*. The
-  `Deploy website` workflow builds and publishes on every push to `main` (or run it manually).
-- **Netlify:** import the repo; `netlify.toml` is already set up.
-- **Vercel:** import the repo; `vercel.json` is already set up.
+## Website data
+Both `pipeline/frontier_model.py` and `b2/export_web.py` write a `forecasts.json`
+into `outputs/`. Copy it into `public/data/` in the FRONTIER-2.0 repo and redeploy.
+To get Medicine and Quant leaderboard entries, include `q-bio` and `q-fin` papers.

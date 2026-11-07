@@ -12,6 +12,3 @@ __pycache__/
 data/real/*
 !data/real/README.md
 outputs/fake/
-
-# The website's own JSON (package.json, tsconfig, forecasts) must be committed
-!web/**/*.json

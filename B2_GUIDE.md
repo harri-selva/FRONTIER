@@ -52,6 +52,7 @@ After `run_backtest.py` and `run_forecast_export.py`:
 ```bash
 python b2/export_web.py
 ```
-This writes `web/public/data/forecasts.json`, which the website reads. For the
+This writes `outputs/<fake|real>/forecasts.json`. Copy it into `public/data/` in the
+website repo (Prarthana-sudeesh/FRONTIER-2.0) and redeploy. For the
 Medicine and Quant leaderboards, `concepts.parquet` needs a category column
 (`field`, `primary_cat`, `category` or `cat`, e.g. `q-bio.NC`, `q-fin.ST`).

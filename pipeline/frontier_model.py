@@ -2,7 +2,7 @@
 FRONTIER - Person B: link prediction, backtest, and export for the website.
 
 Input:  paper_concepts.parquet from frontier_data.py (id, year, primary_cat, concepts)
-Output: web/public/data/forecasts.json (read by the website)
+Output: outputs/forecasts.json (copy into the FRONTIER-2.0 website's public/data/)
 
 Concepts are nodes. Two concepts are linked once a paper mentions both.
 A "research gap" is a pair of concepts that have never been linked but that
@@ -20,7 +20,7 @@ graph <= END to rank gaps that have not happened yet.
 
 Example:
   python pipeline/frontier_model.py --concepts data/paper_concepts.parquet \
-      --t1 2013 --t2 2016 --end 2025 --out web/public/data/forecasts.json
+      --t1 2013 --t2 2016 --end 2025 --out outputs/forecasts.json
 
 Install:
   pip install pandas pyarrow numpy scipy scikit-learn   (lightgbm optional)
@@ -28,6 +28,7 @@ Install:
 
 import argparse
 import json
+import os
 from datetime import date, datetime, timezone
 from itertools import combinations
 
@@ -259,7 +260,7 @@ def main():
     p.add_argument("--neg-ratio", type=int, default=20)
     p.add_argument("--top", type=int, default=300, help="gaps to export")
     p.add_argument("--seed", type=int, default=42)
-    p.add_argument("--out", default="web/public/data/forecasts.json")
+    p.add_argument("--out", default="outputs/forecasts.json")
     a = p.parse_args()
     if not (a.t1 < a.t2 < a.end):
         raise SystemExit("Need t1 < t2 < end.")
@@ -343,6 +344,7 @@ def main():
         "gaps": gaps,
         "backtest": bt,
     }
+    os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as fh:
         json.dump(out, fh, separators=(",", ":"))
     print(f"Wrote {len(gaps)} gaps to {a.out} ({date.today()})")

@@ -1,7 +1,7 @@
 """Turn B2's results into the JSON file the website reads.
 
 Run after run_backtest.py and run_forecast_export.py:
-  python b2/export_web.py                       -> web/public/data/forecasts.json
+  python b2/export_web.py                       -> outputs/<fake|real>/forecasts.json
   python b2/export_web.py --top 300 --out path.json
 
 Reads from outputs/<fake|real>/: backtest_metrics.csv, feature_importance.csv,
@@ -47,7 +47,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--top", type=int, default=300, help="gaps to export")
-    p.add_argument("--out", default=str(C.ROOT / "web" / "public" / "data" / "forecasts.json"))
+    p.add_argument("--out", default=str(C.OUT_DIR / "forecasts.json"))
     a = p.parse_args()
 
     out_dir = C.OUT_DIR
@@ -143,6 +143,7 @@ def main():
         "gaps": gaps,
         "backtest": backtest,
     }
+    C.OUT_DIR.mkdir(parents=True, exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as fh:
         json.dump(out, fh, separators=(",", ":"))
     print(f"Wrote {len(gaps)} gaps and {len(concept_rows)} concepts to {a.out}")
