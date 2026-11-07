@@ -96,6 +96,14 @@ GENERIC_PHRASES = {
     # added after review round 2
     "finding", "development", "comparison", "mean", "year", "contrast",
     "nature", "deal", "square root", "information",
+    # added after review round 3
+    "assumption", "emergence", "possibility", "stability", "article",
+    "abstract", "importance", "ability", "attempt", "advantage", "review",
+    "survey", "literature", "overview", "consideration", "extension",
+    "generalization", "improvement", "attention", "question", "fact",
+    "argument", "explanation", "interpretation", "discussion", "conclusion",
+    "proposal", "summary", "introduction", "focus", "emphasis", "need",
+    "lack", "possibility", "tendency", "success", "failure", "problem",
 }
 
 
