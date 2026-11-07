@@ -108,7 +108,8 @@ GENERIC_PHRASES = {
     # added after field-spread review (spread >= 0.9 and judged generic)
     "state", "prediction", "group", "resource", "achievement",
     "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
-    "step procedure",
+    "step procedure", "et al", "based approach", "algorithms", "couple", "good",
+    "left", "current",
 }
 
 
@@ -310,6 +311,25 @@ def stage_vocab(args):
     vocab = vocab[(vocab["doc_freq"] >= args.min_df) & (vocab["doc_freq"] <= max_df)]
     vocab = vocab.sort_values("doc_freq", ascending=False)
     vocab = add_spread(vocab, group_freq, group_docs)
+
+    # Noun-ratio check. The tag step is a plain text search, so a word like
+    # 'current' matches 'the current study' even though it only became a
+    # concept from 'electric current'. Compare how often spaCy saw the phrase
+    # as a noun-phrase concept with how often the text search finds it in the
+    # SAME papers. Real concepts score near 1; everyday words score low.
+    A = build_automaton(vocab["concept"].tolist())
+    raw_df = Counter()
+    for t in texts:
+        raw_df.update(find_concepts(A, t))
+    vocab["raw_df"] = vocab["concept"].map(raw_df).fillna(0).astype(int)
+    vocab["noun_ratio"] = (vocab["doc_freq"] / vocab["raw_df"].clip(lower=1)).clip(upper=1).round(2)
+    dropped = vocab[vocab["noun_ratio"] < args.min_noun_ratio]
+    vocab = vocab[vocab["noun_ratio"] >= args.min_noun_ratio]
+    print(f"\nNoun-ratio check dropped {len(dropped):,} concepts "
+          f"(seen as a concept in < {args.min_noun_ratio:.0%} of the papers that contain the words).")
+    print("Most common ones dropped (check nothing important is here):")
+    print(dropped.sort_values("raw_df", ascending=False)
+          .head(40)[["concept", "doc_freq", "raw_df", "noun_ratio"]].to_string(index=False))
     vocab.to_csv(args.out, index=False)
 
     print(f"\n{before:,} candidate phrases -> {len(vocab):,} concepts "
@@ -409,6 +429,9 @@ def main():
     v.add_argument("--min-df", type=int, default=10)
     v.add_argument("--max-df-frac", type=float, default=0.15)
     v.add_argument("--workers", type=int, default=1)
+    v.add_argument("--min-noun-ratio", type=float, default=0.5,
+                   help="drop concepts that appear as a noun-phrase concept in fewer than "
+                        "this share of the papers whose text contains them")
     v.add_argument("--out", default="vocab.csv")
 
     t = sub.add_parser("tag")
