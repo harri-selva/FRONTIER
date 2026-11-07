@@ -110,6 +110,11 @@ GENERIC_PHRASES = {
     "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
     "step procedure", "et al", "based approach", "algorithms", "couple", "good",
     "table", "figure", "section", "appendix", "remark", "progress",
+    # common in recent (post-2015) abstracts, seen in the 2026 vocab review
+    "challenge", "research", "tool", "limitation", "effectiveness", "potential",
+    "accuracy", "dataset", "favour", "favor", "download", "sentence",
+    "computational effort", "selected feature", "learned model", "efficacy",
+    "capability", "novelty", "practice", "setting", "benchmark",
     "left", "current", "combination", "interest", "realm", "choice",
     "large body", "presented approach",
 }
