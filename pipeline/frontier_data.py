@@ -109,6 +109,7 @@ GENERIC_PHRASES = {
     "state", "prediction", "group", "resource", "achievement",
     "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
     "step procedure", "et al", "based approach", "algorithms", "couple", "good",
+    "table", "figure", "section", "appendix",
     "left", "current", "combination", "interest", "realm", "choice",
     "large body", "presented approach",
 }
@@ -132,6 +133,8 @@ def clean_chunk(chunk) -> str | None:
         return None
     # singularise the head noun only: 'neural networks' -> 'neural network'
     head = tokens[-1].lemma_.lower()
+    if tokens[-1].lower_.endswith("ies") and head.endswith("ie"):
+        head = head[:-2] + "y"                   # cryptocurrencies -> cryptocurrency
     words = [t.lower_ for t in tokens[:-1]] + [LEMMA_FIXES.get(head, head)]
     phrase = normalise_text(" ".join(words))
     if not phrase:
@@ -141,7 +144,12 @@ def clean_chunk(chunk) -> str | None:
         return None
     if n_words == 1 and len(phrase) < 4:  # 'x', 'id', 'cnn' (see aliases below)
         return None
-    if any(ch.isdigit() for ch in phrase):
+    # Digits: keep real names like 'covid 19', 'p53', 'cd4', 'il 6',
+    # but drop counts, years and references like '2 case', '2010 crisis', 'table 3'.
+    toks = phrase.split()
+    if toks[0].isdigit() or any(t.isdigit() and len(t) >= 3 for t in toks):
+        return None
+    if any(ch.isdigit() for ch in phrase) and not any(t.isalpha() and len(t) >= 2 for t in toks):
         return None
     if phrase in GENERIC_PHRASES:
         return None
@@ -182,6 +190,12 @@ ALIASES = {
     "svm": "support vector machine",
     "svms": "support vector machine",
     "dft": "density functional theory",
+    "covid": "covid 19",
+    "covid19": "covid 19",
+    "sars cov 2": "covid 19",
+    "coronavirus disease": "covid 19",
+    "cryptocurrencies": "cryptocurrency",
+    "crypto currency": "cryptocurrency",
 }
 
 
