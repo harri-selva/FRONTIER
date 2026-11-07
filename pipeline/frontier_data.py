@@ -60,8 +60,10 @@ LEADING_JUNK = {
     "both", "several", "many", "various", "other", "new", "novel", "proposed",
     "previous", "existing", "different", "same", "first", "second", "recent",
     "further", "present", "current", "given", "specific", "general", "certain",
-    "large", "small", "high", "low", "simple", "important", "significant",
+    "simple", "important", "significant",
     "main", "key", "efficient", "effective", "standard", "typical", "only",
+    "individual", "sufficient", "unique", "possible", "relevant", "certain",
+    "strong", "rapid",
 }
 
 # Whole phrases that pass the filters but carry no meaning. Grow this list
@@ -75,7 +77,53 @@ GENERIC_PHRASES = {
     "tasks", "question", "datum", "proposed method", "numerical simulation",
     "simulation", "theory", "property", "value", "function", "process",
     "information", "structure", "field", "type", "level", "time", "rate",
+    # added after reviewing the first real vocab.csv
+    "dynamics", "term", "example", "role", "presence", "existence", "class",
+    "solution", "change", "condition", "respect", "behavior", "behaviour",
+    "mechanism", "parameter", "distribution", "interaction", "individual",
+    "aspect", "feature", "factor", "issue", "purpose", "basis", "context",
+    "impact", "influence", "regime", "scale", "range", "quantity", "amount",
+    "degree", "contribution", "observation", "evidence", "insight",
+    "understanding", "implication", "consequence", "account", "point", "kind",
+    "variety", "series", "sample", "measure", "measurement", "step", "stage",
+    "pattern", "relation", "relationship", "dependence", "limit", "scenario",
+    "situation", "phenomenon", "variable", "component", "element", "region",
+    "size", "length", "dimension", "description", "presence", "absence",
+    "variation", "difference", "increase", "decrease", "number of", "goal",
+    "direction", "manner", "means", "view", "idea", "concept", "notion",
+    "property", "characteristic", "response", "outcome", "output", "input",
+    "data", "sequence data", "sample size", "large number", "wide range",
+    "high", "low", "large", "small", "complex", "multiple", "qualitative",
+    # added after review round 2
+    "finding", "development", "comparison", "mean", "year", "contrast",
+    "nature", "deal", "square root", "information",
+    # added after review round 3
+    "assumption", "emergence", "possibility", "stability", "article",
+    "abstract", "importance", "ability", "attempt", "advantage", "review",
+    "survey", "literature", "overview", "consideration", "extension",
+    "generalization", "improvement", "attention", "question", "fact",
+    "argument", "explanation", "interpretation", "discussion", "conclusion",
+    "proposal", "summary", "introduction", "focus", "emphasis", "need",
+    "lack", "tendency",
+    # added after field-spread review (spread >= 0.9 and judged generic)
+    "state", "prediction", "group", "resource", "achievement",
+    "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
+    "step procedure", "et al", "based approach", "algorithms", "couple", "good",
+    "table", "figure", "section", "appendix", "remark", "progress",
+    # common in recent (post-2015) abstracts, seen in the 2026 vocab review
+    "challenge", "research", "tool", "limitation", "effectiveness", "potential",
+    "accuracy", "dataset", "favour", "favor", "download", "sentence",
+    "computational effort", "selected feature", "learned model", "efficacy",
+    "capability", "novelty", "practice", "setting", "benchmark",
+    "left", "current", "combination", "interest", "realm", "choice",
+    "large body", "presented approach",
 }
+
+
+# spaCy sometimes singularises wrongly. Fix the known cases here.
+LEMMA_FIXES = {"specie": "species", "specy": "species", "datum": "data", "dynamic": "dynamics",
+               "economic": "economics", "statistic": "statistics",
+               "genetic": "genetics", "physic": "physics", "kinetic": "kinetics"}
 
 
 def clean_chunk(chunk) -> str | None:
@@ -89,7 +137,11 @@ def clean_chunk(chunk) -> str | None:
     if not tokens or tokens[-1].pos_ == "PRON":
         return None
     # singularise the head noun only: 'neural networks' -> 'neural network'
-    words = [t.lower_ for t in tokens[:-1]] + [tokens[-1].lemma_.lower()]
+    head = tokens[-1].lemma_.lower()
+    if (head not in LEMMA_FIXES and tokens[-1].lower_ != "species"
+            and tokens[-1].lower_.endswith("ies") and head.endswith("ie")):
+        head = head[:-2] + "y"                   # cryptocurrencies -> cryptocurrency
+    words = [t.lower_ for t in tokens[:-1]] + [LEMMA_FIXES.get(head, head)]
     phrase = normalise_text(" ".join(words))
     if not phrase:
         return None
@@ -98,9 +150,22 @@ def clean_chunk(chunk) -> str | None:
         return None
     if n_words == 1 and len(phrase) < 4:  # 'x', 'id', 'cnn' (see aliases below)
         return None
-    if any(ch.isdigit() for ch in phrase):
+    # Digits: keep real names like 'covid 19', 'p53', 'cd4', 'il 6',
+    # but drop counts, years and references like '2 case', '2010 crisis', 'table 3'.
+    toks = phrase.split()
+    if toks[0].isdigit() or any(t.isdigit() and len(t) >= 3 for t in toks):
+        return None
+    if any(ch.isdigit() for ch in phrase) and not any(t.isalpha() and len(t) >= 2 for t in toks):
+        return None
+    if all(len(t) <= 2 for t in toks):         # maths like 'x n', 'p q'
         return None
     if phrase in GENERIC_PHRASES:
+        return None
+    # adjective(s) + generic noun is still generic:
+    # 'structural feature', 'biological observation', 'long time behavior'
+    if (words[-1] in GENERIC_PHRASES
+            and all(t.pos_ in {"ADJ", "ADV"} or t.lower_ in {"time", "long"}
+                    for t in tokens[:-1])):
         return None
     return phrase
 
@@ -133,6 +198,12 @@ ALIASES = {
     "svm": "support vector machine",
     "svms": "support vector machine",
     "dft": "density functional theory",
+    "covid": "covid 19",
+    "covid19": "covid 19",
+    "sars cov 2": "covid 19",
+    "coronavirus disease": "covid 19",
+    "cryptocurrencies": "cryptocurrency",
+    "crypto currency": "cryptocurrency",
 }
 
 
@@ -146,6 +217,19 @@ def first_submission_date(record: dict):
         return parsedate_to_datetime(record["versions"][0]["created"]).date()
     except (KeyError, IndexError, TypeError, ValueError):
         return None
+
+
+def format_authors(record: dict) -> str:
+    """'Smith, John; Lee, Ann' style from authors_parsed, falling back to the raw string."""
+    parsed = record.get("authors_parsed")
+    if parsed:
+        names = []
+        for parts in parsed:
+            last = (parts[0] if len(parts) > 0 else "").strip()
+            first = (parts[1] if len(parts) > 1 else "").strip()
+            names.append(f"{first} {last}".strip())
+        return "; ".join(n for n in names if n)
+    return SPACES.sub(" ", record.get("authors", "")).strip()
 
 
 def stage_filter(args):
@@ -175,6 +259,9 @@ def stage_filter(args):
                 "primary_cat": cats[0],
                 "categories": " ".join(cats),
                 "title": SPACES.sub(" ", rec.get("title", "")).strip(),
+                "authors": format_authors(rec),
+                "doi": rec.get("doi") or "",
+                "journal_ref": rec.get("journal-ref") or "",
                 "abstract": SPACES.sub(" ", rec.get("abstract", "")).strip(),
             })
             if seen % 500_000 == 0:
@@ -189,13 +276,50 @@ def stage_filter(args):
 
 
 # ---------------------------------------------------------------------------
+# Field spread: real concepts usually belong to one field, generic words
+# appear evenly in all of them.
+# ---------------------------------------------------------------------------
+
+FIELD_GROUPS = {"q-fin": "finance", "econ": "finance",
+                "q-bio": "biology", "physics.med-ph": "medicine"}
+
+
+def field_groups(categories: str) -> set[str]:
+    groups = set()
+    for c in categories.split():
+        for prefix, g in FIELD_GROUPS.items():
+            if c == prefix or c.startswith(prefix + "."):
+                groups.add(g)
+    return groups
+
+
+def add_spread(vocab: pd.DataFrame, group_freq: dict, group_docs: Counter) -> pd.DataFrame:
+    """Add each field's share of a concept (adjusted for field size) and a
+    'spread' score: 0 = only in one field, 1 = perfectly even across fields."""
+    import math
+    groups = sorted(group_docs)
+    if len(groups) < 2:
+        vocab["spread"] = float("nan")
+        return vocab
+    rates = pd.DataFrame({g: vocab["concept"].map(group_freq[g]).fillna(0) / group_docs[g]
+                          for g in groups})
+    shares = rates.div(rates.sum(axis=1), axis=0).fillna(0)
+    entropy = -(shares * shares.where(shares > 0, 1).map(math.log)).sum(axis=1)
+    for g in groups:
+        vocab[f"share_{g}"] = shares[g].round(2)
+    vocab["spread"] = (entropy / math.log(len(groups))).round(2).abs()
+    return vocab
+
+
+# ---------------------------------------------------------------------------
 # Stage 2: vocab
 # ---------------------------------------------------------------------------
 
 def stage_vocab(args):
     import spacy
 
-    df = pd.read_parquet(args.papers, columns=["id", "year", "title", "abstract"])
+    df = pd.read_parquet(args.papers, columns=["id", "year", "categories",
+                                               "title", "abstract"])
     pool = df[df["year"] <= args.cutoff_year]
     print(f"{len(pool):,} papers up to {args.cutoff_year} (vocabulary source)")
     if args.sample and len(pool) > args.sample:
@@ -207,10 +331,15 @@ def stage_vocab(args):
     texts = (pool["title"] + ". " + pool["abstract"]).tolist()
 
     doc_freq = Counter()         # number of papers each phrase appears in
+    groups_per_paper = [field_groups(c) for c in pool["categories"]]
+    group_docs = Counter(g for gs in groups_per_paper for g in gs)
+    group_freq = {g: Counter() for g in group_docs}
     for i, doc in enumerate(nlp.pipe(texts, batch_size=256, n_process=args.workers)):
         phrases = {p for p in (clean_chunk(c) for c in doc.noun_chunks) if p}
         phrases = {ALIASES.get(p, p) for p in phrases}
         doc_freq.update(phrases)
+        for g in groups_per_paper[i]:
+            group_freq[g].update(phrases)
         if (i + 1) % 5000 == 0:
             print(f"  parsed {i + 1:,} abstracts, {len(doc_freq):,} distinct phrases")
 
@@ -220,6 +349,26 @@ def stage_vocab(args):
     before = len(vocab)
     vocab = vocab[(vocab["doc_freq"] >= args.min_df) & (vocab["doc_freq"] <= max_df)]
     vocab = vocab.sort_values("doc_freq", ascending=False)
+    vocab = add_spread(vocab, group_freq, group_docs)
+
+    # Noun-ratio check. The tag step is a plain text search, so a word like
+    # 'current' matches 'the current study' even though it only became a
+    # concept from 'electric current'. Compare how often spaCy saw the phrase
+    # as a noun-phrase concept with how often the text search finds it in the
+    # SAME papers. Real concepts score near 1; everyday words score low.
+    A = build_automaton(vocab["concept"].tolist())
+    raw_df = Counter()
+    for t in texts:
+        raw_df.update(find_concepts(A, t))
+    vocab["raw_df"] = vocab["concept"].map(raw_df).fillna(0).astype(int)
+    vocab["noun_ratio"] = (vocab["doc_freq"] / vocab["raw_df"].clip(lower=1)).clip(upper=1).round(2)
+    dropped = vocab[vocab["noun_ratio"] < args.min_noun_ratio]
+    vocab = vocab[vocab["noun_ratio"] >= args.min_noun_ratio]
+    print(f"\nNoun-ratio check dropped {len(dropped):,} concepts "
+          f"(seen as a concept in < {args.min_noun_ratio:.0%} of the papers that contain the words).")
+    print("Most common ones dropped (check nothing important is here):")
+    print(dropped.sort_values("raw_df", ascending=False)
+          .head(40)[["concept", "doc_freq", "raw_df", "noun_ratio"]].to_string(index=False))
     vocab.to_csv(args.out, index=False)
 
     print(f"\n{before:,} candidate phrases -> {len(vocab):,} concepts "
@@ -297,6 +446,28 @@ def stage_tag(args):
 
 
 # ---------------------------------------------------------------------------
+# Metadata: one slim table of paper details for the model, briefs and galaxy
+# ---------------------------------------------------------------------------
+
+def stage_metadata(args):
+    df = pd.read_parquet(args.papers)
+    if "authors" not in df.columns:
+        raise SystemExit("papers.parquet has no authors column. Rerun the filter step "
+                         "with the updated script first.")
+    df["first_author"] = df["authors"].str.split("; ").str[0]
+    df["n_authors"] = df["authors"].str.count("; ") + (df["authors"] != "").astype(int)
+    df["url"] = "https://arxiv.org/abs/" + df["id"]
+    cols = ["id", "title", "authors", "first_author", "n_authors", "first_date", "year",
+            "primary_cat", "categories", "doi", "journal_ref", "url"]
+    if args.with_abstract:
+        cols.append("abstract")
+    out = df[cols]
+    out.to_parquet(args.out, index=False)
+    print(f"Wrote {args.out}: {len(out):,} papers, columns: {', '.join(cols)}")
+    print(out.head(3)[["id", "title", "first_author", "first_date"]].to_string(index=False))
+
+
+# ---------------------------------------------------------------------------
 
 def main():
     p = argparse.ArgumentParser(description=__doc__,
@@ -319,6 +490,9 @@ def main():
     v.add_argument("--min-df", type=int, default=10)
     v.add_argument("--max-df-frac", type=float, default=0.15)
     v.add_argument("--workers", type=int, default=1)
+    v.add_argument("--min-noun-ratio", type=float, default=0.3,
+                   help="drop concepts that appear as a noun-phrase concept in fewer than "
+                        "this share of the papers whose text contains them")
     v.add_argument("--out", default="vocab.csv")
 
     t = sub.add_parser("tag")
@@ -326,8 +500,15 @@ def main():
     t.add_argument("--vocab", default="vocab.csv")
     t.add_argument("--out", default="paper_concepts.parquet")
 
+    m = sub.add_parser("metadata")
+    m.add_argument("--papers", default="papers.parquet")
+    m.add_argument("--with-abstract", action="store_true",
+                   help="also include the abstract (bigger file)")
+    m.add_argument("--out", default="paper_metadata.parquet")
+
     args = p.parse_args()
-    {"filter": stage_filter, "vocab": stage_vocab, "tag": stage_tag}[args.cmd](args)
+    {"filter": stage_filter, "vocab": stage_vocab, "tag": stage_tag,
+     "metadata": stage_metadata}[args.cmd](args)
 
 
 if __name__ == "__main__":
