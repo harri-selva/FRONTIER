@@ -229,6 +229,8 @@ def test_exported_gaps_are_within_field():
         concepts = json.loads((WEB / field / "concepts.json").read_text())
         ids = {c["id"] for c in concepts}
         for f in (WEB / field).glob("land_*.json"):
+            if f.name.endswith("_text.json"):      # generated text only, no gaps
+                continue
             land = json.loads(f.read_text())
             for gap in land["gaps"]:
                 assert gap["u"] in ids and gap["v"] in ids, f"cross-field gap in {f.name}"
