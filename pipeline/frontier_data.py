@@ -60,7 +60,7 @@ LEADING_JUNK = {
     "both", "several", "many", "various", "other", "new", "novel", "proposed",
     "previous", "existing", "different", "same", "first", "second", "recent",
     "further", "present", "current", "given", "specific", "general", "certain",
-    "large", "small", "high", "low", "simple", "important", "significant",
+    "simple", "important", "significant",
     "main", "key", "efficient", "effective", "standard", "typical", "only",
 }
 
@@ -75,7 +75,30 @@ GENERIC_PHRASES = {
     "tasks", "question", "datum", "proposed method", "numerical simulation",
     "simulation", "theory", "property", "value", "function", "process",
     "information", "structure", "field", "type", "level", "time", "rate",
+    # added after reviewing the first real vocab.csv
+    "dynamics", "term", "example", "role", "presence", "existence", "class",
+    "solution", "change", "condition", "respect", "behavior", "behaviour",
+    "mechanism", "parameter", "distribution", "interaction", "individual",
+    "aspect", "feature", "factor", "issue", "purpose", "basis", "context",
+    "impact", "influence", "regime", "scale", "range", "quantity", "amount",
+    "degree", "contribution", "observation", "evidence", "insight",
+    "understanding", "implication", "consequence", "account", "point", "kind",
+    "variety", "series", "sample", "measure", "measurement", "step", "stage",
+    "pattern", "relation", "relationship", "dependence", "limit", "scenario",
+    "situation", "phenomenon", "variable", "component", "element", "region",
+    "size", "length", "dimension", "description", "presence", "absence",
+    "variation", "difference", "increase", "decrease", "number of", "goal",
+    "direction", "manner", "means", "view", "idea", "concept", "notion",
+    "property", "characteristic", "response", "outcome", "output", "input",
+    "data", "sequence data", "sample size", "large number", "wide range",
+    "high", "low", "large", "small", "complex", "multiple", "qualitative",
 }
+
+
+# spaCy sometimes singularises wrongly. Fix the known cases here.
+LEMMA_FIXES = {"specie": "species", "datum": "data", "dynamic": "dynamics",
+               "economic": "economics", "statistic": "statistics",
+               "genetic": "genetics", "physic": "physics", "kinetic": "kinetics"}
 
 
 def clean_chunk(chunk) -> str | None:
@@ -89,7 +112,8 @@ def clean_chunk(chunk) -> str | None:
     if not tokens or tokens[-1].pos_ == "PRON":
         return None
     # singularise the head noun only: 'neural networks' -> 'neural network'
-    words = [t.lower_ for t in tokens[:-1]] + [tokens[-1].lemma_.lower()]
+    head = tokens[-1].lemma_.lower()
+    words = [t.lower_ for t in tokens[:-1]] + [LEMMA_FIXES.get(head, head)]
     phrase = normalise_text(" ".join(words))
     if not phrase:
         return None
