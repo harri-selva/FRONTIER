@@ -57,6 +57,27 @@ FIELDS = {
 }
 
 
+# arXiv category -> readable island name on the website (unknown codes are shown as-is)
+ARXIV_NAMES = {
+    "q-bio.BM": "Biomolecules", "q-bio.CB": "Cell Behaviour", "q-bio.GN": "Genomics",
+    "q-bio.MN": "Molecular Networks", "q-bio.NC": "Neurons & Cognition", "q-bio.OT": "Other Biology",
+    "q-bio.PE": "Populations & Evolution", "q-bio.QM": "Quantitative Methods", "q-bio.SC": "Subcellular Processes",
+    "q-bio.TO": "Tissues & Organs", "physics.med-ph": "Medical Physics", "physics.bio-ph": "Biological Physics",
+    "q-fin.CP": "Computational Finance", "q-fin.EC": "Economics", "q-fin.GN": "General Finance",
+    "q-fin.MF": "Mathematical Finance", "q-fin.PM": "Portfolio Management", "q-fin.PR": "Pricing of Securities",
+    "q-fin.RM": "Risk Management", "q-fin.ST": "Statistical Finance", "q-fin.TR": "Trading & Microstructure",
+    "cs.LG": "Machine Learning", "cs.AI": "Artificial Intelligence", "cs.CL": "Language", "cs.CV": "Vision",
+    "cs.NE": "Neural & Evolutionary", "cs.IR": "Information Retrieval", "stat.ML": "Statistical ML",
+    "stat.ME": "Statistical Methods", "stat.AP": "Applied Statistics",
+    "cond-mat.mtrl-sci": "Materials Science", "cond-mat.stat-mech": "Statistical Mechanics",
+    "cond-mat.soft": "Soft Matter", "physics.optics": "Optics", "quant-ph": "Quantum Physics",
+}
+
+
+def sub_name(cat: str) -> str:
+    return ARXIV_NAMES.get(str(cat), str(cat))
+
+
 def field_of(cat: str) -> str:
     for prefix, field in FIELD_RULES:
         if cat.startswith(prefix):
@@ -82,6 +103,8 @@ def load(path: str, max_concepts: int, max_per_paper: int):
     first_year = exploded.groupby("concepts")["year"].min()
     fields = (exploded.assign(field=exploded["primary_cat"].map(field_of))
               .groupby("concepts")["field"].agg(lambda s: s.value_counts().index[0]))
+    # the island a concept sits on = its most common primary category
+    subs = exploded.groupby("concepts")["primary_cat"].agg(lambda s: s.value_counts().index[0])
 
     concepts = pd.DataFrame({
         "id": range(len(names)),
@@ -89,6 +112,7 @@ def load(path: str, max_concepts: int, max_per_paper: int):
         "papers": [int(counts[c]) for c in names],
         "first_year": [int(first_year[c]) for c in names],
         "field": [fields[c] for c in names],
+        "sub": [sub_name(subs[c]) for c in names],
     })
 
     # Edge list: (i, j, year) for every co-mention, keeping the earliest year.

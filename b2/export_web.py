@@ -6,8 +6,9 @@ Run after run_backtest.py and run_forecast_export.py:
 
 Reads from outputs/<fake|real>/: backtest_metrics.csv, feature_importance.csv,
 forecast_top.csv, plus concepts.parquet. If concepts.parquet has a category
-column (field / primary_cat / category / cat) concepts are coloured by field and
-the Medicine and Quant leaderboards fill up; otherwise they show as "Other".
+column (field / primary_cat / category / cat) concepts are coloured by field, the
+Medicine and Quant leaderboards fill up, and an arXiv category becomes the concept's
+island on the website; otherwise they show as "Other".
 """
 import argparse
 import json
@@ -27,6 +28,27 @@ FIELDS = {
 FIELD_RULES = [("q-fin", "quant"), ("q-bio", "medicine"), ("physics.med-ph", "medicine"),
                ("physics.bio-ph", "medicine"), ("cs", "ml"), ("stat", "ml")]
 FEATURE_NAMES = {"aa": "adamic_adar", "ra": "resource_alloc", "pa": "pref_attach"}
+
+
+# arXiv category -> readable island name on the website (unknown codes are shown as-is)
+ARXIV_NAMES = {
+    "q-bio.BM": "Biomolecules", "q-bio.CB": "Cell Behaviour", "q-bio.GN": "Genomics",
+    "q-bio.MN": "Molecular Networks", "q-bio.NC": "Neurons & Cognition", "q-bio.OT": "Other Biology",
+    "q-bio.PE": "Populations & Evolution", "q-bio.QM": "Quantitative Methods", "q-bio.SC": "Subcellular Processes",
+    "q-bio.TO": "Tissues & Organs", "physics.med-ph": "Medical Physics", "physics.bio-ph": "Biological Physics",
+    "q-fin.CP": "Computational Finance", "q-fin.EC": "Economics", "q-fin.GN": "General Finance",
+    "q-fin.MF": "Mathematical Finance", "q-fin.PM": "Portfolio Management", "q-fin.PR": "Pricing of Securities",
+    "q-fin.RM": "Risk Management", "q-fin.ST": "Statistical Finance", "q-fin.TR": "Trading & Microstructure",
+    "cs.LG": "Machine Learning", "cs.AI": "Artificial Intelligence", "cs.CL": "Language", "cs.CV": "Vision",
+    "cs.NE": "Neural & Evolutionary", "cs.IR": "Information Retrieval", "stat.ML": "Statistical ML",
+    "stat.ME": "Statistical Methods", "stat.AP": "Applied Statistics",
+    "cond-mat.mtrl-sci": "Materials Science", "cond-mat.stat-mech": "Statistical Mechanics",
+    "cond-mat.soft": "Soft Matter", "physics.optics": "Optics", "quant-ph": "Quantum Physics",
+}
+
+
+def sub_name(cat: str) -> str:
+    return ARXIV_NAMES.get(str(cat), str(cat))
 
 
 def field_of(value) -> str:
@@ -77,6 +99,7 @@ def main():
             "field": field_of(row[fcol]) if row is not None and fcol else "physics",
             "first_year": year_of(row[ycol]) if row is not None and ycol else feature_year,
             "papers": int(row[ncol]) if row is not None and ncol else 1,
+            **({"sub": sub_name(row[fcol])} if row is not None and fcol and fcol != "field" else {}),
         })
     names = {c["id"]: c["name"] for c in concept_rows}
 
