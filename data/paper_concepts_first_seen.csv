@@ -1,4 +1,12 @@
 concepts,first_seen
+19th century,2003-06-23
+1d diffusion,2004-02-03
+21st century,2009-07-01
+2d lattice,2000-03-08
+3d diffusion,2004-02-03
+3d image,1997-10-01
+3d reconstruction,2004-06-29
+3d space,2007-09-05
 ab initio calculation,2001-02-20
 abnormality,2005-02-06
 abrupt transition,1999-06-07
@@ -19,7 +27,6 @@ accord,1994-01-30
 accordance,1999-09-27
 accumulated mutation,2003-08-26
 accumulation,1998-04-09
-accuracy,1995-03-01
 accurate computation,2011-07-10
 accurate estimate,2003-06-21
 accurate estimation,1997-04-09
@@ -159,7 +166,6 @@ altruist,1996-11-18
 alzheimer s disease,2003-07-29
 ambient temperature,1999-11-02
 ambiguity,1998-06-16
-america,2002-11-30
 american option,1998-01-12
 american put option,2004-09-13
 american style,2000-09-04
@@ -205,7 +211,6 @@ analytical estimate,2002-07-04
 analytical expression,1996-10-15
 analytical formula,2002-03-07
 analytical formulae,2003-02-20
-analytical tool,2000-12-15
 analytical tractability,2008-04-07
 analytical treatment,1998-08-12
 anatomy,1997-04-28
@@ -255,7 +260,6 @@ apparent contradiction,2008-06-10
 apparition,2007-07-12
 appeal,2005-01-27
 appearance,1996-07-15
-appendix,1998-02-12
 appl,2005-03-23
 applicability,1999-05-05
 application domain,2004-12-17
@@ -264,7 +268,6 @@ applied electric field,2003-08-11
 applied force,1997-08-21
 applied voltage,2001-12-05
 appreciation,2002-07-27
-appropriate tool,2008-01-05
 appropriateness,1999-02-01
 approval,2004-12-31
 approx,2005-09-07
@@ -419,7 +422,6 @@ awareness,2003-11-21
 axiom,2005-06-22
 axis,1997-07-03
 axon,1998-07-17
-b t,2000-12-18
 bachelier,1997-11-03
 bacillus subtili,1999-04-26
 backbone,1997-01-16
@@ -480,7 +482,6 @@ basic premise,2005-04-06
 basic principle,2008-04-20
 basic reproduction number,2007-11-20
 basic reproductive ratio,2008-04-25
-basic tool,2005-06-28
 basic unit,2001-06-29
 basin,1996-11-08
 basis function,2003-08-10
@@ -493,6 +494,7 @@ bayesian inference,1998-06-16
 bayesian information criterion,2001-04-05
 bayesian model selection,2009-11-09
 bayesian network,2004-10-28
+bcl 2,2004-06-24
 bead,1996-09-18
 beam axis,2004-03-19
 beginning,1999-10-23
@@ -503,7 +505,6 @@ belgium,2008-07-11
 belief,2000-04-17
 belief propagation,2004-05-07
 bellman equation,1998-07-30
-benchmark dataset,2005-10-27
 benchmarking,2007-06-13
 bending energy,1998-03-01
 bending modulus,1996-08-29
@@ -536,7 +537,6 @@ bifurcation analysis,2000-12-10
 bifurcation diagram,1996-12-02
 bifurcation point,2006-01-23
 bifurcation structure,2008-03-14
-big challenge,2008-06-18
 bijection,2005-10-14
 bilateral counterparty risk,2008-12-19
 bilayer,1996-08-29
@@ -615,7 +615,6 @@ biological population,1998-07-27
 biological regulatory network,2003-09-25
 biological relevance,1997-05-27
 biological replicate,2011-09-07
-biological research,2001-02-05
 biological rhythm,1997-10-29
 biological sequence,2002-04-05
 biological significance,1999-01-28
@@ -631,7 +630,6 @@ biomass,2003-01-14
 biomass production,2008-04-07
 biomaterial,1998-08-03
 biomechanic,2005-03-03
-biomedical research,2008-02-21
 biomembrane,1999-03-07
 biomems,2008-12-15
 biomolecule,1994-07-27
@@ -822,7 +820,6 @@ cancerous cell,2004-03-15
 candidate gene,2006-07-18
 canonical ensemble,1993-02-25
 canonical equation,2006-01-26
-capability,1994-05-16
 capacity,1995-01-12
 cape verde,2010-06-30
 capillary electrophoresis,2011-04-21
@@ -956,7 +953,6 @@ cellular population,2005-09-27
 cent,2002-11-19
 center,1996-01-28
 central bank,2005-01-13
-central challenge,2010-03-08
 central limit theorem,1999-06-28
 central pattern generator,1999-10-13
 central theme,2002-05-10
@@ -976,7 +972,6 @@ cgmy model,2007-11-18
 chain,1992-07-09
 chain length,1996-06-24
 chain molecule,2000-01-05
-challenge,1995-03-15
 chance,1998-11-18
 change point,2004-10-07
 change rate,2006-01-09
@@ -1019,7 +1014,6 @@ chemical environment,2001-10-11
 chemical gradient,2002-08-05
 chemical kinetics,2004-12-25
 chemical master equation,2005-04-22
-chemical potential,1998-01-13
 chemical process,2004-08-26
 chemical reaction,1994-07-28
 chemical reaction network,2005-04-12
@@ -1089,10 +1083,8 @@ climate,1994-10-20
 climate change,2005-11-02
 clinic,2007-01-14
 clinical diagnosis,1999-11-17
-clinical practice,2005-12-01
 clinical relevance,2001-09-18
 clinical routine,2006-10-23
-clinical setting,2000-06-16
 clinical significance,2008-05-02
 clinical trial,2003-06-30
 clinician,2003-04-07
@@ -1225,7 +1217,6 @@ common cause,2004-06-21
 common disease,2004-02-27
 common motif,2003-05-19
 common pool,2011-02-03
-common practice,2004-12-27
 commonality,2006-07-18
 commonly used method,2005-06-09
 communication,1997-10-01
@@ -1315,20 +1306,16 @@ compromise,1997-08-06
 computation,1996-10-03
 computation time,2004-01-08
 computational biology,1995-03-16
-computational capability,2001-11-09
-computational challenge,2007-03-22
 computational complexity,2002-09-11
 computational cost,1999-10-01
 computational difficulty,2007-01-18
 computational efficiency,2003-06-24
-computational effort,2003-06-24
 computational finance,2004-03-21
 computational methodology,1997-10-01
 computational modeling,2005-09-14
 computational neuroscience,2001-04-06
 computational power,2001-08-17
 computational strategy,2002-05-10
-computational tool,2002-06-24
 computational tractability,2008-12-20
 computed tomography,2004-12-04
 computer aided detection,2003-04-07
@@ -1479,7 +1466,6 @@ controversy,2000-01-24
 conundrum,2008-07-02
 convection,1997-08-10
 convenience,1996-01-25
-convenient tool,2010-01-05
 convention,2000-01-19
 conventional wisdom,2008-04-20
 convergence,1993-07-18
@@ -1586,6 +1572,7 @@ covariance structure,2010-04-09
 covariate,2006-10-27
 covariation,2004-05-05
 coworker,2000-01-10
+cox 2,2007-08-01
 cox process,2008-02-11
 crack,2004-07-18
 crambin,1998-01-04
@@ -1659,6 +1646,7 @@ cyclic invasion,2000-08-22
 cyclic predator prey model,2004-05-05
 cyclically competing species,2005-04-13
 cyclization,2003-05-15
+cyclooxygenase 2,2007-08-01
 cyclotron,2006-12-21
 cylinder,2001-03-24
 cyprus,2002-12-26
@@ -1697,7 +1685,6 @@ data stream,1999-02-25
 data structure,2004-12-10
 data type,2006-05-03
 database,1995-03-01
-dataset,1998-01-30
 date,1998-08-03
 daughter,2003-02-12
 daughter cell,1995-04-04
@@ -1869,7 +1856,6 @@ developmental biology,2003-05-13
 deviation,1994-11-01
 diabetes,2004-09-16
 diagnosis,1998-06-22
-diagnostic tool,1999-10-01
 diameter,1998-05-07
 dictionary,1998-12-15
 dictyostelium cell,1998-11-04
@@ -2095,7 +2081,6 @@ doublet,2001-05-18
 doubt,2002-02-08
 dow jones index,2002-03-03
 dow jones industrial average,2001-06-26
-download,2004-01-07
 downstream gene,2005-09-14
 dozen,2000-10-19
 drawback,2001-07-30
@@ -2217,9 +2202,7 @@ eeg data,1999-05-04
 eeg recording,1998-08-09
 eeg signal,2000-07-20
 effect size,2010-10-22
-effectiveness,1993-02-25
 effector,2001-05-18
-efficacy,1993-06-02
 efficiency,1994-11-30
 effort,1998-01-17
 egfr,2002-11-22
@@ -2241,12 +2224,10 @@ elastic network model,2005-06-22
 elastic rod,1999-03-24
 elastic rod model,1999-04-01
 elasticity,1995-07-21
-electric potential,2000-03-21
 electrical activity,2000-01-28
 electrical conductivity,2000-05-30
 electrical contact,2002-09-19
 electrical coupling,1998-11-05
-electrical potential,2010-06-17
 electrical signal,2003-05-14
 electrical stimulation,2002-07-31
 electricity,2001-03-30
@@ -2268,7 +2249,6 @@ electrophoretic separation,2007-06-29
 electrophysiology,2005-10-15
 electroporation,1996-10-08
 electrostatic energy,2010-04-09
-electrostatic potential,2003-01-22
 elegan,2001-08-28
 elementary reaction,2000-06-25
 elevated temperature,2005-05-18
@@ -2295,7 +2275,6 @@ empirical law,2002-02-13
 empirical likelihood,2005-12-08
 empirical market data,2004-02-29
 empirical network,2007-05-23
-empirical research,2003-12-04
 empirical test,1999-03-12
 employee,1997-02-10
 employment,2003-11-05
@@ -2458,7 +2437,6 @@ essay,2002-10-29
 essence,1999-11-11
 essential gene,2002-07-14
 essential ingredient,2000-12-15
-essential tool,2004-08-24
 essentiality,2006-01-24
 established model,2007-06-13
 establishment,1998-11-15
@@ -2657,7 +2635,6 @@ extended period,2000-11-08
 extended version,2005-01-09
 extensive computer simulation,1997-09-20
 extensive monte carlo simulation,1999-12-17
-extensive research,2006-09-24
 extent,1998-01-04
 external environment,1995-09-05
 external force,1998-10-08
@@ -2667,7 +2644,6 @@ external medium,2001-05-18
 external news,2000-05-25
 external noise,2000-03-30
 external perturbation,1992-08-02
-external potential,2000-12-15
 external shock,1996-02-02
 external signal,2002-07-12
 external stimulus,1995-11-11
@@ -2699,8 +2675,6 @@ extremity,2001-09-27
 extrinsic noise,2005-08-20
 eye movement,2004-07-02
 eyeball,2006-06-14
-f s,1998-11-13
-f x,2005-07-07
 fabrication,2006-07-18
 face,1999-02-01
 facet,2002-01-25
@@ -2735,7 +2709,6 @@ fat tailed distribution,2001-01-22
 fate,1998-07-27
 fatigue,1998-01-29
 fatter tail,1998-04-08
-favour,1995-05-05
 fbsde,2007-12-21
 fe model,2006-06-14
 fear,2002-08-30
@@ -2772,14 +2745,12 @@ field data,2002-01-30
 field study,1997-06-11
 field theoretic approach,1996-01-03
 field theory,1994-01-30
-figure,1997-09-11
 filament,1997-04-07
 filament length,2004-04-05
 filopodia,2005-03-04
 filtering problem,2004-10-07
 filtration,2005-03-01
 final product,1995-04-04
-final section,2006-02-09
 finance,1997-10-18
 financial agent,2007-06-04
 financial analyst,2001-01-07
@@ -2919,6 +2890,7 @@ fluorophore,2001-07-27
 flux balance analysis,2004-01-07
 fmri,1998-04-20
 fmri data,2002-08-21
+fof1 atp synthase,2009-02-02
 fokker planck equation,2000-11-06
 foldability,1996-06-06
 folded protein,1997-09-05
@@ -2975,7 +2947,6 @@ formal treatment,2000-04-13
 formalism,1997-01-07
 formalization,1995-09-05
 formation,1994-02-03
-formidable challenge,2003-11-08
 formula,1994-06-20
 formulae,1998-05-04
 formulation,1994-01-30
@@ -3060,7 +3031,6 @@ functionalization,2010-09-08
 functioning,1994-07-27
 fund,1997-08-01
 fundamental building block,2002-09-10
-fundamental challenge,2004-07-15
 fundamental law,2002-02-04
 fundamental price,2000-01-24
 fundamental principle,1998-07-06
@@ -3070,12 +3040,10 @@ funding,2007-10-12
 funding cost,2010-09-17
 fungus,2001-10-24
 fusion,2000-05-31
-future challenge,2005-12-08
 future event,2009-05-26
 future evolution,2002-09-03
 future perspective,2006-09-15
 future price,1999-01-25
-future research,2000-04-04
 future return,2006-12-11
 futures market,2007-07-23
 fwhm,2002-11-28
@@ -3098,6 +3066,8 @@ gamma ray burst,2003-08-18
 ganglion cell,2001-05-06
 gap junction,2001-12-20
 gap risk,2009-01-09
+garch,2000-11-17
+garch 1 1,1998-04-11
 garch model,2005-01-12
 gas molecule,2003-01-16
 gate,2000-02-03
@@ -3112,6 +3082,7 @@ gaussian white noise,2001-04-18
 gaussians,2004-03-04
 gc content,2001-08-10
 gdp deflator,2008-11-06
+geant4 toolkit,2003-10-25
 gel electrophoresis,1996-01-19
 geman,2000-06-08
 genbank,1997-03-10
@@ -3298,7 +3269,6 @@ gold nanoparticle,2001-11-01
 gold standard,2007-10-03
 goldbeter,2003-12-02
 gompertz law,2001-07-05
-good accuracy,2001-11-20
 good agreement,1996-01-19
 good approximation,1999-07-23
 good candidate,1998-09-24
@@ -3318,7 +3288,6 @@ gpcalma,2003-04-07
 gpcr,2005-05-12
 gpu implementation,2008-09-10
 gradient sensing,2003-06-16
-grand challenge,2004-09-08
 granger causality,2004-05-03
 granularity,1999-12-29
 graph,1995-03-16
@@ -3331,11 +3300,9 @@ graphics processing unit,2008-11-07
 grass,2006-11-25
 gravity,1997-11-10
 gravity model,2009-07-20
-great challenge,2003-03-10
 great diversity,2003-12-19
 great extent,2008-05-15
 great majority,2001-03-26
-great potential,1998-08-03
 great success,2002-11-21
 greece,2008-02-25
 greek,2003-07-14
@@ -3384,7 +3351,6 @@ gulf,2008-10-06
 gwas,2009-02-09
 gwas data,2010-10-25
 gyration,1997-11-26
-h q,2002-05-25
 habit formation,2008-10-03
 habitat,1998-04-01
 hadrontherapy,2005-09-07
@@ -3494,7 +3460,6 @@ hierarchical network,2001-10-10
 hierarchical organization,1998-08-19
 hierarchical tree,1997-02-10
 hierarchy,1997-01-10
-high accuracy,2002-12-18
 high activity,1999-10-04
 high affinity,2002-08-28
 high complexity,2010-01-05
@@ -3534,7 +3499,6 @@ high throughput sequencing technology,2009-12-16
 high throughput technique,2002-05-10
 high variability,1999-12-17
 high volatility,2000-04-02
-higher accuracy,2005-06-19
 higher animal,2004-09-01
 higher correlation,2005-08-28
 higher density,2003-09-25
@@ -3568,6 +3532,8 @@ histone protein,2003-03-21
 history,1997-09-10
 hitherto,1998-03-31
 hitting time,2003-08-25
+hiv 1,2001-09-05
+hiv 1 protease,2001-01-16
 hiv infection,2000-08-04
 hiv positive people,2011-08-23
 hiv transmission,2005-01-06
@@ -3687,7 +3653,6 @@ hysteresis,1999-04-26
 hysteresis loop,1999-02-16
 i e set,1999-12-17
 i e the number,2002-07-30
-i p,2002-04-13
 icosahedral symmetry,2002-11-18
 ideal gas,2003-01-16
 identifiability,2004-12-09
@@ -4136,7 +4101,6 @@ kyprianou,2010-09-18
 l e vy process,2006-12-22
 l evy flight,1997-08-01
 l evy process,1999-06-25
-l p,2005-10-17
 labor,1997-10-01
 labor force,2007-03-28
 labor productivity,2008-11-13
@@ -4164,7 +4128,6 @@ large collection,2005-05-25
 large crash,1997-11-30
 large data set,1998-04-20
 large database,2000-02-25
-large dataset,2003-09-05
 large deformation,2006-06-26
 large deviation,1998-02-05
 large deviation principle,1998-09-17
@@ -4307,7 +4270,6 @@ limit order book,2002-10-22
 limit order market,2001-06-06
 limit process,2006-08-29
 limit theorem,2006-02-07
-limitation,1994-09-16
 limiting behavior,2001-05-04
 limiting case,1998-03-21
 limiting distribution,2007-02-27
@@ -4525,10 +4487,8 @@ maize,2007-02-22
 major advance,2002-03-25
 major bottleneck,2008-02-12
 major cause,2001-07-17
-major challenge,2003-11-13
 major currency,1999-10-05
 major determinant,2004-12-09
-major limitation,2008-12-31
 major obstacle,1998-07-06
 major source,2005-02-27
 majority,1996-11-08
@@ -4642,7 +4602,6 @@ mathematical models,1996-02-02
 mathematical physics,1999-05-12
 mathematical proof,2007-12-28
 mathematical simplicity,2006-02-01
-mathematical tool,2001-11-09
 mathematical tractability,2000-04-17
 mathematical treatment,2006-09-04
 mathematician,1999-01-25
@@ -4777,6 +4736,7 @@ metabolic rate,2000-07-28
 metabolic reaction,1993-11-25
 metabolism,1999-11-14
 metabolite,1996-11-25
+metacommunity,2004-06-11
 metadata,2012-02-17
 metal,2001-11-16
 metal ion,2000-04-05
@@ -4787,7 +4747,6 @@ metapopulation model,2006-05-24
 metapopulation network,2007-06-25
 metastability,1999-02-26
 metastasis,2003-03-12
-metastatic potential,2004-09-14
 metazoan,2003-11-10
 meter,2005-11-15
 methodology,1997-10-01
@@ -4802,7 +4761,6 @@ mexico,2003-01-10
 mf dfa,2005-02-27
 mfdfa,2005-11-09
 mfpt,2002-06-20
-mg kg,2006-02-14
 michaelis menten equation,2006-12-07
 michaelis menten kinetics,2005-01-05
 michaelis menten reaction,2006-11-03
@@ -5126,7 +5084,6 @@ myr periodicity,2007-04-22
 myriad,2004-08-16
 mystery,2001-01-24
 myth,2007-09-26
-n t,1999-12-03
 nanochannel,2007-08-20
 nanodiamond,2009-02-02
 nanoparticle,2001-11-01
@@ -5359,6 +5316,7 @@ nonlinear partial differential equation,2005-08-20
 nonlinear wave,2003-03-06
 nonlinearity,1995-05-05
 nonparametric method,2004-11-01
+nonstationarity,1999-01-20
 nonstationary signal,1998-03-23
 norm,2000-03-29
 normal cell,2004-01-04
@@ -5373,7 +5331,6 @@ normalized return,2002-05-20
 north america,2001-07-12
 notation,2002-11-15
 note,1994-03-22
-novelty,2002-10-15
 november,1999-03-14
 nowak,2007-06-05
 nucleation,1996-03-05
@@ -5414,7 +5371,6 @@ nutrient loading,2008-03-05
 nuts ii,2011-10-25
 nyse,1998-10-08
 nyse stock,2005-08-28
-o n,2000-02-25
 obesity,2003-12-08
 object,1994-12-06
 objection,2002-10-18
@@ -5594,8 +5550,6 @@ outlier,1997-11-30
 outlook,2005-05-17
 output signal,2001-11-29
 output spike,2000-07-12
-outstanding challenge,2005-07-07
-overall accuracy,2005-10-27
 overall shape,2008-11-21
 overdispersion,1998-11-18
 overlap,1994-09-06
@@ -5607,14 +5561,6 @@ owner,2008-09-05
 ownership,2002-10-30
 oxidative stress,1995-02-24
 oxygen,1999-11-14
-p c,2000-11-07
-p k,2003-02-19
-p l,2000-01-10
-p m,1998-12-08
-p q,1999-08-09
-p r,2002-08-26
-p t,2006-10-24
-p x,2001-02-27
 pace,1998-05-08
 pacemaker,1997-11-18
 pacific salmon,1995-07-25
@@ -5942,7 +5888,6 @@ polynomial time algorithm,2001-11-20
 polypeptide,1996-01-25
 polypeptide chain,1996-06-25
 pool,1994-12-04
-popular tool,2001-02-05
 popularity,2002-05-10
 population,1994-01-27
 population activity,2005-02-23
@@ -6015,7 +5960,6 @@ postsynaptic neuron,2003-07-28
 postural control,2007-05-09
 posture,2000-07-19
 potassium channel,2004-02-25
-potential,1995-10-20
 potential barrier,1999-07-13
 potential drug target,2003-09-26
 potential energy,1993-02-25
@@ -6055,12 +5999,9 @@ power utility,2007-03-28
 power utility function,2005-06-30
 power utility maximization,2009-12-09
 powerful test,2002-07-23
-powerful tool,2001-09-17
 ppi network,2004-04-17
 practical implementation,2006-01-30
-practical tool,2001-11-20
 practicality,2003-12-11
-practice,1996-05-29
 practitioner,2007-02-27
 prebiotic evolution,2000-09-11
 preceding paper,1993-11-25
@@ -6086,7 +6027,6 @@ prediction error,2000-10-23
 prediction market,2009-05-26
 prediction method,2003-10-29
 prediction problem,2005-05-13
-predictive accuracy,2005-03-16
 predictive modeling,2005-10-16
 predictive power,1999-10-05
 predictor,1998-05-04
@@ -6202,7 +6142,6 @@ progeny,2003-09-12
 prognosis,1999-03-04
 program,1998-04-02
 programmed cell death,2004-11-18
-progress,1998-04-17
 progression,1999-02-09
 project,1998-01-20
 projection,1998-06-15
@@ -6213,7 +6152,6 @@ proline,1998-08-12
 promise,1998-03-23
 promising candidate,2001-07-27
 promising strategy,2003-09-09
-promising tool,2006-06-22
 promoter,1995-03-01
 promoter region,2000-09-01
 promoter sequence,1995-03-01
@@ -6238,6 +6176,7 @@ prosthesis,2000-05-10
 proteasome,2003-11-26
 protection,1998-12-08
 protein,1993-02-25
+protein 3d structure,2006-09-25
 protein abundance,2005-03-03
 protein aggregation,1998-04-14
 protein association,1999-03-24
@@ -6321,7 +6260,6 @@ pssm,2006-03-09
 psychology,2000-04-02
 public cooperation,2011-01-26
 public database,2004-11-02
-public dataset,2009-11-01
 public good game,2010-08-08
 public goods game,2007-08-21
 publication,2001-01-24
@@ -6379,11 +6317,11 @@ quarter,2001-03-30
 quartet,1998-12-22
 quartet tree,2006-06-11
 quasi variational inequality,2007-03-19
-quasispecie,1995-05-02
 quasispecies dynamics,2001-05-05
 quasispecies evolution,1997-09-23
 quasispecies model,1996-05-24
 quasispecies theory,1999-04-14
+quasispecy,1995-05-02
 qubit,2000-02-25
 quenched disorder,1992-07-09
 query,1995-05-04
@@ -6395,10 +6333,6 @@ quiet standing,2000-07-19
 quorum,2010-04-30
 quorum sensing,1999-03-25
 quote,1998-03-31
-r d,1998-07-10
-r g,2006-10-24
-r n,1999-11-10
-r t,2002-12-11
 rabbit,1999-05-05
 rabbit prion protein,2011-04-24
 race,2003-11-25
@@ -6518,7 +6452,6 @@ reagent,1995-05-04
 real biological network,2004-06-18
 real case study,2009-12-13
 real data set,1998-04-20
-real dataset,2008-01-21
 real dna sequence,1994-02-19
 real economy,2003-04-15
 real ecosystem,1995-08-08
@@ -6657,7 +6590,6 @@ reliable estimate,2006-12-16
 reliable reconstruction,2010-09-09
 reliance,2006-04-13
 remainder,2001-10-12
-remark,1998-04-04
 remarkable agreement,2000-07-05
 remedy,1998-09-30
 removal,1998-04-20
@@ -6706,7 +6638,6 @@ requirement,1996-09-18
 requisite,2000-12-15
 rescaling,1999-02-02
 rescue,2005-01-16
-research,1997-10-01
 research area,2004-07-03
 research community,2008-01-22
 research field,2008-01-10
@@ -6876,7 +6807,8 @@ running time,2004-06-16
 runtime,2008-03-14
 rupture,1999-10-14
 rupture force,2000-02-04
-s t,2003-10-22
+s p500 index,2001-04-19
+s p500 stock index,1997-08-19
 sabr model,2006-02-15
 saccade,2000-05-10
 saccharomyce,2004-03-11
@@ -6947,7 +6879,6 @@ schweizer,1998-10-20
 science,1996-11-26
 scientific community,2008-06-09
 scientific discipline,2006-07-13
-scientific research,2007-08-20
 scientist,2000-01-03
 scope,2000-08-08
 scoring function,2001-10-10
@@ -6969,7 +6900,6 @@ secondary infection,2005-09-07
 secondary particle,2010-09-04
 secondary structure element,1997-07-24
 secretion,2004-07-30
-section,1995-07-06
 sector,1998-11-15
 security,1997-10-18
 security price,1999-07-11
@@ -7028,7 +6958,6 @@ sensory neuron,1998-01-21
 sensory signal,1999-02-23
 sensory stimulus,2008-03-27
 sensory substitution,2006-07-12
-sentence,1998-10-13
 sentiment,2003-01-13
 separation,1996-06-28
 september,1999-03-09
@@ -7057,7 +6986,6 @@ series expansion,2001-08-31
 server,2001-01-17
 service,2000-09-19
 set valued risk measure,2006-06-21
-setting,1997-11-04
 setup,1996-11-25
 severe acute respiratory syndrome,2003-12-11
 severity,1998-06-07
@@ -7160,7 +7088,6 @@ simplified version,2001-06-20
 simplifying assumption,2005-02-19
 simulated annealing,1993-02-25
 simulated data set,2007-05-04
-simulated dataset,2007-02-22
 simulated network,2005-02-23
 simulated population,2003-05-13
 simulation approach,2001-04-17
@@ -7185,6 +7112,7 @@ single curve,2002-07-17
 single dna molecule,2001-07-20
 single domain protein,1997-09-05
 single exponential,1998-03-30
+single fof1 atp synthase,2009-02-08
 single gene,2001-04-06
 single locus,1999-08-05
 single molecule experiment,1997-08-21
@@ -7529,7 +7457,6 @@ statistical regularity,2002-07-12
 statistical significance,1999-06-16
 statistical test,2000-01-20
 statistical thermodynamic,1998-02-24
-statistical tool,2003-09-05
 statistical uncertainty,2004-06-28
 statistician,2007-04-13
 statistics,1997-05-27
@@ -7588,7 +7515,6 @@ stochastic population model,2005-01-16
 stochastic portfolio theory,2009-08-07
 stochastic reaction diffusion model,2005-05-26
 stochastic resonance,1996-11-19
-stochastic setting,2010-02-22
 stochastic simulation algorithm,2006-10-27
 stochastic trajectory,2002-09-27
 stochastic transition,2007-09-05
@@ -7600,7 +7526,7 @@ stochastic volatility model,2000-01-10
 stochasticity,2001-05-11
 stock,1997-09-10
 stock exchange market,2007-08-02
-stock index,1997-08-19
+stock index,1997-11-03
 stock market,1997-08-01
 stock market crash,1997-11-30
 stock market data,1997-05-09
@@ -7807,7 +7733,6 @@ synaptic connection,1996-10-03
 synaptic connectivity,2003-05-22
 synaptic coupling,1997-09-19
 synaptic depression,2005-08-13
-synaptic efficacy,1997-03-23
 synaptic noise,1999-04-19
 synaptic plasticity,2000-10-16
 synaptic strength,1998-02-18
@@ -7844,9 +7769,6 @@ systemic risk,2009-04-28
 systems biology,2004-03-04
 systems biology approach,2007-02-11
 systems theory,2005-03-03
-t c,2002-05-25
-t f,1997-01-22
-t t,1998-04-22
 tail,1999-03-12
 tail behavior,2010-01-28
 tail dependence,2001-11-16
@@ -7938,9 +7860,7 @@ theoretical justification,2000-07-28
 theoretical modeling,2001-10-24
 theoretical neuroscience,2004-09-21
 theoretical physics,1997-10-27
-theoretical progress,1994-12-05
 theoretical support,2003-08-24
-theoretical tool,2002-10-22
 theoretical treatment,1999-01-27
 therapeutic drug,2007-07-17
 therapeutic strategy,2004-04-23
@@ -8031,7 +7951,6 @@ tokyo stock exchange,2003-02-24
 tolerance,2001-08-02
 tongue,2001-03-02
 tongue display unit,2006-09-12
-tool,1996-11-26
 toolbox,2001-01-17
 tooth,2006-05-24
 topic,1997-04-09
@@ -8284,7 +8203,6 @@ urea,2006-12-04
 usability,2006-10-22
 usage,1998-12-28
 usd jpy,2002-11-08
-useful tool,2001-05-18
 usefulness,1996-11-26
 user,1998-07-17
 utility,1997-05-19
@@ -8304,7 +8222,6 @@ vacuum,2001-04-18
 validation,2001-08-08
 validity,1996-07-03
 valley,1998-03-02
-valuable tool,2000-06-07
 valuation,1998-01-12
 valuation formula,2001-02-16
 valuation problem,2002-02-28
@@ -8368,7 +8285,7 @@ viral load,2001-09-05
 viral particle,2005-10-14
 viral population,2004-02-05
 viral protein,2005-04-07
-viral quasispecie,2002-09-26
+viral quasispecy,2002-09-26
 viral strain,2004-12-16
 virial coefficient,2001-09-23
 virology,2003-12-19
@@ -8521,8 +8438,6 @@ wound healing,2005-07-22
 wright fisher model,2008-11-06
 wright fisher process,2007-07-25
 writhe,1997-08-14
-x n,2011-04-27
-x t,1997-05-08
 yakovenko,2003-02-13
 year horizon,2008-11-03
 year period,1997-06-03
