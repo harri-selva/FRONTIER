@@ -63,6 +63,7 @@ LEADING_JUNK = {
     "simple", "important", "significant",
     "main", "key", "efficient", "effective", "standard", "typical", "only",
     "individual", "sufficient", "unique", "possible", "relevant", "certain",
+    "strong", "rapid",
 }
 
 # Whole phrases that pass the filters but carry no meaning. Grow this list
@@ -104,6 +105,8 @@ GENERIC_PHRASES = {
     "argument", "explanation", "interpretation", "discussion", "conclusion",
     "proposal", "summary", "introduction", "focus", "emphasis", "need",
     "lack", "tendency",
+    # added after field-spread review (spread >= 0.9 and judged generic)
+    "state", "prediction", "group", "resource", "achievement",
 }
 
 
