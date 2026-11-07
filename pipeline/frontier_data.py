@@ -109,7 +109,8 @@ GENERIC_PHRASES = {
     "state", "prediction", "group", "resource", "achievement",
     "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
     "step procedure", "et al", "based approach", "algorithms", "couple", "good",
-    "left", "current",
+    "left", "current", "combination", "interest", "realm", "choice",
+    "large body", "presented approach",
 }
 
 
@@ -429,7 +430,7 @@ def main():
     v.add_argument("--min-df", type=int, default=10)
     v.add_argument("--max-df-frac", type=float, default=0.15)
     v.add_argument("--workers", type=int, default=1)
-    v.add_argument("--min-noun-ratio", type=float, default=0.5,
+    v.add_argument("--min-noun-ratio", type=float, default=0.3,
                    help="drop concepts that appear as a noun-phrase concept in fewer than "
                         "this share of the papers whose text contains them")
     v.add_argument("--out", default="vocab.csv")
