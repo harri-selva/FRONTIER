@@ -3,4 +3,6 @@ pyarrow
 spacy
 pyahocorasick
 numpy
+scipy
 scikit-learn
+# optional, faster model: lightgbm
