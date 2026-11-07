@@ -109,14 +109,14 @@ GENERIC_PHRASES = {
     "state", "prediction", "group", "resource", "achievement",
     "hypothesis", "detail", "origin", "danger", "toy model", "limit case",
     "step procedure", "et al", "based approach", "algorithms", "couple", "good",
-    "table", "figure", "section", "appendix",
+    "table", "figure", "section", "appendix", "remark", "progress",
     "left", "current", "combination", "interest", "realm", "choice",
     "large body", "presented approach",
 }
 
 
 # spaCy sometimes singularises wrongly. Fix the known cases here.
-LEMMA_FIXES = {"specie": "species", "datum": "data", "dynamic": "dynamics",
+LEMMA_FIXES = {"specie": "species", "specy": "species", "datum": "data", "dynamic": "dynamics",
                "economic": "economics", "statistic": "statistics",
                "genetic": "genetics", "physic": "physics", "kinetic": "kinetics"}
 
@@ -133,7 +133,8 @@ def clean_chunk(chunk) -> str | None:
         return None
     # singularise the head noun only: 'neural networks' -> 'neural network'
     head = tokens[-1].lemma_.lower()
-    if tokens[-1].lower_.endswith("ies") and head.endswith("ie"):
+    if (head not in LEMMA_FIXES and tokens[-1].lower_ != "species"
+            and tokens[-1].lower_.endswith("ies") and head.endswith("ie")):
         head = head[:-2] + "y"                   # cryptocurrencies -> cryptocurrency
     words = [t.lower_ for t in tokens[:-1]] + [LEMMA_FIXES.get(head, head)]
     phrase = normalise_text(" ".join(words))
@@ -150,6 +151,8 @@ def clean_chunk(chunk) -> str | None:
     if toks[0].isdigit() or any(t.isdigit() and len(t) >= 3 for t in toks):
         return None
     if any(ch.isdigit() for ch in phrase) and not any(t.isalpha() and len(t) >= 2 for t in toks):
+        return None
+    if all(len(t) <= 2 for t in toks):         # maths like 'x n', 'p q'
         return None
     if phrase in GENERIC_PHRASES:
         return None
