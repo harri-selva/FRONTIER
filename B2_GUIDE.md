@@ -46,3 +46,12 @@ which would be tuning on the test set.
 - **Baselines**: popularity (`pa` = degree x degree), common neighbours (`cn`), random.
 - **The key result**: does the model beat popularity?
 - **Stage candidates**: top pairs for Person D, each concept used once so the list is varied.
+
+## Show results on the website
+After `run_backtest.py` and `run_forecast_export.py`:
+```bash
+python b2/export_web.py
+```
+This writes `web/public/data/forecasts.json`, which the website reads. For the
+Medicine and Quant leaderboards, `concepts.parquet` needs a category column
+(`field`, `primary_cat`, `category` or `cat`, e.g. `q-bio.NC`, `q-fin.ST`).

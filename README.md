@@ -53,6 +53,10 @@ To get Medicine and Quant gaps, include `q-bio` and `q-fin` in the `filter --cat
 
 ## Website
 
+The site reads `web/public/data/forecasts.json`. Fill it from the team's B2 model with
+`python b2/export_web.py` (see `B2_GUIDE.md`), or from the end-to-end script above.
+
+
 ```bash
 cd web
 npm install
