@@ -1,0 +1,9 @@
+# FRONTIER data files - too big for GitHub, share via Drive / USB instead
+data/*
+*.json
+*.parquet
+vocab*.csv
+*_first_seen.csv
+venv/
+__pycache__/
+!data/README.md
