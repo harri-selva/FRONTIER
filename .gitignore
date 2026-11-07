@@ -13,3 +13,10 @@ __pycache__/
 outputs/
 .venv/
 .pytest_cache/
+# FRONTIER build: raw/processed data and pipeline outputs are regenerated
+data/raw/
+data/processed/
+pipeline/cache/
+web/node_modules/
+web/dist/
+!web/public/data/**/*.json
