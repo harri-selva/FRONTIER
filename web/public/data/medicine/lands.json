@@ -1,0 +1,218 @@
+[
+ {
+  "id": 0,
+  "name": "Cardiovascular Biomechanics",
+  "papers": 1147,
+  "slug": "cardiovascular-biomechanics",
+  "x": 0.5,
+  "y": 0.5,
+  "r": 0.0672,
+  "concepts": 306,
+  "top_gaps": 3613,
+  "cross_land_gaps": 86,
+  "featured": [
+   "left ventricle + wall shear stress",
+   "polymer + red blood cell",
+   "fibrosis + left ventricle"
+  ],
+  "bytes": 371088
+ },
+ {
+  "id": 1,
+  "name": "MRI Reconstruction & PET",
+  "papers": 931,
+  "slug": "mri-reconstruction-pet",
+  "x": 0.3375,
+  "y": 0.3889,
+  "r": 0.0632,
+  "concepts": 199,
+  "top_gaps": 3235,
+  "cross_land_gaps": 108,
+  "featured": [
+   "fMRI + metabolite",
+   "high quality image + quantitative metric",
+   "motion correction + quantitative metric"
+  ],
+  "bytes": 396146
+ },
+ {
+  "id": 2,
+  "name": "Particle Therapy & Radiobiology",
+  "papers": 880,
+  "slug": "particle-therapy-radiobiology",
+  "x": 0.3688,
+  "y": 0.7,
+  "r": 0.0621,
+  "concepts": 152,
+  "top_gaps": 2112,
+  "cross_land_gaps": 106,
+  "featured": [
+   "cancer therapy + induction",
+   "linear energy transfer + VMAT",
+   "drug delivery + species"
+  ],
+  "bytes": 374135
+ },
+ {
+  "id": 3,
+  "name": "Rehab Robotics & Devices",
+  "papers": 878,
+  "slug": "rehab-robotics-devices",
+  "x": 0.5375,
+  "y": 0.2,
+  "r": 0.0621,
+  "concepts": 208,
+  "top_gaps": 2722,
+  "cross_land_gaps": 163,
+  "featured": [
+   "ground + ventilation",
+   "country + pain",
+   "animal model + mobility"
+  ],
+  "bytes": 430080
+ },
+ {
+  "id": 4,
+  "name": "Pathology & Radiomics",
+  "papers": 849,
+  "slug": "pathology-radiomics",
+  "x": 0.5563,
+  "y": 0.7889,
+  "r": 0.0615,
+  "concepts": 240,
+  "top_gaps": 3444,
+  "cross_land_gaps": 131,
+  "featured": [
+   "data augmentation + feature extraction",
+   "radiomic feature + text",
+   "fibrosis + left ventricle"
+  ],
+  "bytes": 394126
+ },
+ {
+  "id": 5,
+  "name": "AI Image Segmentation",
+  "papers": 734,
+  "slug": "ai-image-segmentation",
+  "x": 0.6688,
+  "y": 0.4778,
+  "r": 0.059,
+  "concepts": 160,
+  "top_gaps": 2495,
+  "cross_land_gaps": 148,
+  "featured": [
+   "data augmentation + feature extraction",
+   "deep learning based method + quantitative metric",
+   "dl model + quantitative metric"
+  ],
+  "bytes": 378419
+ },
+ {
+  "id": 6,
+  "name": "Ultrasound & Photoacoustics",
+  "papers": 710,
+  "slug": "ultrasound-photoacoustics",
+  "x": 0.7,
+  "y": 0.2,
+  "r": 0.0585,
+  "concepts": 114,
+  "top_gaps": 2129,
+  "cross_land_gaps": 168,
+  "featured": [
+   "metabolite + microbubble",
+   "long acquisition time + photoacoustic tomography",
+   "acceleration factor + photoacoustic tomography"
+  ],
+  "bytes": 400469
+ },
+ {
+  "id": 7,
+  "name": "Radiotherapy Planning",
+  "papers": 679,
+  "slug": "radiotherapy-planning",
+  "x": 0.7188,
+  "y": 0.7444,
+  "r": 0.0578,
+  "concepts": 120,
+  "top_gaps": 2364,
+  "cross_land_gaps": 96,
+  "featured": [
+   "adaptive radiotherapy + dose volume histogram",
+   "bladder + VMAT",
+   "adaptive radiotherapy + prescription"
+  ],
+  "bytes": 366236
+ },
+ {
+  "id": 8,
+  "name": "CT Imaging & Reconstruction",
+  "papers": 562,
+  "slug": "ct-imaging-reconstruction",
+  "x": 0.2188,
+  "y": 0.5889,
+  "r": 0.055,
+  "concepts": 68,
+  "top_gaps": 1323,
+  "cross_land_gaps": 142,
+  "featured": [
+   "improved image quality + material decomposition",
+   "imaging performance + tomographic reconstruction",
+   "imaging performance + motion correction"
+  ],
+  "bytes": 390216
+ },
+ {
+  "id": 9,
+  "name": "Brain Microstructure MRI",
+  "papers": 540,
+  "slug": "brain-microstructure-mri",
+  "x": 0.2438,
+  "y": 0.1556,
+  "r": 0.0544,
+  "concepts": 111,
+  "top_gaps": 1925,
+  "cross_land_gaps": 124,
+  "featured": [
+   "fMRI + metabolite",
+   "quantitative mri + reconstruction accuracy",
+   "quantitative metric + quantitative mri"
+  ],
+  "bytes": 374230
+ },
+ {
+  "id": 10,
+  "name": "Biomaterials & Drug Delivery",
+  "papers": 403,
+  "slug": "biomaterials-drug-delivery",
+  "x": 0.8125,
+  "y": 0.4,
+  "r": 0.0506,
+  "concepts": 71,
+  "top_gaps": 857,
+  "cross_land_gaps": 143,
+  "featured": [
+   "polymer + red blood cell",
+   "drug delivery + inflammation",
+   "drug delivery + species"
+  ],
+  "bytes": 391699
+ },
+ {
+  "id": 11,
+  "name": "Airborne Infection & Biosensors",
+  "papers": 394,
+  "slug": "airborne-infection-biosensors",
+  "x": 0.15,
+  "y": 0.3556,
+  "r": 0.0503,
+  "concepts": 73,
+  "top_gaps": 952,
+  "cross_land_gaps": 163,
+  "featured": [
+   "ground + ventilation",
+   "country + pain",
+   "automation + country"
+  ],
+  "bytes": 422933
+ }
+]

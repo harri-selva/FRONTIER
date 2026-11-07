@@ -20,3 +20,7 @@ pipeline/cache/
 web/node_modules/
 web/dist/
 !web/public/data/**/*.json
+!web/package.json
+!web/package-lock.json
+!web/tsconfig.json
+*.tsbuildinfo

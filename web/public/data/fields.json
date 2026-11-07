@@ -1,0 +1,28 @@
+[
+ {
+  "id": "medicine",
+  "name": "Medicine",
+  "live": true,
+  "papers": 8707,
+  "lands": 12,
+  "concepts": 1822,
+  "links": 266459,
+  "candidates": 1392472,
+  "top_gaps": 13924,
+  "first_year": 1997,
+  "last_date": "2026-10-29"
+ },
+ {
+  "id": "quant",
+  "name": "Quant",
+  "live": true,
+  "papers": 24803,
+  "lands": 9,
+  "concepts": 3344,
+  "links": 758998,
+  "candidates": 4830498,
+  "top_gaps": 48304,
+  "first_year": 1997,
+  "last_date": "2026-10-29"
+ }
+]

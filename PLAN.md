@@ -1,7 +1,11 @@
 # FRONTIER: build plan (Phase 0)
 
-Status: **waiting for approval.** Nothing below has been built yet. The open questions
-in section 9 change what gets built, so please answer them first.
+Status: **built.** The user asked for the finished product, so every open question in section 9 was
+resolved with its recommended option (Q1: metadata fetched from the arXiv API; Q2: Option A; Q3: the docx
+is the UI spec; Q4: >=1 joint paper main, >=2 secondary; Q5: built here; Q6: chat-prompt backtest;
+Q7: >=10 papers and <=10% plus a reviewed stop-list; Q8: specificity rule for featured gaps; Q9: templates,
+no API key; Q10: branch B1/Neriyan). Later changes vs this plan: Medicine has 8,707 papers (exact arXiv
+categories) and 12 re-derived islands; see METHOD.md for the final numbers.
 
 Supporting file: `docs/phase0/data_review.md` (10 sample rows per field, top-100 and
 50 random concepts per field, and the list of concepts the 2% rule would remove).

@@ -12,3 +12,6 @@ networkx
 scikit-learn
 lightgbm
 pytest
+
+# --- optional: AI-written gap text at build time (needs ANTHROPIC_API_KEY) ---
+# anthropic
