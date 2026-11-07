@@ -103,7 +103,7 @@ GENERIC_PHRASES = {
     "generalization", "improvement", "attention", "question", "fact",
     "argument", "explanation", "interpretation", "discussion", "conclusion",
     "proposal", "summary", "introduction", "focus", "emphasis", "need",
-    "lack", "possibility", "tendency", "success", "failure", "problem",
+    "lack", "tendency",
 }
 
 
