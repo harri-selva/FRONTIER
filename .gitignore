@@ -24,3 +24,5 @@ web/dist/
 !web/package-lock.json
 !web/tsconfig.json
 *.tsbuildinfo
+deck/node_modules/
+deck/render/
