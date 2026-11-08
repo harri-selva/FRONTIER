@@ -81,10 +81,10 @@ export function Method() {
       </header>
       <section className="panel">
         <h2 className="h2">1 · THE DATA</h2>
-        <p>33,510 real arXiv papers: <b>Medicine</b> (8,707 papers listed under medical physics) and <b>Quant</b> (24,803 papers in quantitative
+        <p>35,813 real arXiv papers: <b>Medicine</b> (9,353 papers listed under medical physics) and <b>Quant</b> (26,460 papers in quantitative
           finance and economics), 1997 to 29 October 2026. Each paper's original submission date is used. Concepts are research phrases found in titles
           and abstracts (for example "proton therapy", "limit order book"). Hub words that appear in more than 10% of a field's papers and reviewed
-          filler phrases are removed. Titles, authors and links come from arXiv's public API.</p>
+          filler phrases are removed. Titles, authors, DOIs and arXiv categories come from Person A's arXiv metadata file.</p>
         <p><b>Islands</b>: Quant uses arXiv's own sub-categories. Medicine has a single arXiv category, so its 12 islands are found by grouping
           concepts that are often studied together (community detection), then named by hand from each group's most distinctive concepts.</p>
       </section>
@@ -129,7 +129,7 @@ export function Method() {
           <li>"Filled" means the two concepts appeared in the same abstract. That can be a passing mention, so we also report a stricter 2-paper test.</li>
           <li>Concepts come from automatic phrase tagging, so some noise remains (generic words, synonyms not merged).</li>
           <li>The concept list was chosen using data up to 2026. The 10-papers-by-cutoff rule removes most of that effect, not all of it.</li>
-          <li>Popularity explains much of the headline accuracy. Among specific concepts Resource Allocation clearly beats it, but precision is lower.</li>
+          <li>Popularity explains much of the headline accuracy. Among specific concepts Resource Allocation beats it on AUC in both fields and clearly on the top 100 in Medicine; in Quant the top-100 margin is small (49 vs 42).</li>
           <li>Suggested titles, abstracts and missions are generated text, not existing papers.</li>
         </ul>
       </section>

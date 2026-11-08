@@ -289,3 +289,7 @@ button { font: inherit; color: inherit; }
   .planet-label, .island-label { font-size: 15px; } .island-label { max-width: 260px; }
   .tip { zoom: 1.6; }
 }
+/* concept labels sit above bridge labels so a bridge never blocks a click on a concept */
+.overlay > .bridge-label { z-index: 1; }
+.overlay > .node-label.show { z-index: 2; }
+.overlay > .node-label.focus { z-index: 3; }

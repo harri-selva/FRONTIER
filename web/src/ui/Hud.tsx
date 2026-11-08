@@ -45,8 +45,8 @@ export function Hud({ route, crumbs }: { route: Route; crumbs: Crumb[] }) {
 
 const BOOT = [
   "FRONTIER OBSERVATORY v1.0",
-  "LOADING ARXIV ARCHIVE ........ 33,510 PAPERS",
-  "TAGGING CONCEPTS ............. 5,166 LIVE",
+  "LOADING ARXIV ARCHIVE ........ 35,813 PAPERS",
+  "TAGGING CONCEPTS ............. 5,423 LIVE",
   "CALIBRATING TELESCOPE ........ OK",
   "REPLAYING 2018 → 2026 ........ BACKTEST OK",
   "2 WORLDS CHARTED · 12 SECTORS UNDER CONSTRUCTION",

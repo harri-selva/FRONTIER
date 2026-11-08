@@ -3,7 +3,7 @@
 Explore research as a 16-bit pixel-art universe and find **research gaps**: pairs of concepts that
 have never appeared in the same paper but are predicted to meet, **validated with a backtest**.
 
-- **Galaxy:** 14 planets. **Medicine** and **Quant** are live, built from 33,510 real arXiv papers.
+- **Galaxy:** 14 planets. **Medicine** and **Quant** are live, built from 35,813 real arXiv papers.
 - **Planet:** each island is a sub-field (size = papers).
 - **Island:** a network of concepts. Solid lines = studied together; glowing dashed lines = predicted gaps;
   portals = gaps to other islands.
@@ -47,8 +47,8 @@ bash pipeline/run_all.sh
 
 | Step | Script | What it does |
 |---|---|---|
-| 1 | `pipeline/fetch_inputs.py` | copies `paper_concepts_2026.parquet` and `vocab_2026.csv` from the `data-pipeline` branch |
-| 2 | `pipeline/fetch_arxiv.py` | fetches titles, authors, abstracts, DOIs and all categories from the arXiv API (~25 min first time; cached and resumable) |
+| 1 | `pipeline/fetch_inputs.py` | copies `paper_concepts_2026.parquet`, `vocab_2026.csv` and Person A's `paper_metadata.parquet` (titles, authors, DOIs, all arXiv categories) from the `data-pipeline` branch |
+| 2 | `pipeline/fetch_arxiv.py` | optional: fetches abstracts from the arXiv API, only needed for AI-written text (~25 min first time; cached and resumable) |
 | 3 | `pipeline/prepare.py` | dedupes, assigns fields from arXiv categories, cleans concepts, builds islands; writes `outputs/cleaning_report.md` |
 | 4 | `pytest` | 26 tests: hand-computed features, leakage, planted paper, survivorship, networkx, no cross-field pairs |
 | 5 | `pipeline/backtest.py` | main backtest + robustness for both fields; appends to `runs.csv` |

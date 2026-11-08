@@ -84,7 +84,7 @@ function Body({ bt }: { bt: Backtest }) {
       <section className="panel">
         <h2 className="h2">SPECIFIC CONCEPTS ONLY (FEATURED-GAP RULE)</h2>
         <p className="muted small">Same cutoff and window, restricted to pairs where both concepts are specific at 2018 ({fr.rule}). This rule was fixed
-          before the first run. Here popularity alone does much worse, and Resource Allocation's advantage is clearest.</p>
+          before the first run. Precision is lower here because specific gaps are harder to predict; compare the popularity row with ours.</p>
         <MetricTable metrics={fr.metrics} />
       </section>
     )}

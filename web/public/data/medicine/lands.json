@@ -1,218 +1,218 @@
 [
  {
   "id": 0,
-  "name": "Cardiovascular Biomechanics",
-  "papers": 1147,
-  "slug": "cardiovascular-biomechanics",
+  "name": "Pathology & Radiomics",
+  "papers": 1450,
+  "slug": "pathology-radiomics",
   "x": 0.5,
   "y": 0.5,
-  "r": 0.0672,
-  "concepts": 306,
-  "top_gaps": 3613,
-  "cross_land_gaps": 86,
+  "r": 0.084,
+  "concepts": 423,
+  "top_gaps": 6133,
+  "cross_land_gaps": 131,
   "featured": [
-   "left ventricle + wall shear stress",
-   "polymer + red blood cell",
-   "fibrosis + left ventricle"
+   "endpoint + target volume",
+   "data augmentation + feature extraction",
+   "manual segmentation + receiver operating characteristic curve"
   ],
-  "bytes": 371088
+  "bytes": 394072
  },
  {
   "id": 1,
-  "name": "MRI Reconstruction & PET",
-  "papers": 931,
-  "slug": "mri-reconstruction-pet",
-  "x": 0.3375,
-  "y": 0.3889,
-  "r": 0.0632,
-  "concepts": 199,
-  "top_gaps": 3235,
-  "cross_land_gaps": 108,
+  "name": "CT Imaging & Reconstruction",
+  "papers": 1179,
+  "slug": "ct-imaging-reconstruction",
+  "x": 0.2875,
+  "y": 0.5,
+  "r": 0.079,
+  "concepts": 281,
+  "top_gaps": 4647,
+  "cross_land_gaps": 139,
   "featured": [
-   "fMRI + metabolite",
+   "data augmentation + feature extraction",
    "high quality image + quantitative metric",
    "motion correction + quantitative metric"
   ],
-  "bytes": 396146
+  "bytes": 394845
  },
  {
   "id": 2,
-  "name": "Particle Therapy & Radiobiology",
-  "papers": 880,
-  "slug": "particle-therapy-radiobiology",
-  "x": 0.3688,
-  "y": 0.7,
-  "r": 0.0621,
-  "concepts": 152,
-  "top_gaps": 2112,
-  "cross_land_gaps": 106,
+  "name": "Cardiovascular Biomechanics",
+  "papers": 1000,
+  "slug": "cardiovascular-biomechanics",
+  "x": 0.6125,
+  "y": 0.1889,
+  "r": 0.0754,
+  "concepts": 181,
+  "top_gaps": 2917,
+  "cross_land_gaps": 95,
   "featured": [
-   "cancer therapy + induction",
-   "linear energy transfer + VMAT",
-   "drug delivery + species"
+   "left ventricle + wall shear stress",
+   "insertion + wall shear stress",
+   "flow rate + occlusion"
   ],
-  "bytes": 374135
+  "bytes": 377032
  },
  {
   "id": 3,
-  "name": "Rehab Robotics & Devices",
-  "papers": 878,
-  "slug": "rehab-robotics-devices",
-  "x": 0.5375,
-  "y": 0.2,
-  "r": 0.0621,
-  "concepts": 208,
-  "top_gaps": 2722,
-  "cross_land_gaps": 163,
+  "name": "Infection & Biomaterials",
+  "papers": 970,
+  "slug": "infection-biomaterials",
+  "x": 0.65,
+  "y": 0.7556,
+  "r": 0.0747,
+  "concepts": 287,
+  "top_gaps": 3820,
+  "cross_land_gaps": 72,
   "featured": [
-   "ground + ventilation",
-   "country + pain",
-   "animal model + mobility"
+   "polymer + red blood cell",
+   "polymer + virus",
+   "industry + pathogen"
   ],
-  "bytes": 430080
+  "bytes": 387097
  },
  {
   "id": 4,
-  "name": "Pathology & Radiomics",
-  "papers": 849,
-  "slug": "pathology-radiomics",
-  "x": 0.5563,
-  "y": 0.7889,
-  "r": 0.0615,
-  "concepts": 240,
-  "top_gaps": 3444,
-  "cross_land_gaps": 131,
+  "name": "Brain Microstructure MRI",
+  "papers": 737,
+  "slug": "brain-microstructure-mri",
+  "x": 0.4125,
+  "y": 0.1778,
+  "r": 0.0694,
+  "concepts": 147,
+  "top_gaps": 2449,
+  "cross_land_gaps": 103,
   "featured": [
-   "data augmentation + feature extraction",
-   "radiomic feature + text",
-   "fibrosis + left ventricle"
+   "cortex + neurological disorder",
+   "quantitative metric + quantitative mri",
+   "quantitative mri + reconstruction accuracy"
   ],
-  "bytes": 394126
+  "bytes": 381679
  },
  {
   "id": 5,
-  "name": "AI Image Segmentation",
-  "papers": 734,
-  "slug": "ai-image-segmentation",
-  "x": 0.6688,
-  "y": 0.4778,
-  "r": 0.059,
-  "concepts": 160,
-  "top_gaps": 2495,
-  "cross_land_gaps": 148,
+  "name": "Particle Therapy & Radiobiology",
+  "papers": 698,
+  "slug": "particle-therapy-radiobiology",
+  "x": 0.3875,
+  "y": 0.8,
+  "r": 0.0684,
+  "concepts": 111,
+  "top_gaps": 1878,
+  "cross_land_gaps": 104,
   "featured": [
-   "data augmentation + feature extraction",
-   "deep learning based method + quantitative metric",
-   "dl model + quantitative metric"
+   "linear energy transfer + tumor cell",
+   "linear energy transfer + VMAT",
+   "dosimeter + particle therapy"
   ],
-  "bytes": 378419
+  "bytes": 376749
  },
  {
   "id": 6,
   "name": "Ultrasound & Photoacoustics",
-  "papers": 710,
+  "papers": 636,
   "slug": "ultrasound-photoacoustics",
-  "x": 0.7,
-  "y": 0.2,
-  "r": 0.0585,
-  "concepts": 114,
-  "top_gaps": 2129,
-  "cross_land_gaps": 168,
+  "x": 0.7313,
+  "y": 0.4556,
+  "r": 0.0668,
+  "concepts": 98,
+  "top_gaps": 2155,
+  "cross_land_gaps": 173,
   "featured": [
-   "metabolite + microbubble",
-   "long acquisition time + photoacoustic tomography",
-   "acceleration factor + photoacoustic tomography"
+   "parallel imaging + photoacoustic tomography",
+   "microbubble + photoacoustic imaging",
+   "metabolism + microbubble"
   ],
-  "bytes": 400469
+  "bytes": 403883
  },
  {
   "id": 7,
-  "name": "Radiotherapy Planning",
-  "papers": 679,
-  "slug": "radiotherapy-planning",
-  "x": 0.7188,
-  "y": 0.7444,
-  "r": 0.0578,
-  "concepts": 120,
-  "top_gaps": 2364,
-  "cross_land_gaps": 96,
+  "name": "Tissue Biomechanics & Surgery",
+  "papers": 580,
+  "slug": "tissue-biomechanics-surgery",
+  "x": 0.2313,
+  "y": 0.1667,
+  "r": 0.0653,
+  "concepts": 87,
+  "top_gaps": 1206,
+  "cross_land_gaps": 177,
   "featured": [
-   "adaptive radiotherapy + dose volume histogram",
-   "bladder + VMAT",
-   "adaptive radiotherapy + prescription"
+   "insertion + wall shear stress",
+   "computational modeling + replacement",
+   "computational modeling + finite element method"
   ],
-  "bytes": 366236
+  "bytes": 412393
  },
  {
   "id": 8,
-  "name": "CT Imaging & Reconstruction",
-  "papers": 562,
-  "slug": "ct-imaging-reconstruction",
-  "x": 0.2188,
-  "y": 0.5889,
-  "r": 0.055,
-  "concepts": 68,
-  "top_gaps": 1323,
-  "cross_land_gaps": 142,
+  "name": "Radiotherapy Planning",
+  "papers": 560,
+  "slug": "radiotherapy-planning",
+  "x": 0.8,
+  "y": 0.1667,
+  "r": 0.0647,
+  "concepts": 110,
+  "top_gaps": 2260,
+  "cross_land_gaps": 97,
   "featured": [
-   "improved image quality + material decomposition",
-   "imaging performance + tomographic reconstruction",
-   "imaging performance + motion correction"
+   "adaptive radiotherapy + dose volume histogram",
+   "bladder + VMAT",
+   "endpoint + target volume"
   ],
-  "bytes": 390216
+  "bytes": 357491
  },
  {
   "id": 9,
-  "name": "Brain Microstructure MRI",
-  "papers": 540,
-  "slug": "brain-microstructure-mri",
-  "x": 0.2438,
-  "y": 0.1556,
-  "r": 0.0544,
-  "concepts": 111,
-  "top_gaps": 1925,
-  "cross_land_gaps": 124,
+  "name": "MRI Reconstruction",
+  "papers": 525,
+  "slug": "mri-reconstruction",
+  "x": 0.8375,
+  "y": 0.7111,
+  "r": 0.0637,
+  "concepts": 81,
+  "top_gaps": 1523,
+  "cross_land_gaps": 131,
   "featured": [
-   "fMRI + metabolite",
-   "quantitative mri + reconstruction accuracy",
-   "quantitative metric + quantitative mri"
+   "motion correction + parallel imaging",
+   "high quality image + quantitative metric",
+   "motion correction + quantitative metric"
   ],
-  "bytes": 374230
+  "bytes": 399321
  },
  {
   "id": 10,
-  "name": "Biomaterials & Drug Delivery",
-  "papers": 403,
-  "slug": "biomaterials-drug-delivery",
-  "x": 0.8125,
-  "y": 0.4,
-  "r": 0.0506,
-  "concepts": 71,
-  "top_gaps": 857,
-  "cross_land_gaps": 143,
+  "name": "EEG, Epilepsy & Neurorehab",
+  "papers": 514,
+  "slug": "eeg-epilepsy-neurorehab",
+  "x": 0.1063,
+  "y": 0.4111,
+  "r": 0.0634,
+  "concepts": 94,
+  "top_gaps": 1215,
+  "cross_land_gaps": 173,
   "featured": [
-   "polymer + red blood cell",
-   "drug delivery + inflammation",
-   "drug delivery + species"
+   "parallel imaging + toolbox",
+   "fMRI + synchronization",
+   "dose volume histogram + large language model"
   ],
-  "bytes": 391699
+  "bytes": 430808
  },
  {
   "id": 11,
-  "name": "Airborne Infection & Biosensors",
-  "papers": 394,
-  "slug": "airborne-infection-biosensors",
-  "x": 0.15,
-  "y": 0.3556,
-  "r": 0.0503,
-  "concepts": 73,
-  "top_gaps": 952,
-  "cross_land_gaps": 163,
+  "name": "PET & Radiation Detectors",
+  "papers": 504,
+  "slug": "pet-radiation-detectors",
+  "x": 0.9062,
+  "y": 0.4333,
+  "r": 0.0631,
+  "concepts": 61,
+  "top_gaps": 1241,
+  "cross_land_gaps": 162,
   "featured": [
-   "ground + ventilation",
-   "country + pain",
-   "automation + country"
+   "detectability + nuclear medicine",
+   "maximum likelihood + regularizer",
+   "drift + millisecond"
   ],
-  "bytes": 422933
+  "bytes": 373990
  }
 ]
