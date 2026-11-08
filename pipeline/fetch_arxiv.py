@@ -1,13 +1,12 @@
 """
-Step 0b: fetch real paper details (title, authors, abstract, DOI, all categories)
-from arXiv's public API for every paper that might be Quant or Medicine.
+Step 0b (optional): fetch ABSTRACTS from arXiv's public API for every paper that might be
+Quant or Medicine. Titles, authors, DOIs and categories come from Person A's
+paper_metadata.parquet; abstracts are only needed to write AI text (generate_content.py).
 
   - 100 papers per request, one request every 3+ seconds (arXiv's polite-use rule)
   - results are appended to data/raw/arxiv_meta.jsonl as they arrive, so the
     script can be stopped and restarted without re-downloading anything
-  - at the end writes data/raw/paper_metadata.parquet in the SAME column format as
-    Person A's `frontier_data.py metadata --with-abstract` output. If Person A
-    publishes that file, it can replace this one.
+  - at the end writes data/raw/arxiv_abstracts.parquet
 
 Run from the repo root:  python pipeline/fetch_arxiv.py
 """
@@ -28,7 +27,7 @@ from fields import candidate_field  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 CACHE = RAW / "arxiv_meta.jsonl"
-OUT = RAW / "paper_metadata.parquet"
+OUT = RAW / "arxiv_abstracts.parquet"
 API = "https://export.arxiv.org/api/query"
 BATCH, PAUSE = 100, 3.1
 NS = {"a": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}

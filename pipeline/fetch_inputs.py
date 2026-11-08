@@ -3,6 +3,8 @@ Step 0a: copy the two input files we use from the `data-pipeline` branch into da
 
   data/paper_concepts_2026.parquet  -> data/raw/paper_concepts_2026.parquet
   data/vocab_2026.csv               -> data/raw/vocab_2026.csv
+  data/paper_metadata.parquet       -> data/raw/paper_metadata.parquet   (Person A: title, authors,
+                                       DOI, journal ref and ALL arXiv categories for every paper)
 
 We read them straight out of git so nobody has to copy files by hand.
 Run from the repo root:  python pipeline/fetch_inputs.py
@@ -12,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
-FILES = ["data/paper_concepts_2026.parquet", "data/vocab_2026.csv"]
+FILES = ["data/paper_concepts_2026.parquet", "data/vocab_2026.csv", "data/paper_metadata.parquet"]
 
 
 def main():

@@ -442,7 +442,7 @@ QUANT_LANDS = {
     "q-fin.ST": "Statistical Finance",
     "q-fin.MF": "Mathematical Finance",
     "q-fin.GN": "General Finance",
-    "q-fin.EC": "General Finance",
+    "q-fin.EC": "Economics & Econometrics",   # q-fin.EC is arXiv's alias of econ.GN
     "q-fin.RM": "Risk Management",
     "q-fin.CP": "Computational Finance",
     "q-fin.PM": "Portfolio Management",
@@ -457,18 +457,18 @@ MED_MAX_LANDS = 12             # ...and the smallest keep merging until at most 
 # Names given by hand after reading each cluster's most distinctive concepts.
 # A cluster gets the name whose anchor concepts it contains most of.
 MED_LAND_NAMES = {
-    "Cardiovascular Biomechanics": ["artery", "wall shear stress", "heart", "blood flow", "stenosis", "aneurysm", "left ventricle"],
-    "MRI Reconstruction & PET": ["space data", "compressed sensing", "mri reconstruction", "acceleration factor", "pet scanner", "coincidence"],
-    "Particle Therapy & Radiobiology": ["carbon ion", "bragg peak", "proton beam", "neutron", "cell survival", "dna damage"],
-    "Rehab Robotics & Devices": ["tongue", "rehabilitation", "spinal cord injury", "robotic", "gait", "motor control"],
-    "Pathology & Radiomics": ["radiomic", "eosin", "hematoxylin", "radiomic feature", "pathologist", "histopathology"],
-    "AI Image Segmentation": ["psnr", "ssim", "structural similarity index", "dice score", "automated segmentation", "hausdorff distance"],
-    "Ultrasound & Photoacoustics": ["aberration", "photoacoustic computed tomography", "transducer", "ultrasound imaging", "photoacoustic imaging"],
-    "Radiotherapy Planning": ["plan quality", "treatment plan", "target coverage", "vmat", "imrt", "dose volume histogram"],
-    "CT Imaging & Reconstruction": ["dect", "dual energy ct", "projection data", "material decomposition", "ct reconstruction", "sinogram"],
-    "Brain Microstructure MRI": ["white matter", "diffusion mri", "axon", "diffusion tensor imaging", "tractography", "myelin"],
-    "Biomaterials & Drug Delivery": ["hyperthermia", "drug delivery", "tissue engineering", "biocompatibility", "scaffold", "osteoblast"],
-    "Airborne Infection & Biosensors": ["virus", "covid 19", "aerosol", "coronavirus", "airborne transmission", "biosensor"],
+    "Pathology & Radiomics": ["radiomic", "radiomic feature", "eosin", "pathologist", "hematoxylin", "histopathology"],
+    "CT Imaging & Reconstruction": ["dect", "dual energy ct", "ct image", "cbct", "ct reconstruction", "image domain"],
+    "Cardiovascular Biomechanics": ["artery", "blood flow", "stenosis", "wall shear stress", "aorta", "atrial fibrillation"],
+    "Infection & Biomaterials": ["covid 19", "virus", "pathogen", "aerosol", "tissue engineering", "scaffold"],
+    "Brain Microstructure MRI": ["diffusion mri", "white matter", "axon", "diffusion tensor imaging", "tractography", "myelin"],
+    "Particle Therapy & Radiobiology": ["carbon ion", "cell survival", "proton beam", "dna damage", "bragg peak", "double strand break"],
+    "Ultrasound & Photoacoustics": ["aberration", "refraction", "transducer", "ultrasound imaging", "microbubble", "linear array"],
+    "Tissue Biomechanics & Surgery": ["finite element model", "surgeon", "biomechanic", "tissue deformation", "tension", "athlete"],
+    "Radiotherapy Planning": ["plan quality", "target coverage", "imrt", "treatment plan", "vmat", "dose volume histogram"],
+    "MRI Reconstruction": ["space data", "compressed sensing", "acceleration factor", "mri reconstruction", "parallel imaging", "coil sensitivity"],
+    "EEG, Epilepsy & Neurorehab": ["eeg recording", "epileptic seizure", "electroencephalography", "spinal cord injury", "epilepsy", "scalp"],
+    "PET & Radiation Detectors": ["energy resolution", "pet scanner", "coincidence", "time resolution", "scintillator", "fwhm"],
 }
 
 # ---------------------------------------------------------------------------

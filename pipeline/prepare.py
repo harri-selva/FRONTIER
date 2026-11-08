@@ -2,7 +2,8 @@
 Step 1: clean the raw data and split it into the two fields (planets).
 
 Reads   data/raw/paper_concepts_2026.parquet, data/raw/vocab_2026.csv,
-        data/raw/paper_metadata.parquet (arXiv details; optional but expected)
+        data/raw/paper_metadata.parquet (Person A: title, authors, DOI, ALL arXiv categories)
+        data/raw/arxiv_abstracts.parquet (optional: abstracts from the arXiv API, for AI text)
 Writes  data/processed/<field>/papers.parquet          paper_id, date, land, title, authors, ...
         data/processed/<field>/concepts.parquet        concept_id 0..N-1, phrase, display, ...
         data/processed/<field>/paper_concepts.parquet  paper_id, concept_id
@@ -37,6 +38,8 @@ def normalise(concepts) -> list:
 def quant_land(row) -> str:
     """Land key for a Quant paper from its arXiv categories."""
     cats = (row["categories"] or row["primary_cat"]).split()
+    if row["primary_cat"].startswith("econ"):
+        return "econ"
     if row["primary_cat"].startswith("q-fin"):
         return row["primary_cat"]
     for c in cats:
@@ -58,24 +61,25 @@ def main():
                   f"{', '.join(papers.loc[dup, 'id'])}")
     papers = papers[~dup]
 
-    # 2. arXiv metadata
-    meta_path = C.RAW / "paper_metadata.parquet"
-    if meta_path.exists():
-        meta = pd.read_parquet(meta_path)[["id", "title", "authors", "first_author", "n_authors",
-                                           "categories", "doi", "journal_ref", "url", "abstract"]]
-        papers = papers.merge(meta, on="id", how="left")
+    # 2. paper details: Person A's metadata (every paper), abstracts from the arXiv API if fetched
+    meta = pd.read_parquet(C.RAW / "paper_metadata.parquet")[
+        ["id", "title", "authors", "first_author", "n_authors", "categories", "doi", "journal_ref"]]
+    papers = papers.merge(meta.drop_duplicates("id"), on="id", how="left")
+    report.append(f"- Person A metadata (title, authors, categories): {papers['title'].notna().sum():,} of {len(papers):,} papers")
+    abs_path = C.RAW / "arxiv_abstracts.parquet"
+    if abs_path.exists():
+        ab = pd.read_parquet(abs_path)[["id", "abstract"]].drop_duplicates("id")
+        papers = papers.merge(ab, on="id", how="left")
     else:
-        print("WARNING: no paper_metadata.parquet - run pipeline/fetch_arxiv.py")
-        for col in ["title", "authors", "first_author", "categories", "doi", "journal_ref", "url", "abstract"]:
-            papers[col] = ""
-        papers["n_authors"] = 0
+        papers["abstract"] = ""
+    report.append(f"- Abstracts available (arXiv API, for AI text only): {int((papers['abstract'].fillna('') != '').sum()):,}")
     for col in ["title", "authors", "first_author", "categories", "doi", "journal_ref", "abstract"]:
         papers[col] = papers[col].fillna("")
     papers["url"] = "https://arxiv.org/abs/" + papers["id"]
 
     # 3. field
     papers["field"] = final_field(papers, vocab)
-    report.append(f"- Field assignment (arXiv categories where fetched, else concept vote): "
+    report.append(f"- Field assignment (from each paper's full arXiv category list): "
                   f"{papers['field'].value_counts().to_dict()}  ('' = neither field, not used)")
     papers = papers[papers["field"] != ""].copy()
     no_meta = (papers["title"] == "").sum()
