@@ -1,28 +1,28 @@
 import { useEffect, useRef } from 'react';
-import { Backdrop } from './components/Backdrop';
-import { Header } from './components/Header';
 import { useReducedMotion } from './components/useReducedMotion';
+import { DATA_RETRIEVED, DATA_SOURCE_URL } from './data/planets';
+import { PaperDefs } from './paper/Diorama';
+import { TopBar } from './paper/TopBar';
 import { useGame, type Screen } from './store/gameStore';
 import { TitleScreen } from './screens/TitleScreen';
 import { BriefingScreen } from './screens/BriefingScreen';
 import { DifficultyScreen } from './screens/DifficultyScreen';
-import { PlanetSelectScreen } from './screens/PlanetSelectScreen';
-import { MissionBriefScreen } from './screens/MissionBriefScreen';
+import { PlanetScreen } from './screens/PlanetScreen';
 import { BuilderScreen } from './screens/BuilderScreen';
-import { ReviewScreen } from './screens/ReviewScreen';
 import { LaunchScreen } from './screens/LaunchScreen';
 import { OutcomeScreen } from './screens/OutcomeScreen';
 import { SummaryScreen } from './screens/SummaryScreen';
 import { LeaderboardScreen } from './screens/LeaderboardScreen';
 
+// 'mission' and 'review' are folded into the planet and builder screens.
 const SCREENS: Record<Screen, () => JSX.Element> = {
   title: TitleScreen,
   briefing: BriefingScreen,
   difficulty: DifficultyScreen,
-  planets: PlanetSelectScreen,
-  mission: MissionBriefScreen,
+  planets: PlanetScreen,
+  mission: PlanetScreen,
   builder: BuilderScreen,
-  review: ReviewScreen,
+  review: BuilderScreen,
   launch: LaunchScreen,
   outcome: OutcomeScreen,
   summary: SummaryScreen,
@@ -30,26 +30,26 @@ const SCREENS: Record<Screen, () => JSX.Element> = {
 };
 
 const TITLES: Record<Screen, string> = {
-  title: 'Title',
-  briefing: 'Mission briefing',
-  difficulty: 'Choose difficulty',
-  planets: 'Choose destination',
-  mission: 'Mission brief',
-  builder: 'Rocket builder',
-  review: 'Launch preparation',
-  launch: 'Launch',
-  outcome: 'Mission outcome',
+  title: 'Home',
+  briefing: 'Meet Pip',
+  difficulty: 'Pick your rank',
+  planets: 'Pick a planet',
+  mission: 'Pick a planet',
+  builder: 'Build your rocket',
+  review: 'Build your rocket',
+  launch: 'Launch!',
+  outcome: 'Mission report',
   summary: 'Run summary',
-  leaderboard: 'Leaderboard',
+  leaderboard: 'High scores',
 };
 
 export function App() {
-  useReducedMotion(); // keeps the <html data-reduced-motion> flag in sync
+  useReducedMotion();
   const screen = useGame((s) => s.screen);
   const mainRef = useRef<HTMLElement>(null);
   const Current = SCREENS[screen];
+  const fullBleed = screen === 'launch';
 
-  // Move focus to the new screen for keyboard and screen-reader users.
   useEffect(() => {
     document.title = `${TITLES[screen]} · Exoplanet Rocket Builder`;
     mainRef.current?.focus({ preventScroll: true });
@@ -57,15 +57,30 @@ export function App() {
   }, [screen]);
 
   return (
-    <div className="relative min-h-screen">
-      <Backdrop />
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[60] focus:rounded focus:bg-neon focus:px-3 focus:py-2 focus:text-void">
-        Skip to content
+    <div className="relative flex min-h-full flex-col">
+      <PaperDefs />
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[90] focus:rounded-lg focus:bg-butter focus:px-3 focus:py-2 focus:font-bold"
+      >
+        Skip to the game
       </a>
-      {screen !== 'launch' && <Header />}
-      <main id="main" ref={mainRef} tabIndex={-1} className="relative z-10 outline-none" aria-label={TITLES[screen]}>
-        <Current />
+      {!fullBleed && <TopBar />}
+      <main id="main" ref={mainRef} tabIndex={-1} className="relative z-10 flex-1 outline-none" aria-label={TITLES[screen]}>
+        {/* key: every screen change plays the paper page-flip entrance */}
+        <div key={screen === 'review' ? 'builder' : screen === 'mission' ? 'planets' : screen} className={fullBleed ? '' : 'anim-flip'}>
+          <Current />
+        </div>
       </main>
+      {!fullBleed && (
+        <footer className="gutter relative z-10 pb-4 pt-6 text-center text-xs text-[#d8ccf5]">
+          Planet facts:{' '}
+          <a href={DATA_SOURCE_URL} target="_blank" rel="noreferrer" className="underline">
+            NASA Exoplanet Archive
+          </a>
+          , retrieved {DATA_RETRIEVED}. A fan-made learning game, not made by NASA.
+        </footer>
+      )}
     </div>
   );
 }

@@ -6,7 +6,18 @@ launch it, and get a scored explanation of why it succeeded or failed. Every mis
 Earth → exoplanet → Earth. Each difficulty is a run of 10 attempts; the average goes on that difficulty's
 leaderboard.
 
-Style: vaporwave arcade (purple/pink neon, sunset, perspective grid, CRT scanlines, arcade-cabinet panels).
+Style: a papercraft diorama. Each scene is a real 3D stage (CSS 3D perspective) filled with flat cut-paper
+sprites: white paper edges, cast shadows, paper grain, string-hung parts that sway. The palette is
+construction paper in space purples, bubblegum pink and pastels. All artwork is original and drawn in code
+(SVG); the guide is Pip, an original paper robot. The look is a general papercraft style, not a copy of any
+existing game's characters, art or UI.
+
+Made for kids: each planet shows 3 big facts (distance, temperature in °C, gravity) with the rest behind
+"More facts"; parts show icon bars and colour-matched fuel stickers instead of raw numbers; Pip gives one
+plain-language tip at a time; results use 0–3 stars, and every number stays one tap away under "See the
+science". Real data is stamped "Real NASA data" and invented parts "Pretend tech".
+
+The previous vaporwave-arcade version is in git history at commit `ad076d5`.
 
 ## Run it
 
@@ -58,7 +69,14 @@ If you change `src/data/difficulty-sets.ts`, run the tests (they check the curat
 Put the three hand-drawn clips in `public/animations/` as `takeoff`, `explosion` and `orbit_arrival`.
 Video (`.webm`/`.mp4`), animated image (`.gif`/`.webp`/APNG), Lottie (`.json`) and PNG frame sequences are
 all supported; see [`public/animations/README.md`](public/animations/README.md). No code changes are
-needed. Until the files exist, labelled placeholders play.
+needed.
+
+Without the files, the launch plays as a sequence of animated paper dioramas: a 10-second flip-card
+countdown, lift-off with the camera rising past paper clouds, warp travel through layered star fields,
+landing on the planet's horizon or orbiting it, the trip home, and a parachute splashdown with confetti.
+Failures have their own versions: an explosion into paper shards, sputtering out of fuel, static and
+"Signal lost", overheating. When all three hand-drawn clips are present, they play instead, in a paper
+frame, following the same mapping.
 
 Outcome → playback (implemented in `src/engine/animation.ts`, tested):
 
@@ -70,17 +88,17 @@ Outcome → playback (implemented in `src/engine/animation.ts`, tested):
 | Return leg (Δv margin, re-entry heat) | `takeoff` → `orbit_arrival` → "Return journey" on static space → failure overlay |
 | Success | `takeoff` → `orbit_arrival` → "Return journey" → "Splashdown / Mission complete" |
 
-A "Skip animation" button is always visible. With reduced motion (OS setting or the in-game toggle), the
-countdown is skipped, clips show as still frames and overlays advance without effects.
+A "Skip" button is always visible. With calm motion (the OS reduced-motion setting or the in-game toggle),
+the countdown is skipped and each scene shows as a still for about 1.8 seconds.
 
 ## NASA logos
 
 The brief asked for none; a later request asked for NASA logos. The game does not include NASA's
 insignia ("meatball"), logotype ("worm") or seal. These marks are protected (14 CFR Part 1221), NASA's media
 usage guidelines don't allow them on non-NASA products without written permission, and NASA Space Apps asks
-participants not to use them. The game uses an original retro mission patch instead, and refers to NASA and
+participants not to use them. The game uses Pip, an original paper robot, as its badge instead, and refers to NASA and
 its data in text. If your team gets written permission, drop the file at `public/branding/logo.svg` (or
-`.png`) and it replaces the patch everywhere.
+`.png`) and it replaces the Pip badge in the header.
 
 ## Physics model and simplifications
 
@@ -226,10 +244,11 @@ a hackathon demo; a real deployment would need server-side verification.
 
 ## Accessibility
 
-- Drag-and-drop with mouse, touch (150 ms press) and keyboard (Space to pick up, arrows to move, Space to drop, Esc to cancel), with screen-reader announcements. Every part also has an "Add to rocket" button.
+- Drag a part anywhere onto the rocket with mouse, touch (140 ms press) or keyboard (Space to pick up, arrows to move, Space to drop, Esc to cancel), with screen-reader announcements. Every part also has an "Add" button, which is the easiest way on phones. The hangar stays in view (sticky) while you scroll the parts.
 - Visible focus rings, focus moves to each new screen, skip link, ARIA tabs, meters and live regions
-- Text colours meet WCAG AA against the dark backgrounds (main text ≈ 14:1; pink accent ≈ 7:1)
-- `prefers-reduced-motion` respected, plus an in-game Motion toggle; "Skip animation" is always available
+- Text is dark ink on paper-white cards (≈ 14:1) and light text on the purple night (≈ 10:1); the pink used for numbers on paper is ≈ 5:1
+- `prefers-reduced-motion` respected, plus an in-game motion toggle; swaying cards hold still when hovered or focused; "Skip" is always available
+- Sound effects are synthesized with Web Audio (no audio files), only start after a tap, and have a mute button
 - Responsive from phone (no horizontal scroll at 390 px) to desktop
 
 ## Data sources
@@ -237,7 +256,7 @@ a hackathon demo; a real deployment would need server-side verification.
 - NASA Exoplanet Archive, Planetary Systems Composite Parameters (`pscomppars`): https://exoplanetarchive.ipac.caltech.edu/
 - NASA's exoplanet site, including "Strange New Worlds", as general reference: https://science.nasa.gov/exoplanets/
 - Atmosphere notes: the papers cited in `src/data/atmosphere-notes.json`
-- Fonts: Press Start 2P and VT323 (SIL Open Font License), self-hosted
+- Fonts: Grandstander and Lexend from Google Fonts (SIL Open Font License); offline, the game falls back to rounded system fonts
 
 This is a fan-made educational game. It is not affiliated with or endorsed by NASA.
 
@@ -250,7 +269,8 @@ src/engine/                  physics, evaluation, scoring, animation mapping (pu
 src/data/                    snapshot, curated sets, components, atmosphere notes
 src/store/                   Zustand store (persisted run), build resolver
 src/services/                leaderboard (localStorage / Supabase), name filter
-src/components/              UI pieces, builder, animation player
+src/paper/                   papercraft kit: 3D diorama, sprites, rocket drawing, launch scenes, kid text, sounds
+src/components/              animation player for the hand-drawn clips, reduced-motion hook, typewriter
 src/screens/                 one file per screen
 public/animations/           drop the hand-drawn clips here
 public/branding/             optional permitted logo

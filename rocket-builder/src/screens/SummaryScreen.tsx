@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react';
-import { Cabinet } from '../components/Cabinet';
-import { fmt } from '../components/format';
-import { ATTEMPTS_PER_RUN, DIFFICULTY_CONFIG, runAverage } from '../engine';
+import { ATTEMPTS_PER_RUN, runAverage } from '../engine';
+import { LEVEL } from '../paper/kid';
+import { sfx } from '../paper/sfx';
+import { PipSprite, StarSprite } from '../paper/sprites';
+import { Confetti, CountUp } from '../paper/ui';
 import { getLeaderboard } from '../services/leaderboard';
 import { MAX_NAME_LENGTH, checkName } from '../services/nameFilter';
 import { useGame } from '../store/gameStore';
@@ -19,9 +21,9 @@ export function SummaryScreen() {
 
   if (!difficulty) {
     return (
-      <div className="p-8 text-center">
-        <button type="button" className="btn btn-primary" onClick={() => go('difficulty')}>
-          Choose difficulty
+      <div className="p-10 text-center">
+        <button type="button" className="pbtn" onClick={() => go('difficulty')}>
+          Pick a rank
         </button>
       </div>
     );
@@ -29,13 +31,14 @@ export function SummaryScreen() {
   const run = runs[difficulty];
   const avg = runAverage(run.attempts.map((a) => a.score));
   const complete = run.attempts.length >= ATTEMPTS_PER_RUN;
-  const successes = run.attempts.filter((a) => a.success).length;
+  const wins = run.attempts.filter((a) => a.success).length;
   const service = getLeaderboard();
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     const check = checkName(name);
     if (!check.ok) {
+      sfx.nope();
       setError(check.reason);
       return;
     }
@@ -43,89 +46,91 @@ export function SummaryScreen() {
     setError(null);
     try {
       await service.submit({ name: check.name, difficulty, average: avg });
+      sfx.win();
       markSubmitted(difficulty);
       go('leaderboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not submit.');
+      setError(err instanceof Error ? err.message : 'Could not save your score. Try again.');
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <Cabinet title={`${DIFFICULTY_CONFIG[difficulty].label} run summary`} id="summary">
-        <div className="text-center">
-          <p className="font-display text-[0.6rem] text-[#c3b2e8]">Final average over {run.attempts.length} attempts</p>
-          <p className="mt-2 font-display text-5xl">
-            <span className="chrome">{fmt(avg, 1)}</span>
-          </p>
-          <p className="readout mt-2 text-haze">
-            {successes} of {run.attempts.length} missions returned home
-          </p>
+    <div className="gutter mx-auto max-w-3xl pt-6">
+      {complete && wins > 0 && <Confetti count={36} />}
+      <section className="paper tape relative px-6 pb-6 pt-8 text-center" aria-labelledby="sum-title">
+        <div className="mx-auto w-20">
+          <PipSprite mood={wins >= 5 ? 'wow' : 'happy'} />
         </div>
-        <ol className="mt-6 grid gap-1 sm:grid-cols-2">
-          {run.attempts.map((a, i) => (
-            <li key={a.at} className="flex justify-between gap-2 rounded-md bg-void/50 px-2 py-1 text-sm">
-              <span className="text-haze">
-                {i + 1}. {a.planet} {a.crew > 0 ? `· ${a.crew} crew` : ''}
-              </span>
-              <span className={`readout ${a.success ? 'text-ok' : 'text-[#ffb3c3]'}`}>
-                {a.success ? '✔' : '✖'} {a.score}
-              </span>
-            </li>
-          ))}
+        <h1 id="sum-title" className="mt-2 text-4xl font-black">
+          {LEVEL[difficulty].name} {complete ? 'run complete!' : 'run so far'}
+        </h1>
+        <p className="mt-1 text-lg">
+          {wins} of {run.attempts.length} rockets made it home
+        </p>
+        <p className="mt-3 font-display text-7xl font-black text-[#c2307f]">
+          <CountUp to={Math.round(avg)} />
+        </p>
+        <p className="font-semibold">average score</p>
+
+        <ol className="mx-auto mt-5 grid max-w-xl grid-cols-5 gap-2 sm:grid-cols-10" aria-label="Your tries">
+          {Array.from({ length: ATTEMPTS_PER_RUN }, (_, i) => {
+            const a = run.attempts[i];
+            return (
+              <li key={i} className="flex flex-col items-center" title={a ? `${a.planet}: ${a.score}` : 'not flown'}>
+                <span className="w-9">
+                  <StarSprite color={!a ? '#e6dcf5' : a.success ? '#ffe07a' : '#ff9fb0'} />
+                </span>
+                <span className="tabular text-xs font-bold">{a ? a.score : '–'}</span>
+              </li>
+            );
+          })}
         </ol>
 
         {complete && !run.submitted && (
-          <form onSubmit={submit} className="mt-6 rounded-xl border-2 border-neon/60 bg-void/60 p-4" noValidate>
-            <label htmlFor="pilot-name" className="font-display text-[0.65rem] text-neonsoft">
-              Enter your name for the leaderboard
+          <form onSubmit={submit} className="mx-auto mt-6 max-w-md text-left" noValidate>
+            <label htmlFor="pilot-name" className="font-display text-xl font-extrabold">
+              Your name for the high-score board
             </label>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-3">
               <input
                 id="pilot-name"
                 value={name}
                 maxLength={MAX_NAME_LENGTH}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="nickname"
-                className="readout min-w-0 flex-1 rounded-lg border-2 border-cyber bg-void px-3 py-2 text-xl text-haze"
+                className="min-w-0 flex-1 rounded-2xl border-0 bg-[#f6ead8] px-4 py-3 font-display text-xl font-bold shadow-[inset_0_3px_0_rgba(42,23,71,.15)]"
                 aria-describedby="name-help name-error"
                 autoFocus
               />
-              <button type="submit" className="btn btn-primary" disabled={busy}>
-                {busy ? 'Submitting…' : 'Submit score'}
+              <button type="submit" className="pbtn pbtn-mint" disabled={busy}>
+                {busy ? 'Saving…' : 'Save'}
               </button>
             </div>
-            <p id="name-help" className="mt-1 text-xs text-[#c3b2e8]">
-              Up to {MAX_NAME_LENGTH} characters: letters, numbers, spaces, - _ . Saved to: {service.label}.
+            <p id="name-help" className="mt-1 text-sm text-ink/75">
+              Up to {MAX_NAME_LENGTH} letters or numbers. Use a nickname, not your full name.
             </p>
-            <p id="name-error" className="mt-1 text-sm text-[#ffb3c3]" role="alert">
+            <p id="name-error" className="mt-1 font-bold text-[#a3203a]" role="alert">
               {error}
             </p>
           </form>
         )}
-        {run.submitted && <p className="mt-6 text-center text-ok">Score submitted.</p>}
-        {!complete && (
-          <p className="mt-6 text-center text-haze">
-            {ATTEMPTS_PER_RUN - run.attempts.length} attempt(s) left in this run.
-          </p>
-        )}
+        {run.submitted && <p className="mt-5 font-bold text-leaf">Score saved!</p>}
 
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {!complete && (
-            <button type="button" className="btn btn-primary" onClick={() => go('planets')}>
-              Continue run
+            <button type="button" className="pbtn" onClick={() => go('planets')}>
+              Keep playing
             </button>
           )}
-          <button type="button" className="btn btn-ghost" onClick={() => go('leaderboard')}>
-            Leaderboard
+          <button type="button" className="pbtn pbtn-sky" onClick={() => go('leaderboard')}>
+            High scores
           </button>
           <button
             type="button"
-            className={confirmNew ? 'btn btn-danger' : 'btn btn-ghost'}
+            className={`pbtn ${confirmNew ? '' : 'pbtn-paper'}`}
             onClick={() => {
-              // Unsubmitted finished run: ask once, in the page (window.confirm is blocked in some hosts).
               if (complete && !run.submitted && !confirmNew) {
                 setConfirmNew(true);
                 return;
@@ -134,13 +139,13 @@ export function SummaryScreen() {
               restart(difficulty);
             }}
           >
-            {confirmNew ? 'Discard score and start new run' : `New ${DIFFICULTY_CONFIG[difficulty].label} run`}
+            {confirmNew ? 'Skip saving and play again' : `Play ${LEVEL[difficulty].name} again`}
           </button>
-          <button type="button" className="btn btn-ghost" onClick={() => go('difficulty')}>
-            Other difficulty
+          <button type="button" className="pbtn pbtn-paper" onClick={() => go('difficulty')}>
+            Change rank
           </button>
         </div>
-      </Cabinet>
+      </section>
     </div>
   );
 }

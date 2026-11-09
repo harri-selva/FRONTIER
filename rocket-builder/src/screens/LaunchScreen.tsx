@@ -1,125 +1,289 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimationPlayer } from '../components/animation/AnimationPlayer';
-import { preloadClips } from '../components/animation/sources';
-import { fmtInt } from '../components/format';
+import { findClip } from '../components/animation/sources';
 import { useReducedMotion } from '../components/useReducedMotion';
 import { COMPONENTS_BY_ID } from '../data/components';
 import { findPlanet } from '../data/planets';
-import { playbackForResult, type Phase, type PlaybackStep } from '../engine';
+import { playbackForResult, type CheckId, type MissionResult } from '../engine';
+import { kidFailure } from '../paper/kid';
+import { ArriveScene, PadScene, SpaceScene, SplashScene, type SceneProps } from '../paper/scenes';
+import { sfx } from '../paper/sfx';
+import { PipSprite } from '../paper/sprites';
+import { Confetti } from '../paper/ui';
 import { useGame } from '../store/gameStore';
+import { resolveBuild } from '../store/resolve';
 
-const TRACKER = ['Launch', 'Transit', 'Approach', 'Surface/Orbit', 'Return', 'Complete'] as const;
-const FAIL_INDEX: Record<Phase, number> = { launch: 0, transit: 1, planet: 3, return: 4 };
-const OVERLAY_MS = 2800;
-const COUNTDOWN = 10;
+type SceneName = 'countdown' | 'liftoff' | 'explode' | 'space' | 'arrive' | 'home' | 'splash' | 'done';
 
-/** Which tracker stage is active for a playback step. */
-function trackerIndex(step: PlaybackStep | undefined, clipProgress: number): number {
-  if (!step) return 0;
-  if (step.kind === 'clip') {
-    if (step.clip === 'takeoff' || step.clip === 'explosion') return 0;
-    return clipProgress < 0.5 ? 1 : 2;
+const DUR: Record<Exclude<SceneName, 'done'>, number> = {
+  countdown: 10000,
+  liftoff: 5200,
+  explode: 3600,
+  space: 4800,
+  arrive: 5000,
+  home: 4600,
+  splash: 5600,
+};
+const REDUCED_DUR = 1800;
+
+const TICKETS = ['Lift-off', 'Space', 'Approach', 'Land/Orbit', 'Home', 'Done'] as const;
+
+const SIGN: Partial<Record<CheckId, string>> = {
+  driveRange: 'OUT OF RANGE',
+  comms: 'SIGNAL LOST',
+  radiation: 'RADIATION!',
+  dvOrbit: 'OUT OF FUEL',
+  heatPlanet: 'TOO HOT!',
+  dvReturn: 'OUT OF FUEL',
+  heatReentry: 'TOO HOT!',
+};
+const CAUSE: Partial<Record<CheckId, SceneProps['cause']>> = {
+  driveRange: 'fuel',
+  comms: 'signal',
+  radiation: 'radiation',
+  dvOrbit: 'fuel',
+  heatPlanet: 'heat',
+  dvPlanet: 'fuel',
+  dvReturn: 'fuel',
+  heatReentry: 'heat',
+};
+
+/** Scene list per outcome. Mirrors the brief's outcome → animation mapping. */
+function scenesFor(r: MissionResult): SceneName[] {
+  switch (r.failedPhase) {
+    case 'launch':
+      return ['countdown', 'explode', 'done'];
+    case 'transit':
+      return ['countdown', 'liftoff', 'space', 'done'];
+    case 'planet':
+      return ['countdown', 'liftoff', 'space', 'arrive', 'done'];
+    case 'return':
+      return ['countdown', 'liftoff', 'space', 'arrive', 'home', 'done'];
+    default:
+      return ['countdown', 'liftoff', 'space', 'arrive', 'home', 'splash', 'done'];
   }
-  if (step.variant === 'return') return 4;
-  if (step.variant === 'splashdown') return 5;
-  return -1; // failure overlays: tracker shows the failed stage
+}
+
+function ticketFor(scene: SceneName, elapsed: number): number {
+  switch (scene) {
+    case 'countdown':
+    case 'liftoff':
+    case 'explode':
+      return 0;
+    case 'space':
+      return elapsed < DUR.space / 2 ? 1 : 2;
+    case 'arrive':
+      return 3;
+    case 'home':
+      return 4;
+    default:
+      return 5;
+  }
+}
+
+const FAIL_TICKET = { launch: 0, transit: 1, planet: 3, return: 4 } as const;
+
+function PressureDial({ load, label }: { load: number | null; label: string }) {
+  const angle = load === null ? -90 : -90 + Math.min(1.25, load) * 144;
+  const over = load !== null && load > 1;
+  return (
+    <div className="paper flex items-center gap-2 px-3 py-2" role="img" aria-label={`Tank pump pressure: ${label}`}>
+      <svg viewBox="0 0 60 36" width="64" height="40" aria-hidden="true">
+        <path d="M6 32 A24 24 0 0 1 54 32" fill="none" stroke="#dff7ee" strokeWidth="8" />
+        <path d="M44 12 A24 24 0 0 1 54 32" fill="none" stroke="#ff5d73" strokeWidth="8" />
+        <g transform={`rotate(${angle} 30 32)`} style={{ transition: 'transform 1s cubic-bezier(.3,1.6,.5,1)' }}>
+          <path d="M30 32 L30 10" stroke="#2a1747" strokeWidth="3.5" strokeLinecap="round" />
+        </g>
+        <circle cx="30" cy="32" r="4" fill="#2a1747" />
+      </svg>
+      <div className="text-xs leading-tight">
+        <p className="font-display text-sm font-extrabold">Tank pump</p>
+        <p className={over ? 'font-bold text-[#a3203a]' : ''}>{label}</p>
+      </div>
+    </div>
+  );
+}
+
+function useClipsReady(): boolean | null {
+  const [ready, setReady] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    void Promise.all((['takeoff', 'explosion', 'orbit_arrival'] as const).map(findClip)).then((s) => {
+      if (alive) setReady(s.every((x) => x.kind !== 'placeholder'));
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return ready;
+}
+
+/** If the hand-drawn clips are in public/animations, play them in a paper frame. */
+function ClipStage({ result, reduced, onDone }: { result: MissionResult; reduced: boolean; onDone: () => void }) {
+  const steps = useMemo(() => playbackForResult(result), [result]);
+  const [i, setI] = useState(0);
+  const step = steps[i];
+  useEffect(() => {
+    if (!step || step.kind !== 'overlay') return;
+    const id = window.setTimeout(() => (i >= steps.length - 1 ? onDone() : setI(i + 1)), reduced ? 1200 : 2600);
+    return () => window.clearTimeout(id);
+  }, [step, i, steps.length, onDone, reduced]);
+  if (!step) return null;
+  return (
+    <div className="grid h-full place-items-center p-4">
+      <div className="paper w-[min(960px,100%)] overflow-hidden p-3">
+        <div className="relative aspect-video overflow-hidden rounded-xl bg-night">
+          {step.kind === 'clip' ? (
+            <AnimationPlayer key={i} clip={step.clip} cutAt={step.cutAt} reduced={reduced} onEnded={() => setI(i + 1)} />
+          ) : (
+            <div className="grid h-full place-items-center">
+              <p className="anim-stamp rounded-2xl bg-butter px-6 py-3 font-display text-3xl font-black">{step.text}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function LaunchScreen() {
   const result = useGame((s) => s.lastResult);
   const planetName = useGame((s) => s.planetName);
   const build = useGame((s) => s.build);
+  const crew = useGame((s) => s.crew);
   const go = useGame((s) => s.go);
   const { reduced } = useReducedMotion();
+  const clipsReady = useClipsReady();
   const planet = planetName ? findPlanet(planetName) : null;
-  const steps = useMemo(() => (result ? playbackForResult(result) : []), [result]);
+  const rocket = useMemo(() => resolveBuild(build), [build]);
+  const scenes = useMemo(() => (result ? scenesFor(result) : []), [result]);
+  const [si, setSi] = useState(0);
+  const [count, setCount] = useState(10);
+  const [elapsed, setElapsed] = useState(0);
+  const scene = scenes[si] ?? 'done';
 
-  const [count, setCount] = useState(reduced ? 0 : COUNTDOWN);
-  const [stepIndex, setStepIndex] = useState(0);
-  const [clipProgress, setClipProgress] = useState(0);
-
-  useEffect(() => preloadClips(), []);
-
-  // Countdown 10 → 0.
+  // Advance scenes.
   useEffect(() => {
-    if (count <= 0) return;
-    const id = window.setTimeout(() => setCount((c) => c - 1), 1000);
+    if (scene === 'done' || clipsReady) return;
+    // Set an absolute index (not x + 1) so a repeated effect run can't skip a scene.
+    const nextIndex = si + 1;
+    if (scene === 'countdown' && reduced) {
+      setSi(nextIndex);
+      return;
+    }
+    const ms = reduced ? REDUCED_DUR : DUR[scene];
+    const id = window.setTimeout(() => setSi(nextIndex), ms);
     return () => window.clearTimeout(id);
-  }, [count]);
+  }, [scene, si, reduced, clipsReady]);
 
-  const step = count <= 0 ? steps[stepIndex] : undefined;
-  const isLast = stepIndex >= steps.length - 1;
-  const advance = useCallback(() => {
-    setClipProgress(0);
-    setStepIndex((i) => Math.min(i + 1, steps.length - 1));
-  }, [steps.length]);
-
-  // Overlays advance on a timer, except the final one.
+  // Countdown numbers + sounds per scene.
   useEffect(() => {
-    if (!step || step.kind !== 'overlay' || isLast) return;
-    const id = window.setTimeout(advance, reduced ? 1200 : OVERLAY_MS);
-    return () => window.clearTimeout(id);
-  }, [step, isLast, advance, reduced]);
-
-  // Approximate progress through the orbit clip, for the Transit → Approach tracker step.
-  useEffect(() => {
-    if (!step || step.kind !== 'clip' || step.clip !== 'orbit_arrival') return;
+    setElapsed(0);
     const start = performance.now();
-    const id = window.setInterval(() => setClipProgress(Math.min(1, (performance.now() - start) / 3500)), 250);
-    return () => window.clearInterval(id);
-  }, [step]);
+    const tick = window.setInterval(() => setElapsed(performance.now() - start), 250);
+    if (scene === 'countdown') {
+      setCount(10);
+      sfx.tick();
+      const id = window.setInterval(() => {
+        setCount((c) => {
+          if (c > 1) sfx.tick();
+          return Math.max(0, c - 1);
+        });
+      }, 1000);
+      return () => {
+        window.clearInterval(id);
+        window.clearInterval(tick);
+      };
+    }
+    if (scene === 'liftoff') sfx.rumble();
+    if (scene === 'explode') window.setTimeout(() => sfx.boom(), reduced ? 0 : 1100);
+    if (scene === 'space' || scene === 'home') sfx.whoosh();
+    if (scene === 'splash') window.setTimeout(() => sfx.splash(), reduced ? 0 : 3200);
+    if (scene === 'done') (result?.success ? sfx.win : sfx.sad)();
+    return () => window.clearInterval(tick);
+  }, [scene, reduced, result?.success]);
 
   if (!result || !planet) {
     return (
-      <div className="p-8 text-center">
-        <button type="button" className="btn btn-primary" onClick={() => go('planets')}>
+      <div className="p-10 text-center">
+        <button type="button" className="pbtn" onClick={() => go('planets')}>
           Back
         </button>
       </div>
     );
   }
 
-  const failedAt = result.failedPhase ? FAIL_INDEX[result.failedPhase] : null;
-  const active = step ? trackerIndex(step, clipProgress) : -2;
-  const showFailure = step?.kind === 'overlay' && (step.variant === 'failure' || step.variant === 'signal-lost');
-  const currentTracker = showFailure && failedAt !== null ? failedAt : active;
+  const failure = result.failure;
+  const said = failure ? kidFailure(failure, planet) : null;
+  const lastScene = scenes[scenes.length - 2];
+  const failingNow = !!failure && (scene === lastScene || scene === 'done') && scene !== 'countdown';
+  const props: SceneProps = {
+    rocket,
+    crew,
+    planet,
+    reduced,
+    failing: failingNow,
+    cause: failure ? CAUSE[failure.id] ?? 'boom' : undefined,
+    sign: failure ? SIGN[failure.id] ?? (failure.id === 'dvPlanet' && planet.missionType === 'landing' ? 'STUCK!' : 'OUT OF FUEL') : undefined,
+  };
+  const failTicket = result.failedPhase ? FAIL_TICKET[result.failedPhase] : null;
+  const current = scene === 'done' ? (result.success ? 5 : failTicket ?? 0) : ticketFor(scene, elapsed);
 
-  // The clip shown underneath overlays that use the last frame.
-  const lastClipIndex = (() => {
-    for (let i = stepIndex; i >= 0; i--) if (steps[i]?.kind === 'clip') return i;
-    return -1;
-  })();
-  const lastClip = steps[lastClipIndex];
-  const background = step?.kind === 'overlay' ? step.background : undefined;
+  const narration: Record<SceneName, string> = {
+    countdown: count > 0 ? `${count}…` : 'Lift-off!',
+    liftoff: 'Lift-off! Engines at full power!',
+    explode: 'Uh oh…',
+    space: failingNow && elapsed > 2000 ? said?.oops ?? '' : `Warp drive on! Heading to ${planet.name}.`,
+    arrive: failingNow && elapsed > 3200 ? said?.oops ?? '' : planet.missionType === 'landing' ? `Landing on ${planet.name}…` : `Going into orbit around ${planet.name}…`,
+    home: failingNow && elapsed > 2000 ? said?.oops ?? '' : 'Heading home to Earth!',
+    splash: 'Parachutes out… splashdown!',
+    done: result.success ? 'Mission complete! You made it there and back!' : said?.oops ?? 'Mission over.',
+  };
 
-  const pressureCap = result.checks.find((c) => c.id === 'pressure');
-  const pressureFail = result.failure?.id === 'pressure';
-  const tankLoad = (() => {
-    const p = build.pressure ? COMPONENTS_BY_ID[build.pressure] : undefined;
-    const engine = build.engine ? COMPONENTS_BY_ID[build.engine] : undefined;
-    if (engine?.category === 'engine' && engine.propellant === 'solid') return 'solid motor: none needed';
-    if (!p || p.category !== 'pressure') return 'no pressure system';
-    return `${fmtInt((result?.propellantKg ?? 0) / p.capacity * 100)}% of capacity`;
+  const engine = build.engine ? COMPONENTS_BY_ID[build.engine] : undefined;
+  const pump = build.pressure ? COMPONENTS_BY_ID[build.pressure] : undefined;
+  const solid = engine?.category === 'engine' && engine.propellant === 'solid';
+  const load = solid || !pump || pump.category !== 'pressure' ? null : result.propellantKg / pump.capacity;
+  const loadLabel = solid ? 'not needed (solid fuel)' : load === null ? 'no pump fitted' : `${Math.round(load * 100)}% full${failure?.id === 'pressure' ? ' · FAILED' : ''}`;
+
+  // On 'done' the final scene stays mounted (same element type), so its end state remains visible.
+  const shown: SceneName = scene === 'done' ? lastScene ?? 'countdown' : scene;
+  const sceneEl = (() => {
+    if (clipsReady) return <ClipStage result={result} reduced={reduced} onDone={() => setSi(scenes.length - 1)} />;
+    switch (shown) {
+      case 'countdown':
+      case 'liftoff':
+      case 'explode':
+        return <PadScene {...props} phase={shown} />;
+      case 'space':
+        return <SpaceScene {...props} />;
+      case 'arrive':
+        return <ArriveScene {...props} />;
+      case 'home':
+        return <SpaceScene {...props} toEarth />;
+      case 'splash':
+      case 'done':
+        return <SplashScene {...props} />;
+    }
   })();
 
   return (
-    <div className="fixed inset-0 z-20 flex flex-col bg-void text-haze">
-      {/* Mission status tracker */}
-      <nav aria-label="Mission status" className="border-b-2 border-neon/60 bg-night/90 px-3 py-2">
-        <ol className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-1 sm:gap-2">
-          {TRACKER.map((t, i) => {
-            const failedHere = failedAt === i && (showFailure || isLast) && count <= 0 && stepIndex === steps.length - 1;
-            const done = currentTracker > i || (result.success && isLast && step?.kind === 'overlay');
-            const now = currentTracker === i;
-            const cls = failedHere
-              ? 'border-[#ff6b8b] bg-[#ff6b8b]/25 text-[#ffd0da]'
-              : now
-                ? 'border-cyber bg-cyber/20 text-cyber'
-                : done
-                  ? 'border-ok/70 text-ok'
-                  : 'border-[#6b4ba8] text-[#c3b2e8]';
+    <div className="fixed inset-0 z-30 flex flex-col bg-night" style={{ paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <nav aria-label="Mission progress" className="gutter relative z-20 py-2">
+        <ol className="mx-auto flex max-w-4xl flex-wrap justify-center gap-1.5">
+          {TICKETS.map((t, i) => {
+            const failedHere = scene === 'done' && failTicket === i && !result.success;
+            const done = i < current || (scene === 'done' && result.success);
+            const now = i === current && scene !== 'done';
             return (
-              <li key={t} className={`rounded-md border-2 px-2 py-1 font-display text-[0.5rem] sm:text-[0.6rem] ${cls}`} aria-current={now ? 'step' : undefined}>
+              <li
+                key={t}
+                aria-current={now ? 'step' : undefined}
+                className={`rounded-md px-2.5 py-1 font-display text-xs font-extrabold transition-all sm:text-sm ${
+                  failedHere ? 'bg-tomato text-ink' : now ? 'scale-110 bg-butter text-ink' : done ? 'bg-mint text-ink' : 'bg-paper/25 text-paper'
+                }`}
+                style={{ boxShadow: '0 0 0 2.5px #fff8ef', transform: `rotate(${(i % 2 ? 1 : -1) * 2}deg)` }}
+              >
                 {failedHere ? '✖ ' : done ? '✔ ' : ''}
                 {t}
               </li>
@@ -129,88 +293,51 @@ export function LaunchScreen() {
       </nav>
 
       <div className="relative flex-1 overflow-hidden">
-        {count > 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4">
-            <p className="font-display text-[0.7rem] text-neonsoft">T-minus · {planet.name}</p>
-            <p className="font-display text-7xl sm:text-9xl" aria-live="assertive" aria-atomic="true">
-              <span className="chrome">{count}</span>
-            </p>
-            <p className="readout text-cyber">All systems: go for launch</p>
+        {sceneEl}
+        {scene === 'countdown' && !reduced && count > 0 && (
+          <div className="pointer-events-none absolute inset-0 grid place-items-center">
+            <div key={count} className="anim-flip">
+              <div
+                className="grid h-[min(34vw,200px)] w-[min(34vw,200px)] place-items-center rounded-[28px] bg-butter font-display text-[min(22vw,140px)] font-black leading-none text-ink"
+                style={{ boxShadow: '0 0 0 8px #fff8ef, 0 14px 0 8px rgba(20,8,50,.35)', backgroundImage: 'var(--grain)', backgroundBlendMode: 'multiply' }}
+                aria-hidden="true"
+              >
+                {count}
+              </div>
+            </div>
           </div>
-        ) : (
-          <>
-            {/* Clip layer */}
-            {background === 'space' ? (
-              <div className="absolute inset-0 bg-void" aria-hidden="true">
-                <div className="vw-stars" />
-              </div>
-            ) : (
-              lastClip?.kind === 'clip' && (
-                <div className={`absolute inset-0 ${showFailure && lastClip.clip === 'explosion' && !reduced ? 'shake' : ''}`}>
-                  <AnimationPlayer
-                    key={lastClipIndex}
-                    clip={lastClip.clip}
-                    cutAt={lastClip.cutAt}
-                    paused={step?.kind === 'overlay'}
-                    reduced={reduced}
-                    onEnded={advance}
-                  />
-                </div>
-              )
-            )}
-
-            {/* Overlay layer */}
-            {step?.kind === 'overlay' && (
-              <div className={`absolute inset-0 flex items-center justify-center p-4 ${step.variant === 'signal-lost' && !reduced ? 'static-noise' : ''}`}>
-                <div
-                  className={`fade-in max-w-xl rounded-2xl border-4 px-6 py-6 text-center shadow-neon ${
-                    step.variant === 'splashdown'
-                      ? 'border-ok bg-night/90'
-                      : step.variant === 'return'
-                        ? 'border-cyber bg-night/85'
-                        : 'border-[#ff6b8b] bg-night/90'
-                  }`}
-                  role="status"
-                  aria-live="assertive"
-                >
-                  <p className="font-display text-[0.65rem] text-[#c3b2e8]">
-                    {step.variant === 'return' ? 'Phase 5' : step.variant === 'splashdown' ? 'Mission status' : 'Mission status'}
-                  </p>
-                  <p className={`mt-2 font-display text-lg leading-relaxed sm:text-2xl ${step.variant === 'splashdown' ? 'text-ok' : step.variant === 'return' ? 'text-cyber' : 'text-[#ffb3c3]'}`}>
-                    {step.variant === 'signal-lost' && result.failure?.id === 'comms' ? 'SIGNAL LOST' : step.variant === 'failure' || step.variant === 'signal-lost' ? 'MISSION FAILURE' : step.text}
-                  </p>
-                  {(step.variant === 'failure' || step.variant === 'signal-lost') && <p className="readout mt-3 text-xl text-haze">{step.text}</p>}
-                  {step.variant === 'return' && (
-                    <p className="readout mt-3 text-haze">
-                      Leaving {planet.name} · {fmtInt(planet.distanceLy)} ly to home
-                    </p>
-                  )}
-                  {step.variant === 'splashdown' && <p className="readout mt-3 text-xl text-haze">Crew and craft recovered. Earth → {planet.name} → Earth.</p>}
-                </div>
-              </div>
-            )}
-          </>
         )}
 
-        {/* Pressure meter overlay */}
-        <div className="absolute bottom-3 left-3 rounded-lg border-2 border-neon/60 bg-night/85 px-3 py-2 text-xs" aria-label="Tank pressure">
-          <p className="font-display text-[0.5rem] text-neonsoft">Tank pressure</p>
-          <p className={`readout text-base ${pressureFail ? 'text-[#ffb3c3]' : 'text-cyber'} ${pressureFail && !reduced && count <= 0 ? 'blink' : ''}`}>
-            {pressureFail ? 'FAILURE · ' : ''}
-            {tankLoad}
-            {pressureCap?.status === 'auto' ? ' · not checked on this difficulty' : ''}
-          </p>
+        {scene === 'done' && (
+          <div className={`absolute inset-0 flex items-end justify-center p-4 pb-20 ${result.success ? '' : 'bg-night/40'}`}>
+            {result.success && <Confetti />}
+            <div className="paper anim-pop flex w-[min(560px,100%)] items-center gap-4 px-5 py-4 text-left">
+              <div className="w-16 shrink-0">
+                <PipSprite mood={result.success ? 'wow' : 'sad'} />
+              </div>
+              <div className="min-w-0 flex-1">
+              <p className="font-display text-2xl font-black leading-tight">{result.success ? 'You did it!' : said?.oops}</p>
+              {!result.success && said && <p className="mt-1 font-medium">Tip: {said.tip}</p>}
+              <button type="button" className="pbtn mt-3" onClick={() => go('outcome')} autoFocus>
+                See my score
+              </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="absolute bottom-3 left-3" style={{ marginLeft: 'env(safe-area-inset-left, 0px)' }}>
+          <PressureDial load={load} label={loadLabel} />
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-3 border-t-2 border-neon/60 bg-night/90 px-3 py-2">
-        {count <= 0 && isLast && step?.kind === 'overlay' ? (
-          <button type="button" className="btn btn-primary" onClick={() => go('outcome')} autoFocus>
-            View results
-          </button>
-        ) : (
-          <button type="button" className="btn btn-ghost" onClick={() => go('outcome')} autoFocus>
-            Skip animation ⏭
+      <div className="gutter relative z-20 flex flex-wrap items-center justify-between gap-3 py-3">
+        <p className="paper min-w-0 flex-1 px-4 py-2 font-display text-lg font-extrabold" aria-live="polite">
+          {narration[scene]}
+        </p>
+        {scene !== 'done' && (
+          <button type="button" className="pbtn pbtn-paper" onClick={() => go('outcome')}>
+            Skip ⏭
           </button>
         )}
       </div>

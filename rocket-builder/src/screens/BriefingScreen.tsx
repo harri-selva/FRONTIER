@@ -1,42 +1,19 @@
 import { useState } from 'react';
-import { Cabinet } from '../components/Cabinet';
 import { Typewriter } from '../components/Typewriter';
 import { useReducedMotion } from '../components/useReducedMotion';
+import { Diorama, Layer } from '../paper/Diorama';
+import { DEMO_ROCKET, StarWall } from '../paper/scenery';
+import { sfx } from '../paper/sfx';
+import { PipSprite, PlanetSprite, type Mood } from '../paper/sprites';
+import { RocketSprite } from '../paper/RocketSprite';
 import { useGame } from '../store/gameStore';
 
-interface Line {
-  who: string;
-  role: string;
-  text: string;
-}
-
-// Fictional characters. Their facts are real.
-const LINES: Line[] = [
-  {
-    who: 'Dr. Rosa Okafor',
-    role: 'Flight Director',
-    text: 'Welcome to the team. Your job: design rockets that fly to a real exoplanet and come back. Every destination comes from the NASA Exoplanet Archive.',
-  },
-  {
-    who: 'Sam Whitlock',
-    role: 'Propulsion Lead',
-    text: 'Straight talk: no real rocket can do this. The nearest exoplanet, Proxima Centauri b, is 4.2 light-years away. At Voyager 1’s speed that is about 73,000 years.',
-  },
-  {
-    who: 'Dr. Rosa Okafor',
-    role: 'Flight Director',
-    text: 'So we cheat in one honest, clearly labelled way: a fictional Deep-Space Drive covers the light-years. Everything else (lift-off, landing, fuel, heat) uses real physics.',
-  },
-  {
-    who: 'Sam Whitlock',
-    role: 'Propulsion Lead',
-    text: 'Watch your thrust-to-weight: below 1.2 you never leave the pad. Watch your Δv: the rocket equation decides if you make it home. Anything badged “Fictional tech” does not exist.',
-  },
-  {
-    who: 'Dr. Rosa Okafor',
-    role: 'Flight Director',
-    text: 'You get ten attempts per difficulty. Your average goes on the leaderboard. Astronauts multiply your score, and your risk. Good luck.',
-  },
+const LINES: { mood: Mood; text: string }[] = [
+  { mood: 'happy', text: 'Hi! I’m Pip, your mission robot. Welcome to NASA’s rocket team!' },
+  { mood: 'wow', text: 'Every planet here is REAL. Astronomers found them around other stars.' },
+  { mood: 'think', text: 'They’re very far away. Real rockets would take thousands of years, so we use a pretend warp drive.' },
+  { mood: 'happy', text: 'Your job: build a rocket that can lift off, reach the planet, and get home safely.' },
+  { mood: 'wow', text: 'You get 10 tries. Brave astronauts make your score bigger. Ready?' },
 ];
 
 export function BriefingScreen() {
@@ -49,6 +26,7 @@ export function BriefingScreen() {
   const last = i === LINES.length - 1;
 
   const finish = () => {
+    sfx.go();
     setSeen();
     go('difficulty');
   };
@@ -57,6 +35,7 @@ export function BriefingScreen() {
       setTyped(true);
       return;
     }
+    sfx.pop();
     if (last) finish();
     else {
       setI(i + 1);
@@ -65,38 +44,49 @@ export function BriefingScreen() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <Cabinet title={`NASA mission briefing · ${i + 1}/${LINES.length}`} id="briefing">
-        <div className="flex flex-col gap-5 sm:flex-row">
-          <div
-            className="mx-auto flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border-2 border-cyber bg-void font-display text-2xl text-cyber shadow-cyber"
-            aria-hidden="true"
-          >
-            {line.who
-              .replace('Dr. ', '')
-              .split(' ')
-              .map((p) => p[0])
-              .join('')}
+    <div className="gutter mx-auto max-w-4xl pt-4">
+      <h1 className="sr-only">Meet Pip</h1>
+      <Diorama className="h-[min(46vh,400px)] min-h-[280px] rounded-[28px]" camera={{ rx: 3 }}>
+        <StarWall />
+        <Layer x={78} y={45} z={-300} w={24}>
+          <div className="anim-bob" style={{ animationDuration: '8s' }}>
+            <PlanetSprite planet={{ name: 'Proxima Cen b', eqTempK: 218, planetClass: 'rocky' }} />
           </div>
-          <div className="flex-1">
-            <p className="font-display text-[0.7rem] text-neonsoft">
-              {line.who} <span className="text-[#c3b2e8]">· {line.role}</span>
-            </p>
-            <p className="readout mt-3 min-h-[7.5rem] text-[1.45rem] text-haze" aria-live="polite">
-              <Typewriter key={i} text={line.text} instant={typed || reduced} onDone={() => setTyped(true)} />
-            </p>
+        </Layer>
+        <Layer x={20} y={18} z={-150} w={9}>
+          <div className="anim-bob">
+            <RocketSprite rocket={DEMO_ROCKET} />
+          </div>
+        </Layer>
+        <Layer x={50} y={4} z={40} w={30}>
+          <div key={i} className="anim-pop">
+            <div className={line.mood === 'wow' ? 'anim-wobble' : 'anim-bob'}>
+              <PipSprite mood={line.mood} />
+            </div>
+          </div>
+        </Layer>
+      </Diorama>
+
+      <div className="paper tape relative mx-auto -mt-6 max-w-2xl px-6 pb-5 pt-7">
+        <p className="min-h-[4.5em] font-display text-[1.35rem] font-bold leading-snug" aria-live="polite">
+          <Typewriter key={i} text={line.text} instant={typed || reduced} onDone={() => setTyped(true)} />
+        </p>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <ol className="flex gap-1.5" aria-label={`Step ${i + 1} of ${LINES.length}`}>
+            {LINES.map((_, n) => (
+              <li key={n} className="h-2.5 w-6 rounded-full" style={{ background: n <= i ? '#ff7cc6' : 'rgba(42,23,71,.15)' }} />
+            ))}
+          </ol>
+          <div className="flex gap-3">
+            <button type="button" className="pbtn pbtn-paper pbtn-sm" onClick={finish}>
+              Skip
+            </button>
+            <button type="button" className="pbtn" onClick={next} autoFocus>
+              {!typed && !reduced ? 'Show all' : last ? 'Let’s go!' : 'Next'}
+            </button>
           </div>
         </div>
-        <p className="mt-2 text-xs text-[#c3b2e8]">Characters are fictional; the facts they state are real.</p>
-        <div className="mt-5 flex flex-wrap justify-end gap-3">
-          <button type="button" className="btn btn-ghost" onClick={finish}>
-            Skip briefing
-          </button>
-          <button type="button" className="btn btn-primary" onClick={next} autoFocus>
-            {!typed && !reduced ? 'Show all' : last ? 'Choose difficulty' : 'Next'}
-          </button>
-        </div>
-      </Cabinet>
+      </div>
     </div>
   );
 }

@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { Cabinet } from '../components/Cabinet';
-import { fmt } from '../components/format';
-import { DIFFICULTIES, DIFFICULTY_CONFIG, type Difficulty } from '../engine';
+import { useEffect, useState, type KeyboardEvent } from 'react';
+import { DIFFICULTIES, type Difficulty } from '../engine';
+import { LEVEL } from '../paper/kid';
+import { sfx } from '../paper/sfx';
+import { PipSays } from '../paper/ui';
 import { getLeaderboard, type LeaderboardEntry } from '../services/leaderboard';
 import { useGame } from '../store/gameStore';
+
+const RIBBON = ['#ffe07a', '#e6dcf5', '#ffb48f'];
 
 export function LeaderboardScreen() {
   const current = useGame((s) => s.difficulty);
@@ -11,7 +14,6 @@ export function LeaderboardScreen() {
   const [tab, setTab] = useState<Difficulty>(current ?? 'easy');
   const [rows, setRows] = useState<LeaderboardEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const tabs = useRef<Record<string, HTMLButtonElement | null>>({});
   const service = getLeaderboard();
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export function LeaderboardScreen() {
     service
       .list(tab, 20)
       .then((r) => alive && setRows(r))
-      .catch((e: unknown) => alive && setError(e instanceof Error ? e.message : 'Could not load the leaderboard.'));
+      .catch((e: unknown) => alive && setError(e instanceof Error ? e.message : 'Could not load the scores.'));
     return () => {
       alive = false;
     };
@@ -29,76 +31,72 @@ export function LeaderboardScreen() {
 
   const onKey = (e: KeyboardEvent) => {
     const i = DIFFICULTIES.indexOf(tab);
-    let n = i;
-    if (e.key === 'ArrowRight') n = (i + 1) % DIFFICULTIES.length;
-    else if (e.key === 'ArrowLeft') n = (i - 1 + DIFFICULTIES.length) % DIFFICULTIES.length;
-    else return;
+    const n = e.key === 'ArrowRight' ? (i + 1) % 3 : e.key === 'ArrowLeft' ? (i + 2) % 3 : -1;
+    if (n < 0) return;
     e.preventDefault();
     const d = DIFFICULTIES[n]!;
     setTab(d);
-    tabs.current[d]?.focus();
+    document.getElementById(`lb-${d}`)?.focus();
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-4 font-display text-lg sm:text-xl">
-        <span className="chrome">High scores</span>
-      </h1>
-      <div role="tablist" aria-label="Difficulty" className="mb-3 flex gap-2" onKeyDown={onKey}>
+    <div className="gutter mx-auto max-w-3xl pt-6">
+      <h1 className="text-center text-4xl font-black text-paper drop-shadow-[0_3px_0_rgba(0,0,0,.35)] sm:text-5xl">High scores</h1>
+      <div role="tablist" aria-label="Rank" className="mt-5 flex justify-center gap-3" onKeyDown={onKey}>
         {DIFFICULTIES.map((d) => (
           <button
             key={d}
-            ref={(el) => {
-              tabs.current[d] = el;
-            }}
+            id={`lb-${d}`}
             role="tab"
             type="button"
-            id={`lb-tab-${d}`}
             aria-selected={tab === d}
             aria-controls="lb-panel"
             tabIndex={tab === d ? 0 : -1}
-            onClick={() => setTab(d)}
-            className={`btn ${tab === d ? 'btn-primary' : 'btn-ghost'}`}
+            onClick={() => {
+              sfx.click();
+              setTab(d);
+            }}
+            className={`pbtn pbtn-sm ${tab === d ? '' : 'pbtn-paper'}`}
           >
-            {DIFFICULTY_CONFIG[d].label}
+            {LEVEL[d].name}
           </button>
         ))}
       </div>
-      <Cabinet title={`${DIFFICULTY_CONFIG[tab].label} · top 20`} id="lb" right={<span className="text-[0.5rem]">{service.label}</span>}>
-        <div role="tabpanel" id="lb-panel" aria-labelledby={`lb-tab-${tab}`}>
-          {error && <p className="text-[#ffb3c3]">{error}</p>}
-          {!rows && !error && <p className="readout text-cyber">Loading…</p>}
-          {rows && rows.length === 0 && <p className="text-haze">No scores yet. Finish a 10-attempt run to be first.</p>}
-          {rows && rows.length > 0 && (
-            <table className="w-full text-left">
-              <caption className="sr-only">{DIFFICULTY_CONFIG[tab].label} leaderboard, average score over 10 attempts</caption>
-              <thead>
-                <tr className="font-display text-[0.55rem] text-neonsoft">
-                  <th scope="col" className="py-2">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col" className="text-right">Average</th>
-                  <th scope="col" className="hidden text-right sm:table-cell">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r, i) => (
-                  <tr key={`${r.name}-${r.createdAt}`} className={`border-t border-[#6b4ba8] ${i < 3 ? 'text-neonsoft' : 'text-haze'}`}>
-                    <td className="readout py-1 text-xl">{i + 1}</td>
-                    <td className="readout text-xl">{r.name}</td>
-                    <td className="readout text-right text-xl text-cyber">{fmt(r.average, 1)}</td>
-                    <td className="hidden text-right text-sm text-[#c3b2e8] sm:table-cell">{r.createdAt.slice(0, 10)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </Cabinet>
-      <div className="mt-5 flex flex-wrap justify-end gap-3">
-        <button type="button" className="btn btn-ghost" onClick={() => go('title')}>
-          Title screen
+      <section id="lb-panel" role="tabpanel" aria-labelledby={`lb-${tab}`} className="paper tape relative mt-6 px-5 pb-5 pt-7">
+        {error && <p className="font-bold text-[#a3203a]">{error}</p>}
+        {!rows && !error && <p className="font-semibold">Loading…</p>}
+        {rows && rows.length === 0 && (
+          <PipSays mood="think" live={false}>
+            No scores yet for {LEVEL[tab].name}. Finish 10 tries to be the first!
+          </PipSays>
+        )}
+        {rows && rows.length > 0 && (
+          <ol className="space-y-2">
+            {rows.map((r, i) => (
+              <li
+                key={`${r.name}-${r.createdAt}`}
+                className="anim-rise flex items-center gap-3 rounded-2xl bg-[#f6ead8] px-3 py-2"
+                style={{ animationDelay: `${i * 0.04}s` }}
+              >
+                <span
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full font-display text-lg font-black"
+                  style={{ background: RIBBON[i] ?? '#fff8ef', boxShadow: '0 0 0 3px #fff8ef, 0 3px 0 3px rgba(42,23,71,.2)' }}
+                >
+                  {i + 1}
+                </span>
+                <span className="min-w-0 flex-1 truncate font-display text-xl font-extrabold">{r.name}</span>
+                <span className="tabular font-display text-2xl font-black text-[#c2307f]">{Math.round(r.average)}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+        <p className="mt-4 text-xs text-ink/70">Average score over 10 tries. Saved in: {service.label}.</p>
+      </section>
+      <div className="mt-6 flex justify-center gap-3">
+        <button type="button" className="pbtn pbtn-paper" onClick={() => go('title')}>
+          Home
         </button>
-        <button type="button" className="btn btn-primary" onClick={() => go('difficulty')}>
+        <button type="button" className="pbtn" onClick={() => go('difficulty')}>
           Play
         </button>
       </div>
