@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Cabinet } from '../components/Cabinet';
 import { fmt, money } from '../components/format';
 import { PLANETS_BY_DIFFICULTY } from '../data/planets';
@@ -17,6 +18,7 @@ export function DifficultyScreen() {
   const choose = useGame((s) => s.chooseDifficulty);
   const runs = useGame((s) => s.runs);
   const restart = useGame((s) => s.restartRun);
+  const [confirming, setConfirming] = useState<string | null>(null);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -61,18 +63,34 @@ export function DifficultyScreen() {
                 <button type="button" className="btn btn-primary flex-1" onClick={() => choose(d)}>
                   {done ? (run.submitted ? 'New run' : 'Finish run') : n > 0 ? 'Continue' : 'Play'}
                 </button>
-                {n > 0 && !done && (
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => {
-                      if (window.confirm(`Restart your ${cfg.label} run? ${n} attempt(s) will be lost.`)) restart(d);
-                    }}
-                  >
+                {n > 0 && !done && confirming !== d && (
+                  <button type="button" className="btn btn-danger" onClick={() => setConfirming(d)}>
                     Restart
                   </button>
                 )}
               </div>
+              {confirming === d && (
+                <div className="mt-3 rounded-lg border-2 border-[#ff6b8b] bg-void/70 p-3" role="alert">
+                  <p className="text-sm text-haze">
+                    Restart your {cfg.label} run? {n} attempt(s) will be lost.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => {
+                        setConfirming(null);
+                        restart(d);
+                      }}
+                    >
+                      Yes, restart
+                    </button>
+                    <button type="button" className="btn btn-ghost" onClick={() => setConfirming(null)}>
+                      Keep run
+                    </button>
+                  </div>
+                </div>
+              )}
             </Cabinet>
           );
         })}

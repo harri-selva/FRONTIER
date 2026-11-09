@@ -15,6 +15,7 @@ export function SummaryScreen() {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [confirmNew, setConfirmNew] = useState(false);
 
   if (!difficulty) {
     return (
@@ -122,13 +123,18 @@ export function SummaryScreen() {
           </button>
           <button
             type="button"
-            className="btn btn-ghost"
+            className={confirmNew ? 'btn btn-danger' : 'btn btn-ghost'}
             onClick={() => {
-              if (complete && !run.submitted && !window.confirm('Start a new run without submitting this score?')) return;
+              // Unsubmitted finished run: ask once, in the page (window.confirm is blocked in some hosts).
+              if (complete && !run.submitted && !confirmNew) {
+                setConfirmNew(true);
+                return;
+              }
+              setConfirmNew(false);
               restart(difficulty);
             }}
           >
-            New {DIFFICULTY_CONFIG[difficulty].label} run
+            {confirmNew ? 'Discard score and start new run' : `New ${DIFFICULTY_CONFIG[difficulty].label} run`}
           </button>
           <button type="button" className="btn btn-ghost" onClick={() => go('difficulty')}>
             Other difficulty
