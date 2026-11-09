@@ -67,13 +67,13 @@ export function gauges(rocket: Rocket, r: MissionResult, difficulty: Difficulty,
 
 /** Pip's one piece of advice for the current build. */
 export function pipTip(rocket: Rocket, r: MissionResult, issues: BuildIssue[], planet: Planet): { mood: 'happy' | 'think' | 'wow'; text: string } {
-  if (!rocket.payload) return { mood: 'think', text: 'Start with a cabin. Drag one onto the rocket, or tap Add!' };
-  if (!rocket.engine) return { mood: 'think', text: 'Now pick an engine. Strong engines lift heavy rockets.' };
-  if (rocket.tanks.length === 0) return { mood: 'think', text: `Add a fuel tank with the ${FUEL_NAME[rocket.engine.propellant]} sticker to match your engine.` };
+  if (!rocket.payload) return { mood: 'think', text: 'Start with a cabin. Grab one from the parts box and drop it on the rocket!' };
+  if (!rocket.engine) return { mood: 'think', text: 'Now drag an engine onto the rocket. Strong engines lift heavy rockets.' };
+  if (rocket.tanks.length === 0) return { mood: 'think', text: `Drag on a fuel tank with the ${FUEL_NAME[rocket.engine.propellant]} sticker to match your engine.` };
   if (rocket.tanks.some((t) => t.propellant !== rocket.engine?.propellant))
     return { mood: 'think', text: `Your tanks don’t match your engine! It needs the ${FUEL_NAME[rocket.engine.propellant]} sticker.` };
-  if (!rocket.drive) return { mood: 'think', text: 'Add a warp drive so you can cross the space between stars.' };
-  if (!rocket.comms) return { mood: 'think', text: 'Add a radio so Mission Control can talk to you.' };
+  if (!rocket.drive) return { mood: 'think', text: 'Drop a warp drive on so you can cross the space between stars.' };
+  if (!rocket.comms) return { mood: 'think', text: 'Drop a radio on so Mission Control can talk to you.' };
   const block = issues.find((i) => i.severity === 'block');
   if (block) return { mood: 'think', text: block.message };
   const fail = r.checks.find((c) => c.status === 'fail' && c.id !== 'budget');

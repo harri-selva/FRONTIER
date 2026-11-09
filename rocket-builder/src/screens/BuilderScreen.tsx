@@ -12,6 +12,7 @@ import {
   type Announcements,
   type CollisionDetection,
   type DragEndEvent,
+  type KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
 import { useMemo, useState } from 'react';
 import { ALL_COMPONENTS, COMPONENTS_BY_ID } from '../data/components';
@@ -56,11 +57,21 @@ const ICON_FOR: Record<Category, Parameters<typeof Icon>[0]['name']> = {
 
 const nameOf = (id: string | number | undefined) => COMPONENTS_BY_ID[String(id ?? '').replace('part:', '')]?.name ?? 'part';
 const announcements: Announcements = {
-  onDragStart: ({ active }) => `Picked up ${nameOf(active.id)}. Move it onto the rocket with the arrow keys, then press Space.`,
+  onDragStart: ({ active }) => `Picked up ${nameOf(active.id)}. Press any arrow key to move it onto the rocket, then Space to drop it.`,
   onDragOver: ({ active, over }) => (over ? `${nameOf(active.id)} is over your rocket.` : `${nameOf(active.id)} is not over the rocket.`),
   onDragEnd: ({ active, over }) => (over ? `${nameOf(active.id)} added to your rocket.` : `${nameOf(active.id)} was not added.`),
   onDragCancel: ({ active }) => `Cancelled. ${nameOf(active.id)} was not added.`,
 };
+/** Keyboard dragging: any arrow key jumps the part straight onto the rocket. */
+const toRocket: KeyboardCoordinateGetter = (event, { context, currentCoordinates }) => {
+  if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) return undefined;
+  event.preventDefault();
+  const target = context.droppableRects.get('rocket');
+  const self = context.collisionRect;
+  if (!target || !self) return currentCoordinates;
+  return { x: target.left + target.width / 2 - self.width / 2, y: target.top + target.height / 2 - self.height / 2 };
+};
+
 const collision: CollisionDetection = (args) => {
   const hits = pointerWithin(args);
   return hits.length > 0 ? hits : rectIntersection(args);
@@ -153,7 +164,7 @@ export function BuilderScreen() {
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 140, tolerance: 6 } }),
-    useSensor(KeyboardSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: toRocket }),
   );
   const maxByCat = useMemo(() => {
     const m: Partial<Record<Category, number>> = {};
@@ -242,7 +253,7 @@ export function BuilderScreen() {
       }}
       onDragEnd={onDragEnd}
       onDragCancel={() => setDragging(null)}
-      accessibility={{ announcements, screenReaderInstructions: { draggable: 'Press Space to pick up a part. Use the arrow keys to move it onto the rocket, then press Space to drop. Or use the Add button.' } }}
+      accessibility={{ announcements, screenReaderInstructions: { draggable: 'Press Space to pick up a part, any arrow key to move it onto the rocket, then Space to drop it.' } }}
     >
       <div className="gutter mx-auto max-w-6xl pt-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -273,9 +284,9 @@ export function BuilderScreen() {
 
         <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           {/* Hangar: stays in view while you scroll the parts, so drag-and-drop always has a target */}
-          <div className="flex flex-col gap-4 lg:sticky lg:top-3 lg:self-start">
+          <div className="sticky top-0 z-30 -mx-4 self-start rounded-b-[28px] bg-[#2b1a5e] px-3 pb-3 pt-2 shadow-[0_10px_24px_rgba(10,4,30,.45)] sm:mx-0 sm:rounded-[28px] lg:top-3 lg:bg-transparent lg:p-0 lg:shadow-none">
             <RocketDrop active={!!dragging}>
-              <Diorama className="h-[min(58vh,540px)] min-h-[340px] rounded-[28px]" camera={{ rx: 3 }} label={`Your rocket for ${planet.name}`}>
+              <Diorama className="h-[36vh] min-h-[230px] rounded-[24px] lg:h-[min(62vh,580px)] lg:min-h-[360px]" camera={{ rx: 3 }} label={`Your rocket for ${planet.name}`}>
                 <StarWall z={-600} />
                 <Layer x={50} y={0} z={-400} w={200}>
                   <div className="h-[34cqh] rounded-t-[40%] bg-[#3b2577]" style={{ boxShadow: 'inset 0 6px 0 rgba(255,255,255,.08)' }} />
@@ -306,7 +317,25 @@ export function BuilderScreen() {
                   </div>
                 </Layer>
               </Diorama>
+              <div className="absolute right-3 top-3 flex flex-col items-end gap-1">
+                <button
+                  type="button"
+                  className="pbtn max-sm:pbtn-sm"
+                  disabled={!ready}
+                  onClick={() => {
+                    sfx.go();
+                    setCheckOpen(true);
+                  }}
+                >
+                  <Icon name="lift" size={22} /> Launch!
+                </button>
+                {!ready && <span className="rounded-md bg-night/80 px-2 py-0.5 text-xs font-bold text-paper">Parts with a red dot first</span>}
+              </div>
             </RocketDrop>
+          </div>
+
+          <div className="flex min-w-0 flex-col gap-5">
+            <PipSays mood={tip.mood}>{tip.text}</PipSays>
             <div className="paper flex flex-wrap items-center gap-4 px-4 py-3">
               <div className="min-w-0 flex-1">
                 <p className="font-display text-lg font-extrabold">Astronauts</p>
@@ -330,22 +359,6 @@ export function BuilderScreen() {
                 </button>
               </div>
             </div>
-            <button
-              type="button"
-              className="pbtn pbtn-lg w-full"
-              disabled={!ready}
-              onClick={() => {
-                sfx.go();
-                setCheckOpen(true);
-              }}
-            >
-              <Icon name="lift" size={26} /> Launch!
-            </button>
-            {!ready && <p className="-mt-2 text-center text-sm font-semibold text-paper">Add the parts with a red dot first.</p>}
-          </div>
-
-          <div className="flex min-w-0 flex-col gap-5">
-            <PipSays mood={tip.mood}>{tip.text}</PipSays>
             <section className="paper px-4 py-4" aria-labelledby="ready-title">
               <h2 id="ready-title" className="text-2xl font-black">
                 Ready to fly?
@@ -401,7 +414,9 @@ export function BuilderScreen() {
             })}
           </div>
           <div id="parts-panel" role="tabpanel" aria-labelledby={`tab-${activeTab.cat}`} className="mt-4">
-            <p className="mb-3 font-semibold text-[#e6dcff]">{activeTab.hint}</p>
+            <p className="mb-3 font-semibold text-[#e6dcff]">
+              {activeTab.hint} <span className="text-butter">Grab a card and drop it on the rocket{' '}<span className="sm:hidden">(press and hold first)</span>.</span>
+            </p>
             <ul key={activeTab.cat} className="grid gap-5 sm:grid-cols-2">
               {ALL_COMPONENTS.filter((c) => c.category === activeTab.cat).map((c, i) => (
                 <li key={c.id} className="anim-pop flex select-none" style={{ animationDelay: `${i * 0.05}s` }}>
@@ -409,7 +424,6 @@ export function BuilderScreen() {
                     c={c}
                     fitted={fittedCount(c.id)}
                     warning={warningFor(c.id)}
-                    onAdd={() => add(c.id)}
                     onRemove={() => remove(c.id)}
                     maxMass={maxByCat[c.category] ?? 1}
                   />

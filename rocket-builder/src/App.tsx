@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useReducedMotion } from './components/useReducedMotion';
 import { DATA_RETRIEVED, DATA_SOURCE_URL } from './data/planets';
 import { PaperDefs } from './paper/Diorama';
+import { PaperSky } from './paper/PaperSky';
 import { TopBar } from './paper/TopBar';
 import { useGame, type Screen } from './store/gameStore';
 import { TitleScreen } from './screens/TitleScreen';
@@ -59,6 +60,7 @@ export function App() {
   return (
     <div className="relative flex min-h-full flex-col">
       <PaperDefs />
+      {!fullBleed && <PaperSky />}
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[90] focus:rounded-lg focus:bg-butter focus:px-3 focus:py-2 focus:font-bold"

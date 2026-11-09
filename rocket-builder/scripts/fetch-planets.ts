@@ -9,6 +9,7 @@
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { DIFFICULTY_SETS } from '../src/data/difficulty-sets';
 
 const TAP = 'https://exoplanetarchive.ipac.caltech.edu/TAP/sync';
 const COLUMNS = [
@@ -84,6 +85,74 @@ async function main(): Promise<void> {
   const target = resolve(here, '../src/data/planets.json');
   writeFileSync(target, JSON.stringify(out) + '\n');
   console.log(`Wrote ${planets.length} planets to ${target}`);
+
+  await fetchSystems(out.retrieved, planets, resolve(here, '../src/data/systems.json'));
+}
+
+interface SystemRow {
+  pl_name: string;
+  hostname: string;
+  glon: number | null;
+  glat: number | null;
+  sy_dist: number | null;
+  pl_orbsmax: number | null;
+  pl_orbper: number | null;
+  pl_orbpererr1: number | null;
+  pl_tranmid: number | null;
+  pl_tranmiderr1: number | null;
+  tran_flag: number | null;
+  pl_orbeccen: number | null;
+  pl_rade: number | null;
+  st_rad: number | null;
+  st_teff: number | null;
+  st_mass: number | null;
+  st_spectype: string | null;
+}
+
+/**
+ * Every known planet (no filtering) around the curated host stars, plus the
+ * star's galactic position, for the star-map and planetary-system views.
+ */
+async function fetchSystems(retrieved: string, planets: { pl_name: string; hostname: string }[], target: string): Promise<void> {
+  const curated = new Set(Object.values(DIFFICULTY_SETS).flat());
+  const hosts = [...new Set(planets.filter((p) => curated.has(p.pl_name)).map((p) => p.hostname))];
+  const list = hosts.map((h) => `'${h.replace(/'/g, "''")}'`).join(',');
+  const cols =
+    'pl_name,hostname,glon,glat,sy_dist,pl_orbsmax,pl_orbper,pl_orbpererr1,pl_tranmid,pl_tranmiderr1,tran_flag,pl_orbeccen,pl_rade,st_rad,st_teff,st_mass,st_spectype';
+  const url = `${TAP}?query=${encodeURIComponent(`select ${cols} from pscomppars where hostname in (${list})`)}&format=json`;
+  console.log(`Querying ${hosts.length} planetary systems…`);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Archive returned HTTP ${res.status}`);
+  const rows = (await res.json()) as SystemRow[];
+  const systems: Record<string, unknown> = {};
+  for (const h of hosts) {
+    const rs = rows.filter((r) => r.hostname === h).sort((a, b) => (a.pl_orbsmax ?? 1e9) - (b.pl_orbsmax ?? 1e9));
+    const s = rs[0];
+    if (!s) continue;
+    systems[h] = {
+      host: h,
+      glon: s.glon,
+      glat: s.glat,
+      distancePc: s.sy_dist,
+      starRadiusSun: s.st_rad,
+      starTeffK: s.st_teff,
+      starMassSun: s.st_mass,
+      spectralType: s.st_spectype,
+      planets: rs.map((r) => ({
+        name: r.pl_name,
+        aAu: r.pl_orbsmax,
+        periodDays: r.pl_orbper,
+        periodErrDays: r.pl_orbpererr1,
+        conjunctionBjd: r.pl_tranmid,
+        conjunctionErrDays: r.pl_tranmiderr1,
+        transits: r.tran_flag === 1,
+        eccentricity: r.pl_orbeccen,
+        radiusRe: r.pl_rade,
+      })),
+    };
+  }
+  writeFileSync(target, JSON.stringify({ retrieved, source: 'NASA Exoplanet Archive (pscomppars)', systems }, null, 1) + '\n');
+  console.log(`Wrote ${Object.keys(systems).length} systems to ${target}`);
 }
 
 main().catch((err: unknown) => {

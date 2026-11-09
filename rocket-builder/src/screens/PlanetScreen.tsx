@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type TouchEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { atmosphereNote, PLANETS_BY_DIFFICULTY } from '../data/planets';
 import { requiredDeltaV, requiredDriveRangeLy, type Planet } from '../engine';
-import { Diorama, Layer } from '../paper/Diorama';
 import { feelsLike, gravityWords, LEVEL } from '../paper/kid';
-import { StarWall } from '../paper/scenery';
+import { SpaceMap } from '../paper/SpaceMap';
 import { sfx } from '../paper/sfx';
 import { Icon, PlanetSprite } from '../paper/sprites';
 import { PipSays, RealStamp } from '../paper/ui';
@@ -52,7 +51,7 @@ function MoreFacts({ p }: { p: Planet }) {
       </dl>
       <p className="mt-2 text-xs text-ink/75">
         Gravity and orbital speed are worked out from the real mass and size. “Rocky” vs “gas or ice” (from size) is a game
-        simplification.{' '}
+        simplification. What the surface looks like is an artist’s idea: no one has a close-up picture of these planets.{' '}
         <a href={p.archiveUrl} target="_blank" rel="noreferrer" className="font-semibold underline">
           See it in the NASA Exoplanet Archive
         </a>
@@ -71,7 +70,6 @@ export function PlanetScreen() {
   const startIdx = Math.max(0, planets.findIndex((p) => p.name === planetName));
   const [idx, setIdx] = useState(startIdx);
   const [more, setMore] = useState(false);
-  const touchX = useRef<number | null>(null);
   useEffect(() => setMore(false), [idx]);
 
   if (!difficulty) {
@@ -86,22 +84,9 @@ export function PlanetScreen() {
   const p = planets[idx] ?? planets[0]!;
   const n = planets.length;
   const goTo = (i: number) => {
-    sfx.whoosh();
+    if (i === idx) return;
+    sfx.pop();
     setIdx(((i % n) + n) % n);
-  };
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowRight') goTo(idx + 1);
-    else if (e.key === 'ArrowLeft') goTo(idx - 1);
-    else return;
-    e.preventDefault();
-  };
-  const onTouchStart = (e: TouchEvent) => (touchX.current = e.touches[0]?.clientX ?? null);
-  const onTouchEnd = (e: TouchEvent) => {
-    const start = touchX.current;
-    const end = e.changedTouches[0]?.clientX;
-    if (start === null || end === undefined) return;
-    if (Math.abs(end - start) > 40) goTo(idx + (end < start ? 1 : -1));
-    touchX.current = null;
   };
   const temp = feelsLike(p.eqTempK);
   const req = requiredDeltaV(p);
@@ -117,57 +102,31 @@ export function PlanetScreen() {
         </p>
       </div>
 
-      <section
-        className="relative mt-3"
-        aria-roledescription="carousel"
-        aria-label="Planets"
-        onKeyDown={onKey}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
-        <Diorama className="h-[min(42vh,360px)] min-h-[250px] rounded-[28px]" camera={{ rx: 2 }}>
-          <StarWall z={-700} />
-          {planets.map((pl, i) => {
-            let off = i - idx;
-            if (off > n / 2) off -= n;
-            if (off < -n / 2) off += n;
-            const visible = Math.abs(off) <= 2;
-            return (
-              <Layer
-                key={pl.name}
-                x={50 + off * 30}
-                y={14}
-                z={-Math.abs(off) * 220}
-                w={off === 0 ? 46 : 30}
-                style={{ transition: 'left .7s cubic-bezier(.2,.9,.2,1), transform .7s cubic-bezier(.2,.9,.2,1), width .7s', opacity: visible ? 1 : 0 }}
-              >
-                <div className="anim-sway" style={{ animationDelay: `${i * -0.7}s` }}>
-                  <div className="mx-auto h-[40cqh] w-[2px] bg-[#e6dcff]/80" style={{ marginTop: '-40cqh' }} aria-hidden="true" />
-                  <button
-                    type="button"
-                    tabIndex={-1}
-                    aria-hidden="true"
-                    onClick={() => off !== 0 && goTo(i)}
-                    className="block w-full cursor-pointer"
-                  >
-                    <PlanetSprite planet={pl} />
-                  </button>
-                </div>
-              </Layer>
-            );
-          })}
-        </Diorama>
-        <button type="button" className="pbtn pbtn-paper pbtn-icon absolute left-3 top-1/2 -translate-y-1/2" onClick={() => goTo(idx - 1)} aria-label="Previous planet">
-          <Icon name="back" />
-        </button>
-        <button type="button" className="pbtn pbtn-paper pbtn-icon absolute right-3 top-1/2 -translate-y-1/2" onClick={() => goTo(idx + 1)} aria-label="Next planet">
-          <span className="inline-block rotate-180">
-            <Icon name="back" />
-          </span>
-        </button>
-      </section>
+      <div className="mt-3">
+        <SpaceMap difficulty={difficulty} selected={p.name} onSelect={(name) => {
+          const i = planets.findIndex((x) => x.name === name);
+          if (i >= 0) goTo(i);
+        }} />
+      </div>
 
-      <article key={p.name} className="paper tape anim-rise relative mx-auto -mt-4 max-w-4xl px-5 pb-5 pt-7" aria-live="polite">
+      <ul className="mt-4 flex flex-wrap justify-center gap-2" aria-label={`${LEVEL[difficulty].name} planets`}>
+        {planets.map((pl, i) => (
+          <li key={pl.name}>
+            <button
+              type="button"
+              onClick={() => goTo(i)}
+              aria-pressed={i === idx}
+              className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-sm font-bold transition ${i === idx ? 'bg-butter text-ink' : 'bg-paper/85 text-ink hover:bg-paper'}`}
+              style={{ boxShadow: '0 0 0 2.5px #fff8ef, 0 4px 0 2.5px rgba(20,8,50,.3)' }}
+            >
+              <span className="w-7"><PlanetSprite planet={pl} /></span>
+              {pl.name}
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <article key={p.name} className="paper tape anim-rise relative mx-auto mt-8 max-w-4xl px-5 pb-5 pt-7" aria-live="polite">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h2 className="text-4xl font-black">{p.name}</h2>
           <RealStamp />

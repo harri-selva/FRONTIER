@@ -145,29 +145,36 @@ interface Props {
   c: RocketComponent;
   fitted: number;
   warning?: string | null;
-  onAdd: () => void;
   onRemove?: () => void;
   maxMass: number;
 }
 
-export function PartCard({ c, fitted, warning, onAdd, onRemove, maxMass }: Props) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: `part:${c.id}`, data: { componentId: c.id } });
+export function PartCard({ c, fitted, warning, onRemove, maxMass }: Props) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, isDragging } = useDraggable({
+    id: `part:${c.id}`,
+    data: { componentId: c.id },
+  });
   const on = fitted > 0;
   return (
+    // The whole card is the drag surface (pointer + touch). The grab handle is the keyboard activator.
     <div
       ref={setNodeRef}
-      style={{ transform: CSS.Translate.toString(transform) }}
-      className={`paper flex w-full flex-col p-3 transition-transform ${isDragging ? 'opacity-40' : ''} ${on ? 'ring-4 ring-mint' : ''}`}
+      {...listeners}
+      style={{ transform: CSS.Translate.toString(transform), touchAction: 'pan-y' }}
+      className={`paper group flex w-full cursor-grab flex-col p-3 transition-transform active:cursor-grabbing ${isDragging ? 'opacity-40' : 'hover:-rotate-1 hover:scale-[1.02]'} ${on ? 'ring-4 ring-mint' : ''}`}
     >
       <div className="flex items-start gap-2">
         <button
+          ref={setActivatorNodeRef}
           type="button"
-          className="cursor-grab touch-none rounded-xl active:cursor-grabbing"
-          aria-label={`Drag ${c.name} onto your rocket`}
-          {...listeners}
+          className="relative touch-none rounded-xl"
+          aria-label={`Drag ${c.name} onto your rocket. Press Space to pick up, arrow keys to move, Space to drop.`}
           {...attributes}
         >
           <PartIcon c={c} />
+          <span className="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-butter text-[13px] shadow-[0_0_0_2px_#fff8ef]" aria-hidden="true">
+            ✋
+          </span>
         </button>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-[1.05rem] font-extrabold leading-tight">{c.name}</h3>
@@ -177,7 +184,7 @@ export function PartCard({ c, fitted, warning, onAdd, onRemove, maxMass }: Props
           </div>
         </div>
       </div>
-      <p className="mt-1.5 text-sm leading-snug">{c.description && kidDescFor(c)}</p>
+      <p className="mt-1.5 text-sm leading-snug">{kidDescFor(c)}</p>
       <div className="mt-2 space-y-1">
         <Stats c={c} />
         <div className="flex items-center justify-between gap-2">
@@ -186,18 +193,25 @@ export function PartCard({ c, fitted, warning, onAdd, onRemove, maxMass }: Props
         </div>
       </div>
       {warning && <p className="mt-2 rounded-lg bg-[#ffe1e6] px-2 py-1 text-xs font-bold text-[#a3203a]">{warning}</p>}
-      <div className="mt-auto flex gap-2 pt-3">
+      <div className="mt-auto flex items-center gap-2 pt-3">
+        <span className={`flex-1 text-xs font-bold ${on ? 'text-leaf' : 'text-ink/70'}`}>
+          {on
+            ? c.category === 'tank'
+              ? `${fitted} on your rocket. Drag again for more!`
+              : 'On your rocket!'
+            : 'Drag me onto the rocket ↗'}
+        </span>
         {on && onRemove && (
-          <button type="button" className="pbtn pbtn-paper pbtn-sm flex-1" onClick={onRemove} aria-label={`Remove ${c.name}`}>
-            Remove{c.category === 'tank' && fitted > 0 ? ` (${fitted})` : ''}
+          <button
+            type="button"
+            className="pbtn pbtn-paper pbtn-sm"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={onRemove}
+            aria-label={`Remove ${c.name}`}
+          >
+            Remove
           </button>
         )}
-        {(!on || c.category === 'tank') && (
-          <button type="button" className="pbtn pbtn-mint pbtn-sm flex-1" onClick={onAdd} aria-label={`Add ${c.name} to your rocket`}>
-            {c.category === 'tank' && on ? 'Add another' : 'Add'}
-          </button>
-        )}
-        {on && c.category !== 'tank' && !onRemove && <span className="sticker">On your rocket</span>}
       </div>
     </div>
   );

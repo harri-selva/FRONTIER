@@ -100,54 +100,148 @@ export function planetColors(eqTempK: number): { base: string; band: string; spo
   return { base: '#ff7cc6', band: '#ffe07a', spot: '#e2459f' };
 }
 
+/** Seeded random numbers so each planet always looks the same. */
+function rng(seed: number): () => number {
+  let s = seed || 1;
+  return () => {
+    s = (Math.imul(s ^ (s >>> 15), 2246822507) + 0x6d2b79f5) | 0;
+    s = Math.imul(s ^ (s >>> 13), 3266489909);
+    return ((s ^= s >>> 16) >>> 0) / 4294967296;
+  };
+}
+
+/** A wobbly closed blob around (cx, cy). */
+function blobPath(r: () => number, cx: number, cy: number, rad: number, points = 9): string {
+  const pts = Array.from({ length: points }, (_, i) => {
+    const a = (i / points) * Math.PI * 2;
+    const d = rad * (0.65 + r() * 0.55);
+    return [cx + Math.cos(a) * d, cy + Math.sin(a) * d] as const;
+  });
+  const mid = (i: number) => {
+    const a = pts[i % points]!;
+    const b = pts[(i + 1) % points]!;
+    return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] as const;
+  };
+  let d = `M${mid(0)[0].toFixed(1)} ${mid(0)[1].toFixed(1)}`;
+  for (let i = 1; i <= points; i++) {
+    const c = pts[i % points]!;
+    const m = mid(i);
+    d += ` Q${c[0].toFixed(1)} ${c[1].toFixed(1)} ${m[0].toFixed(1)} ${m[1].toFixed(1)}`;
+  }
+  return d + 'Z';
+}
+
+/**
+ * Cut-paper planet. Colours follow the real equilibrium temperature; surface
+ * details are an artist's idea (no one has photographed these surfaces).
+ * Circle of radius 70 centred in a 200×200 box.
+ */
 export function PlanetSprite({ planet, ...p }: SpriteProps & { planet: Pick<Planet, 'name' | 'eqTempK' | 'planetClass'> }) {
   const c = planetColors(planet.eqTempK);
   const h = hash(planet.name);
-  const tilt = (h % 40) - 20;
+  const r = rng(h);
   const giant = planet.planetClass === 'giant';
+  const T = planet.eqTempK;
+  const id = `pl${h}`;
+  const tilt = (h % 30) - 15;
+
+  const craters = giant ? [] : Array.from({ length: 6 }, () => ({ x: 50 + r() * 100, y: 50 + r() * 100, s: 5 + r() * 11 }));
+  const plains = giant ? [] : Array.from({ length: 3 }, () => blobPath(r, 55 + r() * 90, 55 + r() * 90, 16 + r() * 18));
+  const bands = giant
+    ? Array.from({ length: 8 }, (_, i) => {
+        const y = 38 + i * 17 + (r() - 0.5) * 6;
+        const amp = 2 + r() * 4;
+        const th = 6 + r() * 8;
+        const f = 0.04 + r() * 0.04;
+        let top = `M20 ${y}`;
+        let bot = '';
+        for (let x = 20; x <= 180; x += 10) top += ` L${x} ${(y + Math.sin(x * f + i) * amp).toFixed(1)}`;
+        for (let x = 180; x >= 20; x -= 10) bot += ` L${x} ${(y + th + Math.sin(x * f * 1.3 + i * 2) * amp).toFixed(1)}`;
+        return { d: `${top}${bot}Z`, color: i % 3 === 0 ? c.band : i % 3 === 1 ? c.spot : c.base, op: i % 3 === 2 ? 0.5 : 0.75 };
+      })
+    : [];
+  const storm = giant ? { x: 70 + r() * 60, y: 85 + r() * 40, w: 14 + r() * 8 } : null;
+  const cracks =
+    !giant && T > 900
+      ? Array.from({ length: 5 }, () => {
+          let x = 40 + r() * 120;
+          let y = 40 + r() * 120;
+          let d = `M${x.toFixed(1)} ${y.toFixed(1)}`;
+          for (let j = 0; j < 4; j++) {
+            x += (r() - 0.5) * 34;
+            y += (r() - 0.5) * 34;
+            d += ` L${x.toFixed(1)} ${y.toFixed(1)}`;
+          }
+          return d;
+        })
+      : [];
+  const caps = !giant && T < 290;
+  const clouds = !giant && T >= 230 && T < 420;
+
   return (
     <svg {...svgProps('0 0 200 200', p)}>
-      {giant && (
-        <ellipse cx="100" cy="100" rx="96" ry="22" fill="none" stroke="#b8a1ff" strokeWidth="10" transform={`rotate(${tilt} 100 100)`} filter="url(#pp-edge-thin)" />
-      )}
+      <defs>
+        <clipPath id={`${id}-c`}>
+          <circle cx="100" cy="100" r="70" />
+        </clipPath>
+        <mask id={`${id}-m`}>
+          <rect width="200" height="200" fill="#fff" />
+          <circle cx="84" cy="84" r="72" fill="#000" />
+        </mask>
+      </defs>
+      {/* atmosphere glow */}
+      <circle cx="100" cy="100" r="78" fill={c.band} opacity=".22" />
       <g filter="url(#pp-edge)">
         <circle cx="100" cy="100" r="70" fill={c.base} />
       </g>
-      <clipPath id={`pc-${h}`}>
-        <circle cx="100" cy="100" r="70" />
-      </clipPath>
-      <mask id={`pm-${h}`}>
-        <rect width="200" height="200" fill="#fff" />
-        <circle cx="86" cy="86" r="70" fill="#000" />
-      </mask>
-      <g clipPath={`url(#pc-${h})`}>
-        {giant ? (
-          <g transform={`rotate(${tilt} 100 100)`}>
-            <rect x="20" y="62" width="160" height="12" rx="6" fill={c.band} />
-            <rect x="20" y="92" width="160" height="18" rx="9" fill={c.spot} opacity=".55" />
-            <rect x="20" y="126" width="160" height="10" rx="5" fill={c.band} />
+      <g clipPath={`url(#${id}-c)`}>
+        <g transform={`rotate(${tilt} 100 100)`}>
+          {bands.map((b, i) => (
+            <path key={i} d={b.d} fill={b.color} opacity={b.op} />
+          ))}
+          {storm && (
+            <g>
+              <ellipse cx={storm.x} cy={storm.y} rx={storm.w} ry={storm.w * 0.55} fill={c.spot} />
+              <ellipse cx={storm.x} cy={storm.y} rx={storm.w * 0.62} ry={storm.w * 0.32} fill={c.band} />
+              <path d={`M${storm.x - storm.w * 0.4} ${storm.y} q${storm.w * 0.4} ${-storm.w * 0.25} ${storm.w * 0.7} 0`} stroke={c.spot} strokeWidth="2" fill="none" />
+            </g>
+          )}
+        </g>
+        {plains.map((d, i) => (
+          <path key={i} d={d} fill={i === 1 ? c.band : c.spot} opacity={i === 1 ? 0.55 : 0.45} />
+        ))}
+        {cracks.map((d, i) => (
+          <g key={i}>
+            <path d={d} stroke="#5a1e3a" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity=".6" />
+            <path d={d} stroke="#ffe07a" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </g>
-        ) : (
+        ))}
+        {craters.map((k, i) => (
+          <g key={i}>
+            <circle cx={k.x} cy={k.y} r={k.s} fill={c.spot} opacity=".55" />
+            <circle cx={k.x + k.s * 0.18} cy={k.y + k.s * 0.18} r={k.s * 0.72} fill="#2a1747" opacity=".14" />
+            <path d={`M${k.x - k.s} ${k.y} A${k.s} ${k.s} 0 0 1 ${k.x} ${k.y - k.s}`} stroke="#fff8ef" strokeWidth="1.6" fill="none" opacity=".6" />
+          </g>
+        ))}
+        {caps && (
           <>
-            <circle cx={70 + (h % 30)} cy={70 + (h % 17)} r="14" fill={c.spot} opacity=".7" />
-            <circle cx={120 + (h % 13)} cy={115 - (h % 11)} r="20" fill={c.spot} opacity=".55" />
-            <circle cx={88} cy={140} r="9" fill={c.band} opacity=".9" />
-            <path d={`M30 ${95 + (h % 9)} Q100 ${70 + (h % 20)} 170 ${100 - (h % 9)}`} stroke={c.band} strokeWidth="8" fill="none" opacity=".7" strokeLinecap="round" />
+            <ellipse cx="100" cy="34" rx="46" ry="14" fill="#fff8ef" opacity=".9" />
+            <ellipse cx="100" cy="168" rx="34" ry="10" fill="#fff8ef" opacity=".8" />
           </>
         )}
-        <circle cx="70" cy="68" r="28" fill="#fff" opacity=".18" />
-        <circle cx="100" cy="100" r="70" fill="#2a1747" opacity=".16" mask={`url(#pm-${h})`} />
+        {clouds && (
+          <g stroke="#fff8ef" strokeWidth="5" fill="none" strokeLinecap="round" opacity=".55">
+            <path d={`M${40 + (h % 20)} 80 q24 -10 48 0 t40 -4`} />
+            <path d={`M${70 + (h % 25)} 128 q20 -8 40 0`} />
+          </g>
+        )}
+        {giant && T > 1500 && <circle cx="72" cy="78" r="48" fill="#ffe07a" opacity=".22" />}
+        {/* lit side and shadow side */}
+        <circle cx="72" cy="70" r="26" fill="#fff" opacity=".2" />
+        <circle cx="64" cy="62" r="8" fill="#fff" opacity=".35" />
+        <circle cx="100" cy="100" r="70" fill="#2a1747" opacity=".22" mask={`url(#${id}-m)`} />
       </g>
-      {giant && (
-        <path
-          d={`M4 100 A96 22 0 0 0 196 100`}
-          fill="none"
-          stroke="#b8a1ff"
-          strokeWidth="10"
-          transform={`rotate(${tilt} 100 100)`}
-          filter="url(#pp-edge-thin)"
-        />
-      )}
+      <circle cx="100" cy="100" r="68.5" fill="none" stroke="#fff8ef" strokeWidth="1.5" opacity=".35" />
     </svg>
   );
 }

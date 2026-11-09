@@ -1,0 +1,799 @@
+{
+ "retrieved": "2026-11-09",
+ "source": "NASA Exoplanet Archive (pscomppars)",
+ "systems": {
+  "Proxima Cen": {
+   "host": "Proxima Cen",
+   "glon": 313.92595,
+   "glat": -1.91805,
+   "distancePc": 1.30119,
+   "starRadiusSun": 0.141,
+   "starTeffK": 2900,
+   "starMassSun": 0.1221,
+   "spectralType": "M5.5 V",
+   "planets": [
+    {
+     "name": "Proxima Cen d",
+     "aAu": 0.02881,
+     "periodDays": 5.12338,
+     "periodErrDays": 0.00035,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0,
+     "radiusRe": 0.692
+    },
+    {
+     "name": "Proxima Cen b",
+     "aAu": 0.04848,
+     "periodDays": 11.18465,
+     "periodErrDays": 0.00053,
+     "conjunctionBjd": 2457897.9,
+     "conjunctionErrDays": 0.3,
+     "transits": false,
+     "eccentricity": 0,
+     "radiusRe": 1.02
+    }
+   ]
+  },
+  "Ross 128": {
+   "host": "Ross 128",
+   "glon": 270.15662,
+   "glat": 59.55577,
+   "distancePc": 3.37454,
+   "starRadiusSun": 0.1967,
+   "starTeffK": 3192,
+   "starMassSun": 0.168,
+   "spectralType": "M4",
+   "planets": [
+    {
+     "name": "Ross 128 b",
+     "aAu": 0.0496,
+     "periodDays": 9.8658,
+     "periodErrDays": 0.007,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.116,
+     "radiusRe": 1.11
+    }
+   ]
+  },
+  "GJ 1061": {
+   "host": "GJ 1061",
+   "glon": 251.87109,
+   "glat": -52.90138,
+   "distancePc": 3.67278,
+   "starRadiusSun": 0.156,
+   "starTeffK": 2953,
+   "starMassSun": 0.12,
+   "spectralType": "M5.5 V",
+   "planets": [
+    {
+     "name": "GJ 1061 b",
+     "aAu": 0.021,
+     "periodDays": 3.2073,
+     "periodErrDays": 0.0002,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.05,
+     "radiusRe": 1.04
+    },
+    {
+     "name": "GJ 1061 c",
+     "aAu": 0.0342,
+     "periodDays": 6.6821,
+     "periodErrDays": 0.0008,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.02,
+     "radiusRe": 1.19
+    },
+    {
+     "name": "GJ 1061 d",
+     "aAu": 0.054,
+     "periodDays": 13.066,
+     "periodErrDays": 0.002,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.04,
+     "radiusRe": 1.16
+    }
+   ]
+  },
+  "Teegarden's Star": {
+   "host": "Teegarden's Star",
+   "glon": 160.29013,
+   "glat": -37.03132,
+   "distancePc": 3.83078,
+   "starRadiusSun": 0.12,
+   "starTeffK": 3034,
+   "starMassSun": 0.097,
+   "spectralType": "M7.0 V",
+   "planets": [
+    {
+     "name": "Teegarden's Star b",
+     "aAu": 0.0259,
+     "periodDays": 4.90634,
+     "periodErrDays": 0.00041,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.03,
+     "radiusRe": 1.05
+    },
+    {
+     "name": "Teegarden's Star c",
+     "aAu": 0.0455,
+     "periodDays": 11.416,
+     "periodErrDays": 0.003,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.04,
+     "radiusRe": 1.02
+    },
+    {
+     "name": "Teegarden's Star d",
+     "aAu": 0.0791,
+     "periodDays": 26.13,
+     "periodErrDays": 0.03,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.07,
+     "radiusRe": 0.954
+    }
+   ]
+  },
+  "GJ 1002": {
+   "host": "GJ 1002",
+   "glon": 92.44529,
+   "glat": -67.73033,
+   "distancePc": 4.84867,
+   "starRadiusSun": 0.137,
+   "starTeffK": 3024,
+   "starMassSun": 0.12,
+   "spectralType": "M5.5 V",
+   "planets": [
+    {
+     "name": "GJ 1002 b",
+     "aAu": 0.0457,
+     "periodDays": 10.3465,
+     "periodErrDays": 0.027,
+     "conjunctionBjd": 2458583.27,
+     "conjunctionErrDays": 0.22,
+     "transits": false,
+     "eccentricity": null,
+     "radiusRe": 1.03
+    },
+    {
+     "name": "GJ 1002 c",
+     "aAu": 0.0738,
+     "periodDays": 21.202,
+     "periodErrDays": 0.013,
+     "conjunctionBjd": 2458585.54,
+     "conjunctionErrDays": 0.5,
+     "transits": false,
+     "eccentricity": null,
+     "radiusRe": 1.1
+    }
+   ]
+  },
+  "Wolf 1069": {
+   "host": "Wolf 1069",
+   "glon": 93.74413,
+   "glat": 11.70382,
+   "distancePc": 9.58341,
+   "starRadiusSun": 0.1813,
+   "starTeffK": 3158,
+   "starMassSun": 0.167,
+   "spectralType": "M5.0 V",
+   "planets": [
+    {
+     "name": "Wolf 1069 b",
+     "aAu": 0.0672,
+     "periodDays": 15.564,
+     "periodErrDays": 0.015,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": null,
+     "radiusRe": 1.08
+    }
+   ]
+  },
+  "TRAPPIST-1": {
+   "host": "TRAPPIST-1",
+   "glon": 69.71519,
+   "glat": -56.64891,
+   "distancePc": 12.42988881,
+   "starRadiusSun": 0.1192,
+   "starTeffK": 2566,
+   "starMassSun": 0.0898,
+   "spectralType": "M8.0 V",
+   "planets": [
+    {
+     "name": "TRAPPIST-1 b",
+     "aAu": 0.01154,
+     "periodDays": 1.510826,
+     "periodErrDays": 0.000006,
+     "conjunctionBjd": 2457322.514193,
+     "conjunctionErrDays": 0.000003,
+     "transits": true,
+     "eccentricity": 0.00622,
+     "radiusRe": 1.116
+    },
+    {
+     "name": "TRAPPIST-1 c",
+     "aAu": 0.0158,
+     "periodDays": 2.421937,
+     "periodErrDays": 0.000018,
+     "conjunctionBjd": 2457282.8113871,
+     "conjunctionErrDays": 0.0000038,
+     "transits": true,
+     "eccentricity": 0.00654,
+     "radiusRe": 1.097
+    },
+    {
+     "name": "TRAPPIST-1 d",
+     "aAu": 0.02227,
+     "periodDays": 4.049219,
+     "periodErrDays": 0.000026,
+     "conjunctionBjd": 2457670.1463014,
+     "conjunctionErrDays": 0.0000184,
+     "transits": true,
+     "eccentricity": 0.00837,
+     "radiusRe": 0.788
+    },
+    {
+     "name": "TRAPPIST-1 e",
+     "aAu": 0.02925,
+     "periodDays": 6.101013,
+     "periodErrDays": 0.000035,
+     "conjunctionBjd": 2457660.3676621,
+     "conjunctionErrDays": 0.0000143,
+     "transits": true,
+     "eccentricity": 0.0051,
+     "radiusRe": 0.92
+    },
+    {
+     "name": "TRAPPIST-1 f",
+     "aAu": 0.03849,
+     "periodDays": 9.20754,
+     "periodErrDays": 0.000032,
+     "conjunctionBjd": 2457671.3737299,
+     "conjunctionErrDays": 0.0000157,
+     "transits": true,
+     "eccentricity": 0.01007,
+     "radiusRe": 1.045
+    },
+    {
+     "name": "TRAPPIST-1 g",
+     "aAu": 0.04683,
+     "periodDays": 12.352446,
+     "periodErrDays": 0.000054,
+     "conjunctionBjd": 2457665.3628439,
+     "conjunctionErrDays": 0.0000206,
+     "transits": true,
+     "eccentricity": 0.00208,
+     "radiusRe": 1.129
+    },
+    {
+     "name": "TRAPPIST-1 h",
+     "aAu": 0.06189,
+     "periodDays": 18.772866,
+     "periodErrDays": 0.000214,
+     "conjunctionBjd": 2457662.5741486,
+     "conjunctionErrDays": 0.0000913,
+     "transits": true,
+     "eccentricity": 0.00567,
+     "radiusRe": 0.755
+    }
+   ]
+  },
+  "55 Cnc": {
+   "host": "55 Cnc",
+   "glon": 196.79526,
+   "glat": 37.69663,
+   "distancePc": 12.5855,
+   "starRadiusSun": 0.943,
+   "starTeffK": 5172,
+   "starMassSun": 0.905,
+   "spectralType": "G8 V",
+   "planets": [
+    {
+     "name": "55 Cnc e",
+     "aAu": 0.01544,
+     "periodDays": 0.7365474,
+     "periodErrDays": 0.0000013,
+     "conjunctionBjd": 2457063.2096,
+     "conjunctionErrDays": 0.0006,
+     "transits": true,
+     "eccentricity": 0.05,
+     "radiusRe": 1.875
+    },
+    {
+     "name": "55 Cnc b",
+     "aAu": 0.118,
+     "periodDays": 14.651552,
+     "periodErrDays": 0.000036,
+     "conjunctionBjd": 2455495.595,
+     "conjunctionErrDays": 0.012,
+     "transits": false,
+     "eccentricity": 0.0029,
+     "radiusRe": 13.9
+    },
+    {
+     "name": "55 Cnc c",
+     "aAu": 0.247,
+     "periodDays": 44.3936,
+     "periodErrDays": 0.0024,
+     "conjunctionBjd": 2455491.23,
+     "conjunctionErrDays": 0.34,
+     "transits": false,
+     "eccentricity": 0.088,
+     "radiusRe": 8.51
+    },
+    {
+     "name": "55 Cnc f",
+     "aAu": 0.802,
+     "periodDays": 260.58,
+     "periodErrDays": 0.15,
+     "conjunctionBjd": 2455236.4,
+     "conjunctionErrDays": 2.6,
+     "transits": false,
+     "eccentricity": 0.063,
+     "radiusRe": 7.59
+    },
+    {
+     "name": "55 Cnc d",
+     "aAu": 5.6,
+     "periodDays": 4799,
+     "periodErrDays": 4.9,
+     "conjunctionBjd": 2451517.8,
+     "conjunctionErrDays": 20,
+     "transits": false,
+     "eccentricity": 0.0913,
+     "radiusRe": 13
+    }
+   ]
+  },
+  "GJ 1132": {
+   "host": "GJ 1132",
+   "glon": 277.25461,
+   "glat": 7.75911,
+   "distancePc": 12.613,
+   "starRadiusSun": 0.2211,
+   "starTeffK": 3229,
+   "starMassSun": 0.1945,
+   "spectralType": "M4.5 V",
+   "planets": [
+    {
+     "name": "GJ 1132 b",
+     "aAu": 0.0157,
+     "periodDays": 1.62892911,
+     "periodErrDays": 2.9e-7,
+     "conjunctionBjd": 2459280.98988,
+     "conjunctionErrDays": 0.00013,
+     "transits": true,
+     "eccentricity": 0.0118,
+     "radiusRe": 1.19151465
+    },
+    {
+     "name": "GJ 1132 c",
+     "aAu": 0.0476,
+     "periodDays": 8.929,
+     "periodErrDays": 0.0008,
+     "conjunctionBjd": 2457505.94,
+     "conjunctionErrDays": 0.15,
+     "transits": false,
+     "eccentricity": 0.19,
+     "radiusRe": 1.52
+    }
+   ]
+  },
+  "GJ 1214": {
+   "host": "GJ 1214",
+   "glon": 26.16217,
+   "glat": 23.60704,
+   "distancePc": 14.6427,
+   "starRadiusSun": 0.2162,
+   "starTeffK": 3101,
+   "starMassSun": 0.182,
+   "spectralType": "M4 V",
+   "planets": [
+    {
+     "name": "GJ 1214 b",
+     "aAu": 0.01505,
+     "periodDays": 1.580404531,
+     "periodErrDays": 1.8e-8,
+     "conjunctionBjd": 2459639.7812619,
+     "conjunctionErrDays": 0.000009,
+     "transits": true,
+     "eccentricity": 0.0062,
+     "radiusRe": 2.733
+    }
+   ]
+  },
+  "LHS 3844": {
+   "host": "LHS 3844",
+   "glon": 318.24947,
+   "glat": -43.90616,
+   "distancePc": 14.8846,
+   "starRadiusSun": 0.189,
+   "starTeffK": 3080,
+   "starMassSun": 0.151,
+   "spectralType": "M4.5-M5.0",
+   "planets": [
+    {
+     "name": "LHS 3844 b",
+     "aAu": 0.00624,
+     "periodDays": 0.462929709,
+     "periodErrDays": 4.4e-8,
+     "conjunctionBjd": 2460178.83309,
+     "conjunctionErrDays": 0.0001,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 1.286
+    }
+   ]
+  },
+  "LHS 1140": {
+   "host": "LHS 1140",
+   "glon": 115.40542,
+   "glat": -78.05159,
+   "distancePc": 14.9861,
+   "starRadiusSun": 0.2159,
+   "starTeffK": 3096,
+   "starMassSun": 0.1844,
+   "spectralType": "M4.5 V",
+   "planets": [
+    {
+     "name": "LHS 1140 c",
+     "aAu": 0.027,
+     "periodDays": 3.77794,
+     "periodErrDays": 0.000002,
+     "conjunctionBjd": 2458389.2939,
+     "conjunctionErrDays": 0.0002,
+     "transits": true,
+     "eccentricity": 0.05,
+     "radiusRe": 1.272
+    },
+    {
+     "name": "LHS 1140 b",
+     "aAu": 0.0946,
+     "periodDays": 24.73723,
+     "periodErrDays": 0.00002,
+     "conjunctionBjd": 2458399.93,
+     "conjunctionErrDays": 0.0003,
+     "transits": true,
+     "eccentricity": 0.043,
+     "radiusRe": 1.73
+    }
+   ]
+  },
+  "HD 189733": {
+   "host": "HD 189733",
+   "glon": 60.96214,
+   "glat": -3.92282,
+   "distancePc": 19.7638,
+   "starRadiusSun": 0.75,
+   "starTeffK": 5052,
+   "starMassSun": 0.79,
+   "spectralType": "K2 V",
+   "planets": [
+    {
+     "name": "HD 189733 b",
+     "aAu": 0.03126,
+     "periodDays": 2.21857567,
+     "periodErrDays": 1.5e-7,
+     "conjunctionBjd": 2453955.5255511,
+     "conjunctionErrDays": 0.0000088,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 12.66617
+    }
+   ]
+  },
+  "TOI-270": {
+   "host": "TOI-270",
+   "glon": 259.77379,
+   "glat": -42.01396,
+   "distancePc": 22.4793,
+   "starRadiusSun": 0.38,
+   "starTeffK": 3506,
+   "starMassSun": 0.386,
+   "spectralType": "M3 V",
+   "planets": [
+    {
+     "name": "TOI-270 b",
+     "aAu": 0.03197,
+     "periodDays": 3.35992,
+     "periodErrDays": 0.00005,
+     "conjunctionBjd": 2458461.01464,
+     "conjunctionErrDays": 0.00084,
+     "transits": true,
+     "eccentricity": 0.0167,
+     "radiusRe": 1.28
+    },
+    {
+     "name": "TOI-270 c",
+     "aAu": 0.04526,
+     "periodDays": 5.66051,
+     "periodErrDays": 0.00004,
+     "conjunctionBjd": 2458463.08056,
+     "conjunctionErrDays": 0.0004,
+     "transits": true,
+     "eccentricity": 0.0044,
+     "radiusRe": 2.33
+    },
+    {
+     "name": "TOI-270 d",
+     "aAu": 0.0721,
+     "periodDays": 11.38194,
+     "periodErrDays": 0.00011,
+     "conjunctionBjd": 2458469.33823,
+     "conjunctionErrDays": 0.00032,
+     "transits": true,
+     "eccentricity": 0.0066,
+     "radiusRe": 2
+    }
+   ]
+  },
+  "TOI-1452": {
+   "host": "TOI-1452",
+   "glon": 104.66497,
+   "glat": 23.81292,
+   "distancePc": 30.5212,
+   "starRadiusSun": 0.275,
+   "starTeffK": 3185,
+   "starMassSun": 0.249,
+   "spectralType": "M4 +/- 0.5 V",
+   "planets": [
+    {
+     "name": "TOI-1452 b",
+     "aAu": 0.061,
+     "periodDays": 11.06201,
+     "periodErrDays": 0.00002,
+     "conjunctionBjd": 2458691.5321,
+     "conjunctionErrDays": 0.0015,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 1.672
+    }
+   ]
+  },
+  "TOI-700": {
+   "host": "TOI-700",
+   "glon": 275.46822,
+   "glat": -26.88106,
+   "distancePc": 31.1265,
+   "starRadiusSun": 0.4104,
+   "starTeffK": 3459,
+   "starMassSun": 0.417,
+   "spectralType": "M2.5 V",
+   "planets": [
+    {
+     "name": "TOI-700 b",
+     "aAu": 0.0678,
+     "periodDays": 9.97722,
+     "periodErrDays": 0.000012,
+     "conjunctionBjd": 2458880.0994,
+     "conjunctionErrDays": 0.0012,
+     "transits": true,
+     "eccentricity": 0.032,
+     "radiusRe": 0.963
+    },
+    {
+     "name": "TOI-700 c",
+     "aAu": 0.0931,
+     "periodDays": 16.0511039,
+     "periodErrDays": 0.0000056,
+     "conjunctionBjd": 2458821.6219,
+     "conjunctionErrDays": 0.00041,
+     "transits": true,
+     "eccentricity": 0.033,
+     "radiusRe": 2.535
+    },
+    {
+     "name": "TOI-700 e",
+     "aAu": 0.1336,
+     "periodDays": 27.810124,
+     "periodErrDays": 0.000071,
+     "conjunctionBjd": 2460772.46343,
+     "conjunctionErrDays": 0.00024,
+     "transits": true,
+     "eccentricity": 0.059,
+     "radiusRe": 0.919
+    },
+    {
+     "name": "TOI-700 d",
+     "aAu": 0.1642,
+     "periodDays": 37.423457,
+     "periodErrDays": 0.000018,
+     "conjunctionBjd": 2460763.01612,
+     "conjunctionErrDays": 0.00021,
+     "transits": true,
+     "eccentricity": 0.042,
+     "radiusRe": 1.145
+    }
+   ]
+  },
+  "K2-18": {
+   "host": "K2-18",
+   "glon": 254.63265,
+   "glat": 62.57509,
+   "distancePc": 38.0266,
+   "starRadiusSun": 0.411,
+   "starTeffK": 3457,
+   "starMassSun": 0.359,
+   "spectralType": "M2.5 V",
+   "planets": [
+    {
+     "name": "K2-18 c",
+     "aAu": 0.06,
+     "periodDays": 8.962,
+     "periodErrDays": 0.008,
+     "conjunctionBjd": null,
+     "conjunctionErrDays": null,
+     "transits": false,
+     "eccentricity": 0.47,
+     "radiusRe": 2.65
+    },
+    {
+     "name": "K2-18 b",
+     "aAu": 0.1429,
+     "periodDays": 32.939623,
+     "periodErrDays": 0.000095,
+     "conjunctionBjd": 2457264.39144,
+     "conjunctionErrDays": 0.00065,
+     "transits": true,
+     "eccentricity": 0.2,
+     "radiusRe": 2.37
+    }
+   ]
+  },
+  "HD 149026": {
+   "host": "HD 149026",
+   "glon": 61.29711,
+   "glat": 43.28357,
+   "distancePc": 75.8643,
+   "starRadiusSun": 1.41,
+   "starTeffK": 6179,
+   "starMassSun": 1.42,
+   "spectralType": "G0",
+   "planets": [
+    {
+     "name": "HD 149026 b",
+     "aAu": 0.04364,
+     "periodDays": 2.87589,
+     "periodErrDays": 0.000002,
+     "conjunctionBjd": 2457217.64141,
+     "conjunctionErrDays": 0.00011,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 8.29466
+    }
+   ]
+  },
+  "WASP-76": {
+   "host": "WASP-76",
+   "glon": 149.08514,
+   "glat": -57.34698,
+   "distancePc": 194.459,
+   "starRadiusSun": 1.756,
+   "starTeffK": 6329,
+   "starMassSun": 1.458,
+   "spectralType": "F7",
+   "planets": [
+    {
+     "name": "WASP-76 b",
+     "aAu": 0.033,
+     "periodDays": 1.80988198,
+     "periodErrDays": 6.4e-7,
+     "conjunctionBjd": 2458080.626165,
+     "conjunctionErrDays": 0.000418,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 20.78145022
+    }
+   ]
+  },
+  "KELT-9": {
+   "host": "KELT-9",
+   "glon": 78.91292,
+   "glat": 0.24852,
+   "distancePc": 204.455,
+   "starRadiusSun": 2.418,
+   "starTeffK": 9270,
+   "starMassSun": 2.32,
+   "spectralType": "A",
+   "planets": [
+    {
+     "name": "KELT-9 b",
+     "aAu": 0.03368,
+     "periodDays": 1.4811235,
+     "periodErrDays": 0.0000011,
+     "conjunctionBjd": 2457095.68572,
+     "conjunctionErrDays": 0.00014,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 21.70058664
+    }
+   ]
+  },
+  "WASP-39": {
+   "host": "WASP-39",
+   "glon": 344.40348,
+   "glat": 51.37116,
+   "distancePc": 213.982,
+   "starRadiusSun": 0.939,
+   "starTeffK": 5485,
+   "starMassSun": 0.913,
+   "spectralType": null,
+   "planets": [
+    {
+     "name": "WASP-39 b",
+     "aAu": 0.04828,
+     "periodDays": 4.0552941,
+     "periodErrDays": 0.0000034,
+     "conjunctionBjd": 2455342.96913,
+     "conjunctionErrDays": 0.00063,
+     "transits": true,
+     "eccentricity": 0,
+     "radiusRe": 14.336311
+    }
+   ]
+  },
+  "WASP-121": {
+   "host": "WASP-121",
+   "glon": 250.2937,
+   "glat": -13.32514,
+   "distancePc": 269.898,
+   "starRadiusSun": 1.461,
+   "starTeffK": 6628,
+   "starMassSun": 1.33,
+   "spectralType": "F6 V",
+   "planets": [
+    {
+     "name": "WASP-121 b",
+     "aAu": 0.02571,
+     "periodDays": 1.27492504,
+     "periodErrDays": 1.5e-7,
+     "conjunctionBjd": 2460245.02038,
+     "conjunctionErrDays": 0.000015,
+     "transits": true,
+     "eccentricity": 0.0085,
+     "radiusRe": 19.52604438
+    }
+   ]
+  },
+  "WASP-12": {
+   "host": "WASP-12",
+   "glon": 184.08312,
+   "glat": 8.93638,
+   "distancePc": 427.246,
+   "starRadiusSun": 1.69,
+   "starTeffK": 6265,
+   "starMassSun": 1.325,
+   "spectralType": null,
+   "planets": [
+    {
+     "name": "WASP-12 b",
+     "aAu": 0.0234,
+     "periodDays": 1.091418901,
+     "periodErrDays": 1.8e-8,
+     "conjunctionBjd": 2457607.519305,
+     "conjunctionErrDays": 0.000032,
+     "transits": true,
+     "eccentricity": 0.0447,
+     "radiusRe": 22.02564708
+    }
+   ]
+  }
+ }
+}

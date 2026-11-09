@@ -43,6 +43,27 @@ npm test
 - `npm run build`: type-checks, then writes static files to `dist/` (relative paths, so it can be hosted from any folder, e.g. GitHub Pages)
 - `npm test`: Vitest unit tests for the physics, scoring, animation mapping, run average, curated data and name filter
 
+## Space map: what is accurate
+
+The planet picker is a zoomable 3D paper star map with four levels (drag to spin and tilt; + / − or
+ctrl/pinch-wheel to zoom):
+
+| Level | What is real | What is drawn for clarity |
+| --- | --- | --- |
+| Star system | Every planet the archive lists for that star; orbit sizes to scale (semi-major axis, AU); star radius to the same scale where it is big enough to see; relative orbital speeds from the real periods; **where each planet is on its orbit today**, from the measured transit/conjunction time (`pl_tranmid`) and period, with the uncertainty propagated (`σ = √(σT² + (n·σP)²)`); the direction toward Earth (at conjunction the planet is between its star and Earth) | Orbits drawn as circles (eccentricities of the curated planets are small); planets enlarged; small stars enlarged (said on screen); dashed orbit + "?" when the position is unknown (no timing in the archive, e.g. Ross 128 b) or uncertain by more than 45° (e.g. GJ 1002 b); which way round the orbit is viewed |
+| Our star neighbourhood | Each host star's position from its galactic longitude, latitude and distance, converted to 3D (x toward the Galactic Centre, y toward l = 90°, z toward the North Galactic Pole); stalks show real height above/below the galactic plane; distance rings in light-years | Star dot sizes and colours (colour from temperature, approximate) |
+| Milky Way | Sun–Galactic Centre distance 8.178 kpc (GRAVITY Collaboration 2019); the circle around the Sun is the real radius that contains this rank's planets | Spiral arms, bar and disc size are an illustration (stated on screen) |
+| Nearby galaxies | Positions from galactic coordinates and measured distances: LMC 49.59 kpc (Pietrzyński et al. 2019), SMC 62.44 kpc (Graczyk et al. 2020), Andromeda 761 kpc (Li et al. 2021), Sagittarius Dwarf ≈ 26 kpc, Triangulum ≈ 0.85 Mpc (published values span ~0.80–0.95) | Galaxies drawn much bigger than real (stated) |
+
+Positions are top-down onto the galactic plane. Planet surfaces are artwork: no exoplanet in the game
+has been imaged as more than a point of light, and none has known rings, so none are drawn. Labels are
+drawn in a flat layer that follows the 3D anchors each frame, so they never hide behind the map.
+
+The star-system data comes from `src/data/systems.json`, written by `npm run fetch-planets` (every
+planet around the 23 curated host stars, plus galactic coordinates, star radius and temperature,
+transit/conjunction times and their uncertainties). Tests in `src/data/space.test.ts` check the
+coordinate conversion, the Julian date, the orbit phase and its uncertainty cut-off.
+
 ## Refresh the planet data
 
 The game never calls the archive at runtime. `src/data/planets.json` is a committed snapshot.
@@ -244,7 +265,7 @@ a hackathon demo; a real deployment would need server-side verification.
 
 ## Accessibility
 
-- Drag a part anywhere onto the rocket with mouse, touch (140 ms press) or keyboard (Space to pick up, arrows to move, Space to drop, Esc to cancel), with screen-reader announcements. Every part also has an "Add" button, which is the easiest way on phones. The hangar stays in view (sticky) while you scroll the parts.
+- Rockets are built only by drag-and-drop: drag a part card anywhere onto the rocket with a mouse, by touch (press and hold ~140 ms, then drag), or with the keyboard (focus the card's hand button, Space to pick up, any arrow key jumps it onto the rocket, Space to drop, Esc to cancel), with screen-reader announcements. The hangar stays pinned in view (also on phones) so there is always a drop target. Fitted parts can be removed with a button.
 - Visible focus rings, focus moves to each new screen, skip link, ARIA tabs, meters and live regions
 - Text is dark ink on paper-white cards (≈ 14:1) and light text on the purple night (≈ 10:1); the pink used for numbers on paper is ≈ 5:1
 - `prefers-reduced-motion` respected, plus an in-game motion toggle; swaying cards hold still when hovered or focused; "Skip" is always available
@@ -266,7 +287,7 @@ This is a fan-made educational game. It is not affiliated with or endorsed by NA
 scripts/fetch-planets.ts     archive → src/data/planets.json
 scripts/solver.ts            brute-force winnability check
 src/engine/                  physics, evaluation, scoring, animation mapping (pure TS + tests)
-src/data/                    snapshot, curated sets, components, atmosphere notes
+src/data/                    snapshot, systems.json, curated sets, components, atmosphere notes, space-map maths
 src/store/                   Zustand store (persisted run), build resolver
 src/services/                leaderboard (localStorage / Supabase), name filter
 src/paper/                   papercraft kit: 3D diorama, sprites, rocket drawing, launch scenes, kid text, sounds
