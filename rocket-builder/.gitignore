@@ -1,0 +1,8 @@
+# Root repo ignores *.json; re-include this project's JSON files.
+!*.json
+!**/*.json
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.local

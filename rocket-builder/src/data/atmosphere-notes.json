@@ -1,0 +1,37 @@
+{
+  "_comment": "Hand-curated notes on observed atmospheres. Only planets with a published observation are listed; every other planet shows 'Atmosphere: not measured'. Each note cites its source.",
+  "notes": {
+    "K2-18 b": {
+      "note": "JWST detected methane (CH4) and carbon dioxide (CO2).",
+      "source": "Madhusudhan et al. 2023, The Astrophysical Journal Letters 956, L13"
+    },
+    "GJ 1214 b": {
+      "note": "Hazy, high-metallicity atmosphere inferred from JWST thermal phase curve.",
+      "source": "Kempton et al. 2023, Nature 620, 67"
+    },
+    "LHS 3844 b": {
+      "note": "Spitzer thermal phase curve rules out a thick atmosphere; likely bare rock.",
+      "source": "Kreidberg et al. 2019, Nature 573, 87"
+    },
+    "55 Cnc e": {
+      "note": "JWST thermal emission suggests a secondary atmosphere, possibly rich in CO or CO2.",
+      "source": "Hu et al. 2024, Nature 630, 609"
+    },
+    "HD 189733 b": {
+      "note": "JWST detected hydrogen sulfide (H2S), plus water and CO2.",
+      "source": "Fu et al. 2024, Nature 632, 752"
+    },
+    "WASP-39 b": {
+      "note": "JWST detected carbon dioxide (CO2) and sulfur dioxide (SO2, from photochemistry).",
+      "source": "JWST Transiting Exoplanet Community ERS Team 2023, Nature 614, 649; Tsai et al. 2023, Nature 617, 483"
+    },
+    "WASP-121 b": {
+      "note": "Hubble found water emission from a stratosphere (temperature inversion).",
+      "source": "Evans et al. 2017, Nature 548, 58"
+    },
+    "KELT-9 b": {
+      "note": "Ground-based spectroscopy detected atomic iron and titanium vapour.",
+      "source": "Hoeijmakers et al. 2018, Nature 560, 453"
+    }
+  }
+}
