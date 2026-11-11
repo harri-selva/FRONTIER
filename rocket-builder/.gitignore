@@ -6,3 +6,5 @@ dist/
 *.tsbuildinfo
 .env
 .env.local
+ml/.venv/
+__pycache__/

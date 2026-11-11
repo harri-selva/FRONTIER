@@ -14,6 +14,7 @@ import { LaunchScreen } from './screens/LaunchScreen';
 import { OutcomeScreen } from './screens/OutcomeScreen';
 import { SummaryScreen } from './screens/SummaryScreen';
 import { LeaderboardScreen } from './screens/LeaderboardScreen';
+import { StoryScreen } from './screens/StoryScreen';
 
 // 'mission' and 'review' are folded into the planet and builder screens.
 const SCREENS: Record<Screen, () => JSX.Element> = {
@@ -28,6 +29,7 @@ const SCREENS: Record<Screen, () => JSX.Element> = {
   outcome: OutcomeScreen,
   summary: SummaryScreen,
   leaderboard: LeaderboardScreen,
+  story: StoryScreen,
 };
 
 const TITLES: Record<Screen, string> = {
@@ -42,6 +44,7 @@ const TITLES: Record<Screen, string> = {
   outcome: 'Mission report',
   summary: 'Run summary',
   leaderboard: 'High scores',
+  story: 'Secret Project',
 };
 
 export function App() {

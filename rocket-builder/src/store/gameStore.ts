@@ -25,7 +25,8 @@ export type Screen =
   | 'launch'
   | 'outcome'
   | 'summary'
-  | 'leaderboard';
+  | 'leaderboard'
+  | 'story';
 
 /** Slots that hold a single component. Tanks are handled separately. */
 export type SingleSlot = 'payload' | 'engine' | 'drive' | 'comms' | 'pressure' | 'protection';

@@ -44,7 +44,7 @@ export function TopBar() {
   const { reduced } = useReducedMotion();
   const logo = useBrandLogo();
   const run = difficulty ? runs[difficulty] : null;
-  const showRun = !!run && !['title', 'briefing', 'difficulty', 'leaderboard'].includes(screen);
+  const showRun = !!run && !['title', 'briefing', 'difficulty', 'leaderboard', 'story'].includes(screen);
 
   return (
     <header className="gutter relative z-20 pt-3">

@@ -123,6 +123,17 @@ export function TitleScreen() {
           </button>
           <button
             type="button"
+            className="pbtn pbtn-butter relative"
+            onClick={() => {
+              sfx.go();
+              go('story');
+            }}
+          >
+            Secret Project
+            <span className="stamp absolute -right-4 -top-4 bg-paper text-[0.6rem] text-[#c0263f]">Learn the maths</span>
+          </button>
+          <button
+            type="button"
             className="pbtn pbtn-sky"
             onClick={() => {
               sfx.click();

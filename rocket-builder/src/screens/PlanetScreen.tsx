@@ -7,6 +7,8 @@ import { sfx } from '../paper/sfx';
 import { Icon, PlanetSprite } from '../paper/sprites';
 import { PipSays, RealStamp } from '../paper/ui';
 import { useGame } from '../store/gameStore';
+import { SYSTEMS } from '../data/space';
+import { MASS_MODEL, predictMass } from '../ml/massModel';
 
 const fmt = (n: number, dp = 1) => n.toLocaleString('en-US', { maximumFractionDigits: dp, minimumFractionDigits: dp });
 
@@ -25,6 +27,22 @@ function Fact({ icon, big, small, badge }: { icon: Parameters<typeof Icon>[0]['n
   );
 }
 
+/** Pip's AI mass guess: only for planets whose radius was measured (they transit), so the guess isn't circular. */
+function aiRow(p: Planet): [string, string][] {
+  const sys = SYSTEMS[p.host];
+  const sp = sys?.planets.find((x) => x.name === p.name);
+  if (!sys || !sp?.transits || !p.orbitalPeriodDays || !sys.starMassSun || !sys.starTeffK) return [];
+  const ai = predictMass({ radiusEarth: p.radiusRe, periodDays: p.orbitalPeriodDays, eqTempK: p.eqTempK, starMassSun: sys.starMassSun, starTeffK: sys.starTeffK });
+  const heldOut = MASS_MODEL.showcase.some((s) => s.name === p.name);
+  const d = (x: number) => fmt(x, x < 10 ? 2 : 0);
+  return [
+    [
+      'AI mass guess',
+      `${d(ai.massEarth)} × Earth (likely ${d(ai.low)}–${d(ai.high)}). ${heldOut ? 'The AI never saw this planet while learning.' : ''}${ai.outOfExperience ? ' It has seen few planets like this, so treat it with care.' : ''}`,
+    ],
+  ];
+}
+
 function MoreFacts({ p }: { p: Planet }) {
   const atm = atmosphereNote(p.name);
   const massNote =
@@ -34,6 +52,7 @@ function MoreFacts({ p }: { p: Planet }) {
     ['Distance', `${fmt(p.distanceLy, 2)} light-years (${fmt(p.distancePc, 2)} parsecs)`],
     ['Size', `${fmt(p.radiusRe, 2)} × Earth’s width`],
     ['Mass', `${fmt(p.massMe, 2)} × Earth (${massNote})`],
+    ...aiRow(p),
     ['Temperature', `${Math.round(p.eqTempK)} K (equilibrium temperature)`],
     ['Year length', p.orbitalPeriodDays !== null ? `${fmt(p.orbitalPeriodDays, 2)} Earth days` : 'not listed'],
     ['Discovered', `${p.discoveryYear ?? '?'} by ${p.discoveryMethod?.toLowerCase() ?? 'unknown method'}`],
