@@ -25,6 +25,7 @@ import {
 import type { Difficulty } from '../engine';
 import { sfx } from './sfx';
 import { Icon, PlanetSprite } from './sprites';
+import { Pixelate } from '../pixel/Pixelate';
 
 export type MapLevel = 'system' | 'neighbourhood' | 'galaxy' | 'local';
 const LEVELS: MapLevel[] = ['system', 'neighbourhood', 'galaxy', 'local'];
@@ -135,21 +136,24 @@ function LabelLayer({ stage }: { stage: React.RefObject<HTMLDivElement> }) {
 
 function StarDot({ teff, size, label, onClick, highlight, children }: { teff: number | null; size: number; label: string; onClick?: () => void; highlight?: boolean; children?: ReactNode }) {
   const c = starColor(teff);
+  // 16-bit star: a 7×7 pixel cross with a white core and a dark outline.
+  const rows = ['..ooo..', '.ogggo.', 'oggcggo', 'ogcwcgo', 'oggcggo', '.ogggo.', '..ooo..'];
+  const col: Record<string, string> = { o: '#05060f', g: c.glow, c: c.fill, w: '#ffffff' };
   const body = (
-    <span
-      className={`relative block rounded-full ${highlight ? 'anim-twinkle' : ''}`}
-      style={{
-        width: `${size}cqmin`,
-        height: `${size}cqmin`,
-        background: `radial-gradient(circle at 35% 35%, #fff, ${c.fill} 45%, ${c.glow})`,
-        boxShadow: `0 0 0 0.35cqmin #fff8ef, 0 0 ${size * 1.2}cqmin ${c.glow}`,
-      }}
-    />
+    <svg
+      viewBox="0 0 7 7"
+      shapeRendering="crispEdges"
+      className={`block ${highlight ? 'anim-twinkle' : ''}`}
+      style={{ width: `${size * 1.2}cqmin`, height: `${size * 1.2}cqmin` }}
+      aria-hidden="true"
+    >
+      {rows.flatMap((r, y) => [...r].map((ch, x) => (ch === '.' ? null : <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={col[ch]} />)))}
+    </svg>
   );
   return (
     <div className="relative -translate-x-1/2 -translate-y-full">
       {onClick ? (
-        <button type="button" onClick={onClick} aria-label={label} className="block rounded-full">
+        <button type="button" onClick={onClick} aria-label={label} className="block">
           {body}
         </button>
       ) : (
@@ -183,11 +187,19 @@ const SPECKS = Array.from({ length: 46 }, (_, i) => {
 });
 
 function SpiralGalaxy({ size, hue = 'pink', flat = false, detailed = false }: { size: number; hue?: 'pink' | 'lilac' | 'sky'; flat?: boolean; detailed?: boolean }) {
+  return (
+    <Pixelate outline={!flat} style={{ width: `${size}cqmin`, animation: 'galaxy-spin 160s linear infinite' }}>
+      <SpiralGalaxySvg size={size} hue={hue} flat={flat} detailed={detailed} />
+    </Pixelate>
+  );
+}
+
+function SpiralGalaxySvg({ size, hue = 'pink', flat = false, detailed = false }: { size: number; hue?: 'pink' | 'lilac' | 'sky'; flat?: boolean; detailed?: boolean }) {
   const arm = hue === 'pink' ? '#ff9fd3' : hue === 'lilac' ? '#c9b6ff' : '#a8dcff';
   const arm2 = hue === 'pink' ? '#ffd0ea' : hue === 'lilac' ? '#ffb7e1' : '#e6dcff';
   return (
     <svg viewBox="-100 -100 200 200" style={{ width: `${size}cqmin`, height: `${size}cqmin`, display: 'block', overflow: 'visible' }} aria-hidden="true" className={flat ? '' : 'sprite'}>
-      <g style={{ transformOrigin: 'center', animation: 'galaxy-spin 160s linear infinite' }}>
+      <g>
         <circle r="98" fill={arm} opacity=".12" />
         {ARMS.map((d, i) => (
           <g key={i}>
@@ -204,6 +216,14 @@ function SpiralGalaxy({ size, hue = 'pink', flat = false, detailed = false }: { 
 }
 
 function Blob({ size, color }: { size: number; color: string }) {
+  return (
+    <Pixelate style={{ width: `${size}cqmin` }}>
+      <BlobSvg size={size} color={color} />
+    </Pixelate>
+  );
+}
+
+function BlobSvg({ size, color }: { size: number; color: string }) {
   return (
     <svg viewBox="-50 -50 100 100" style={{ width: `${size}cqmin`, height: `${size}cqmin`, display: 'block' }} aria-hidden="true" className="sprite">
       <path filter="url(#pp-edge-thin)" fill={color} d="M-30 -10 C-34 -34 2 -42 18 -28 C40 -30 44 -2 30 12 C34 34 2 40 -12 30 C-38 34 -44 8 -30 -10Z" />
@@ -517,8 +537,8 @@ export function SpaceMap({ difficulty, selected, onSelect }: Props) {
         @keyframes galaxy-spin { to { transform: rotate(-360deg); } }
         @keyframes zoom-from-far { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes zoom-from-near { from { transform: scale(2.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .map-label { position: absolute; left: 0; top: 0; white-space: nowrap; border-radius: 6px; padding: 1px 6px; font: 700 clamp(10px, 1.5vw, 13px)/1.3 var(--font-body); color: #2a1747; background: rgba(255,248,239,.92); box-shadow: 0 2px 0 rgba(20,8,50,.35); will-change: transform; }
-        .map-label[data-strong='1'] { background: #ffe07a; }
+        .map-label { position: absolute; left: 0; top: 0; white-space: nowrap; padding: 4px 6px; font: 400 clamp(7px, 0.9vw, 9px)/1.3 var(--f-title); color: #8a94b8; background: rgba(11,14,42,.88); border: 2px solid #05060f; will-change: transform; }
+        .map-label[data-strong='1'] { color: #ffc94a; border-color: #ffc94a; box-shadow: 2px 2px 0 #05060f; }
       `}</style>
       <div
         ref={stage}
@@ -547,7 +567,7 @@ export function SpaceMap({ difficulty, selected, onSelect }: Props) {
               className="absolute inset-0 rounded-full"
               style={{
                 background: level === 'local' ? 'radial-gradient(circle, rgba(59,37,119,.72), rgba(36,22,79,.6) 70%)' : 'radial-gradient(circle, rgba(70,48,140,.75), rgba(43,26,94,.62) 72%)',
-                boxShadow: '0 0 0 1cqmin #fff8ef, 0 2cqmin 0 1cqmin rgba(10,4,30,.45)',
+                boxShadow: '0 0 0 0.6cqmin #4a5378, 0 0 0 1.2cqmin #05060f',
                 backgroundImage: 'var(--grain)',
                 backgroundBlendMode: 'multiply',
               }}
@@ -583,7 +603,7 @@ export function SpaceMap({ difficulty, selected, onSelect }: Props) {
               onClick={() => go(l)}
               aria-current={l === level ? 'true' : undefined}
               className={`rounded-md px-2 py-1 text-xs font-extrabold transition sm:text-sm ${l === level ? 'bg-butter text-ink' : 'bg-paper/85 text-ink hover:bg-paper'}`}
-              style={{ boxShadow: '0 0 0 2px #fff8ef, 0 3px 0 2px rgba(20,8,50,.3)', transform: `rotate(${i % 2 ? 1.5 : -1.5}deg)` }}
+              style={{ boxShadow: '0 0 0 2px #05060f, 0 3px 0 2px rgba(20,8,50,.3)', transform: `rotate(${i % 2 ? 1.5 : -1.5}deg)` }}
             >
               {LEVEL_NAME[l]}
             </button>
@@ -601,7 +621,7 @@ export function SpaceMap({ difficulty, selected, onSelect }: Props) {
           <Icon name="motion" size={14} /> Drag to spin · buttons to zoom
         </p>
       </div>
-      <p className="mt-3 rounded-2xl bg-night/70 px-4 py-2 text-sm text-[#efe8ff]" aria-live="polite">
+      <p className="mt-3 rounded-2xl bg-night/70 px-4 py-2 text-sm text-[#2b2f73]" aria-live="polite">
         <strong className="text-butter">{LEVEL_NAME[level]}{level === 'system' && sys ? `: ${sys.host}` : ''}.</strong>{' '}
         {level === 'system' ? (sys ? systemCaptionText(sys, selected, reduced) : 'Pick a planet below.') : caption[level]}
       </p>

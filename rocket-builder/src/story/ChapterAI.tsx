@@ -27,7 +27,7 @@ function AiLab() {
   const pred = predictMass({ radiusEarth: r, periodDays: p, eqTempK: t, starMassSun: ms, starTeffK: ts });
   const base = baselineMass(r);
   return (
-    <Widget title="Pip’s AI lab">
+    <Widget title="Mass-model lab">
       <div className="grid gap-x-6 sm:grid-cols-2">
         <Slider id="ai-r" label="Planet size (Earth = 1)" min={0.5} max={22} step={0.05} value={r} onChange={setR} display={`${fmt(r, 2)} ×`} />
         <Slider id="ai-p" label="Planet’s year" min={0.5} max={400} step={0.5} value={p} onChange={setP} display={`${fmt(p, 1)} days`} />
@@ -38,12 +38,12 @@ function AiLab() {
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl bg-paper p-3" aria-live="polite">
           <p className="text-xs font-extrabold uppercase tracking-wider text-ink/60">AI guess</p>
-          <p className="font-display text-3xl font-black text-[#c2307f]">{fmt(pred.massEarth, pred.massEarth < 10 ? 2 : 0)} × Earth</p>
+          <p className="font-display text-3xl font-black text-[#f06aa8]">{fmt(pred.massEarth, pred.massEarth < 10 ? 2 : 0)} × Earth</p>
           <p className="text-sm">Probably between {fmt(pred.low, pred.low < 10 ? 2 : 0)} and {fmt(pred.high, pred.high < 10 ? 2 : 0)} (68% range)</p>
           <p className="mt-1 text-sm">Similar planets it learned from: <strong>{pred.similarTrainingPlanets}</strong></p>
           {pred.outOfExperience && (
-            <p className="mt-1 rounded-lg bg-[#ffe1e6] px-2 py-1 text-sm font-bold text-[#a3203a]">
-              Pip says: “I’ve hardly seen planets like this. Don’t trust my guess!”
+            <p className="mt-1 rounded-lg bg-[#4a1a2c] px-2 py-1 text-sm font-bold text-[#ff8f86]">
+              Model warning: few training planets resemble this input. Treat the prediction as unreliable.
             </p>
           )}
         </div>
@@ -77,7 +77,7 @@ function ReportCard() {
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-xl bg-paper p-3">
           <p className="text-sm font-bold">Neural-network AI</p>
-          <p className="font-display text-2xl font-black text-[#c2307f]">{pct(m.test_model.within_factor_2)}</p>
+          <p className="font-display text-2xl font-black text-[#f06aa8]">{pct(m.test_model.within_factor_2)}</p>
           <p className="text-xs">guesses within 2× of the real mass</p>
         </div>
         <div className="rounded-xl bg-paper p-3">

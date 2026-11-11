@@ -5,6 +5,7 @@ import { bars, FUEL_NAME, kidDesc } from './kid';
 import { FUEL_COLOR } from './RocketSprite';
 import { AstronautSprite, Icon } from './sprites';
 import { Bars, PretendStamp, RealStamp } from './ui';
+import { Pixelate } from '../pixel/Pixelate';
 
 export function FuelSticker({ fuel }: { fuel: keyof typeof FUEL_COLOR }) {
   return (
@@ -171,9 +172,11 @@ export function PartCard({ c, fitted, warning, onRemove, maxMass }: Props) {
           aria-label={`Drag ${c.name} onto your rocket. Press Space to pick up, arrow keys to move, Space to drop.`}
           {...attributes}
         >
-          <PartIcon c={c} />
-          <span className="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-butter text-[13px] shadow-[0_0_0_2px_#fff8ef]" aria-hidden="true">
-            ✋
+          <Pixelate className="w-14" px={2}>
+            <PartIcon c={c} />
+          </Pixelate>
+          <span className="sticker absolute -bottom-2 -right-2" aria-hidden="true">
+            Drag
           </span>
         </button>
         <div className="min-w-0 flex-1">
@@ -192,14 +195,14 @@ export function PartCard({ c, fitted, warning, onRemove, maxMass }: Props) {
           <Bars value={bars.weight(c.mass + (c.category === 'tank' ? c.propellantCapacity : 0), maxMass)} label="Weight" color="#b8a1ff" />
         </div>
       </div>
-      {warning && <p className="mt-2 rounded-lg bg-[#ffe1e6] px-2 py-1 text-xs font-bold text-[#a3203a]">{warning}</p>}
+      {warning && <p className="mt-2 rounded-lg bg-[#4a1a2c] px-2 py-1 text-xs font-bold text-[#ff8f86]">{warning}</p>}
       <div className="mt-auto flex items-center gap-2 pt-3">
         <span className={`flex-1 text-xs font-bold ${on ? 'text-leaf' : 'text-ink/70'}`}>
           {on
             ? c.category === 'tank'
-              ? `${fitted} on your rocket. Drag again for more!`
-              : 'On your rocket!'
-            : 'Drag me onto the rocket ↗'}
+              ? `${fitted} fitted. Drag again to add another.`
+              : 'Fitted.'
+            : 'Drag onto the vehicle ↗'}
         </span>
         {on && onRemove && (
           <button

@@ -6,8 +6,8 @@ import { Icon, StarSprite } from '../paper/sprites';
 import { PipSays } from '../paper/ui';
 import { useGame } from '../store/gameStore';
 
-const CARD_COLOR: Record<Difficulty, string> = { easy: '#74e0c0', medium: '#8fd3ff', hard: '#ff7cc6' };
-const STAR_COLOR: Record<Difficulty, string> = { easy: '#ffe07a', medium: '#ffb48f', hard: '#ff5d73' };
+const CARD_COLOR: Record<Difficulty, string> = { easy: '#5fd3c8', medium: '#39d0e8', hard: '#f06aa8' };
+const STAR_COLOR: Record<Difficulty, string> = { easy: '#ffc94a', medium: '#f28c28', hard: '#e04a3a' };
 
 function Check({ on, icon, text }: { on: boolean; icon: Parameters<typeof Icon>[0]['name']; text: string }) {
   return (
@@ -28,11 +28,10 @@ export function DifficultyScreen() {
 
   return (
     <div className="gutter mx-auto max-w-6xl pt-6">
-      <h1 className="text-center text-4xl font-black text-paper drop-shadow-[0_3px_0_rgba(0,0,0,.35)] sm:text-5xl">Pick your rank</h1>
+      <h1 className="text-center">Select rank</h1>
 
       {/* string the badges hang from */}
       <div className="relative mt-8">
-        <div className="absolute inset-x-[4%] top-0 h-[3px] rounded bg-[#e6dcff] shadow-[0_2px_0_rgba(0,0,0,.25)]" aria-hidden="true" />
         <div className="grid gap-8 pt-2 md:grid-cols-3">
           {DIFFICULTIES.map((d, idx) => {
             const cfg = DIFFICULTY_CONFIG[d];
@@ -40,14 +39,12 @@ export function DifficultyScreen() {
             const n = run.attempts.length;
             const done = n >= ATTEMPTS_PER_RUN;
             return (
-              <div key={d} className="anim-sway" style={{ animationDelay: `${idx * -1.3}s`, animationDuration: `${4.5 + idx * 0.6}s` }}>
-                <div className="mx-auto h-8 w-[3px] bg-[#e6dcff]" aria-hidden="true" />
+              <div key={d} className="flex">
                 <article
-                  className="paper relative flex flex-col px-5 pb-5 pt-4"
-                  style={{ background: CARD_COLOR[d], backgroundImage: 'var(--grain)', backgroundBlendMode: 'multiply' }}
+                  className="paper relative flex w-full flex-col px-5 pb-5 pt-4"
+                  style={{ borderColor: CARD_COLOR[d] }}
                   aria-labelledby={`rank-${d}`}
                 >
-                  <span className="absolute -top-3 left-1/2 h-5 w-5 -translate-x-1/2 rounded-full bg-paper shadow-[0_2px_0_rgba(0,0,0,.3)]" aria-hidden="true" />
                   <div className="flex items-center justify-center gap-1" aria-hidden="true">
                     {Array.from({ length: idx + 1 }, (_, s) => (
                       <span key={s} className="w-12">
@@ -121,7 +118,7 @@ export function DifficultyScreen() {
         </div>
       </div>
       <div className="mx-auto mt-8 max-w-xl">
-        <PipSays mood="happy">New here? Start as a Cadet. Each rank adds a new thing to think about!</PipSays>
+        <PipSays mood="happy">Each rank adds engineering constraints: Pilot adds comms range and thermal protection; Commander adds pressurisation, crew radiation limits and a hard budget.</PipSays>
       </div>
     </div>
   );

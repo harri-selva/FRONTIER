@@ -1,44 +1,49 @@
+import { useEffect, useState } from 'react';
+import { useReducedMotion } from '../components/useReducedMotion';
+import { DATA_COUNT, DATA_RETRIEVED } from '../data/planets';
+import { SYSTEMS } from '../data/space';
 import { ATTEMPTS_PER_RUN } from '../engine';
-import { DATA_COUNT } from '../data/planets';
+import { MASS_MODEL } from '../ml/massModel';
 import { Diorama, Layer } from '../paper/Diorama';
 import { LEVEL } from '../paper/kid';
 import { RocketSprite } from '../paper/RocketSprite';
 import { DEMO_ROCKET, DriftingClouds, HillsAndSun, StarWall } from '../paper/scenery';
 import { sfx } from '../paper/sfx';
-import { PadSprite, PipSprite, PlanetSprite, TowerSprite } from '../paper/sprites';
+import { PadSprite, PlanetSprite, TowerSprite } from '../paper/sprites';
 import { useGame } from '../store/gameStore';
 
-const WORD_1 = 'EXOPLANET';
-const WORD_2 = 'ROCKET BUILDER';
-const CHIP_COLORS = ['#ff7cc6', '#ffe07a', '#74e0c0', '#8fd3ff', '#b8a1ff', '#ffb48f'];
+const BOOT = [
+  'EXOPLANET ROCKET BUILDER v3.0',
+  `NASA EXOPLANET ARCHIVE ....... ${DATA_COUNT.toLocaleString('en-US')} PLANETS (${DATA_RETRIEVED})`,
+  `STAR SYSTEMS CHARTED ......... ${Object.keys(SYSTEMS).length}`,
+  `MASS MODEL ................... ${MASS_MODEL.counts.train.toLocaleString('en-US')} TRAINING PLANETS`,
+  'TSIOLKOVSKY SOLVER ........... OK',
+  'DEEP-SPACE DRIVE ............. FICTIONAL (LABELLED)',
+];
 
-function PaperWord({ text, offset, size }: { text: string; offset: number; size: string }) {
+function BootLog() {
+  const { reduced } = useReducedMotion();
+  const total = BOOT.reduce((n, l) => n + l.length + 6, 0);
+  const [n, setN] = useState(reduced ? total : 0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = window.setInterval(() => setN((k) => (k >= total ? (window.clearInterval(id), k) : k + 3)), 16);
+    return () => window.clearInterval(id);
+  }, [reduced, total]);
+  let left = n;
   return (
-    <span className="inline-flex flex-wrap justify-center gap-[0.12em]" aria-hidden="true">
-      {text.split('').map((ch, i) =>
-        ch === ' ' ? (
-          <span key={i} className="w-[0.35em]" />
-        ) : (
-          <span
-            key={i}
-            className="anim-pop inline-block"
-            style={{ animationDelay: `${(offset + i) * 0.05}s` }}
-          >
-            <span
-              className="inline-block rounded-[0.18em] px-[0.12em] font-display font-black leading-[1.05] text-ink"
-              style={{
-                fontSize: size,
-                background: CHIP_COLORS[(offset + i) % CHIP_COLORS.length],
-                transform: `rotate(${((offset + i) * 37) % 11 - 5}deg)`,
-                boxShadow: '0 0 0 0.09em #fff8ef, 0 0.12em 0 0.09em rgba(20,8,50,.35)',
-              }}
-            >
-              {ch}
-            </span>
-          </span>
-        ),
-      )}
-    </span>
+    <div className="font-title text-[clamp(8px,1vw,11px)] leading-[2.1] text-mint" aria-hidden="true">
+      {BOOT.map((line, i) => {
+        const show = Math.max(0, Math.min(line.length, left));
+        left -= line.length + 6;
+        return show > 0 ? (
+          <div key={i} className={i === 0 ? 'text-gold' : ''}>
+            {line.slice(0, show)}
+          </div>
+        ) : null;
+      })}
+      {left > 0 && <div className="blink text-cream">PRESS START</div>}
+    </div>
   );
 }
 
@@ -51,101 +56,95 @@ export function TitleScreen() {
   const inProgress = difficulty && run && run.attempts.length > 0 && run.attempts.length < ATTEMPTS_PER_RUN;
 
   return (
-    <div className="gutter mx-auto max-w-6xl pt-4">
+    <div className="gutter mx-auto max-w-6xl pt-6">
       <h1 className="sr-only">Exoplanet Rocket Builder</h1>
-      <div className="relative">
-        <Diorama className="h-[min(64vh,560px)] min-h-[380px] rounded-[28px]" camera={{ rx: 4 }}>
-          <StarWall />
-          <Layer x={80} y={64} z={-450} w={20}>
-            <div className="anim-bob" style={{ animationDuration: '9s' }}>
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+        <div className="relative">
+          <Diorama className="h-[min(58vh,520px)] min-h-[340px] border-[3px] border-slate bg-navy0/40" camera={{ rx: 4 }}>
+            <StarWall />
+            <Layer x={80} y={64} z={-450} w={18}>
               <PlanetSprite planet={{ name: 'TRAPPIST-1 e', eqTempK: 250, planetClass: 'rocky' }} />
-            </div>
-          </Layer>
-          <Layer x={16} y={70} z={-500} w={14}>
-            <div className="anim-bob" style={{ animationDuration: '11s' }}>
+            </Layer>
+            <Layer x={16} y={70} z={-500} w={13}>
               <PlanetSprite planet={{ name: 'WASP-39 b', eqTempK: 1166, planetClass: 'giant' }} />
-            </div>
-          </Layer>
-          <HillsAndSun />
-          <DriftingClouds />
-          <Layer x={50} y={5} z={-20} w={36}>
-            <PadSprite />
-          </Layer>
-          <Layer x={62} y={9} z={-30} w={8}>
-            <TowerSprite />
-          </Layer>
-          <Layer x={50} y={9} z={0} w={15}>
-            <div className="anim-bob" style={{ animationDuration: '4s' }}>
+            </Layer>
+            <HillsAndSun />
+            <DriftingClouds />
+            <Layer x={50} y={5} z={-20} w={36}>
+              <PadSprite />
+            </Layer>
+            <Layer x={62} y={9} z={-30} w={8}>
+              <TowerSprite />
+            </Layer>
+            <Layer x={50} y={9} z={0} w={15}>
               <RocketSprite rocket={DEMO_ROCKET} crew={2} />
-            </div>
-          </Layer>
-          <Layer x={24} y={4} z={60} w={13}>
-            <div className="anim-wobble">
-              <PipSprite mood="happy" />
-            </div>
-          </Layer>
-        </Diorama>
-
-        {/* Title sits on the diorama like a paper sign */}
-        <div className="pointer-events-none absolute inset-x-0 top-[6%] flex flex-col items-center gap-2 px-2 text-center">
-          <PaperWord text={WORD_1} offset={0} size="clamp(1.8rem, 7.5vw, 4.6rem)" />
-          <PaperWord text={WORD_2} offset={WORD_1.length} size="clamp(1.25rem, 4.6vw, 2.8rem)" />
+            </Layer>
+          </Diorama>
+          <div className="pointer-events-none absolute inset-x-0 top-6 text-center">
+            <p className="font-title text-[clamp(18px,3.4vw,38px)] leading-[1.35] text-gold" style={{ textShadow: '4px 4px 0 #c13b8a, 8px 8px 0 #05060f' }}>
+              EXOPLANET
+              <br />
+              ROCKET BUILDER
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="paper paper-tilt-r tape relative mx-auto -mt-10 max-w-2xl px-5 pb-6 pt-7 text-center">
-        <p className="text-lg font-medium">
-          Build a paper rocket, fly to a <strong>real planet</strong> around another star, and bring your crew home!
-        </p>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-4">
-          {inProgress && difficulty && (
-            <button
-              type="button"
-              className="pbtn pbtn-mint pbtn-lg"
-              onClick={() => {
-                sfx.go();
-                go('planets');
-              }}
-            >
-              Keep playing ({LEVEL[difficulty].name} {run.attempts.length}/{ATTEMPTS_PER_RUN})
-            </button>
-          )}
-          <button
-            type="button"
-            className={`pbtn pbtn-lg ${inProgress ? 'pbtn-paper' : ''}`}
-            onClick={() => {
-              sfx.go();
-              go(briefingSeen ? 'difficulty' : 'briefing');
-            }}
-            autoFocus
-          >
-            {inProgress ? 'New game' : 'Play!'}
-          </button>
-          <button
-            type="button"
-            className="pbtn pbtn-butter relative"
-            onClick={() => {
-              sfx.go();
-              go('story');
-            }}
-          >
-            Secret Project
-            <span className="stamp absolute -right-4 -top-4 bg-paper text-[0.6rem] text-[#c0263f]">Learn the maths</span>
-          </button>
-          <button
-            type="button"
-            className="pbtn pbtn-sky"
-            onClick={() => {
-              sfx.click();
-              go('leaderboard');
-            }}
-          >
-            High scores
-          </button>
+        <div className="flex flex-col gap-4">
+          <section className="paper px-5 py-4" aria-label="System status">
+            <BootLog />
+          </section>
+          <section className="paper px-5 py-5" aria-label="Main menu">
+            <p className="text-[1.05rem]">
+              Design a launch vehicle, fly it to a confirmed exoplanet from the NASA Exoplanet Archive, and get it home. Real data and real
+              rocket physics; one clearly labelled fictional warp drive.
+            </p>
+            <div className="mt-4 flex flex-col gap-2.5">
+              {inProgress && difficulty && (
+                <button
+                  type="button"
+                  className="pbtn pbtn-butter w-full"
+                  onClick={() => {
+                    sfx.go();
+                    go('planets');
+                  }}
+                >
+                  ▶ Continue {LEVEL[difficulty].name} run ({run.attempts.length}/{ATTEMPTS_PER_RUN})
+                </button>
+              )}
+              <button
+                type="button"
+                className={`pbtn w-full ${inProgress ? 'pbtn-paper' : 'pbtn-butter'}`}
+                onClick={() => {
+                  sfx.go();
+                  go(briefingSeen ? 'difficulty' : 'briefing');
+                }}
+                autoFocus
+              >
+                ▶ {inProgress ? 'New run' : 'Start mission'}
+              </button>
+              <button
+                type="button"
+                className="pbtn w-full"
+                onClick={() => {
+                  sfx.go();
+                  go('story');
+                }}
+              >
+                ▶ Secret Project: learn the maths
+              </button>
+              <button
+                type="button"
+                className="pbtn pbtn-paper w-full"
+                onClick={() => {
+                  sfx.click();
+                  go('leaderboard');
+                }}
+              >
+                High scores
+              </button>
+            </div>
+          </section>
         </div>
-        <p className="mt-4 text-sm text-ink/75">
-          {DATA_COUNT.toLocaleString('en-US')} real planets found by NASA and other astronomers. We picked 24 for you.
-        </p>
       </div>
     </div>
   );

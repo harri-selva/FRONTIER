@@ -166,7 +166,7 @@ export function ChLantern({ onSolved }: ChapterProps) {
           </ul>
         </section>
         {flown.success && (
-          <section className="rounded-3xl border-[6px] border-double border-[#c2307f] bg-paper p-6 text-center" aria-label="Certificate">
+          <section className="rounded-3xl border-[6px] border-double border-[#f06aa8] bg-paper p-6 text-center" aria-label="Certificate">
             <p className="text-sm font-extrabold uppercase tracking-[0.3em] text-ink/60">Certificate</p>
             <p className="mt-2 font-display text-3xl font-black">Secret Agent of Space Maths</p>
             <p className="mt-2">For calculating distances, transits, orbits, gravity and rocket Δv, and flying Operation Lantern to {TARGET}.</p>
@@ -191,7 +191,7 @@ export function ChLantern({ onSolved }: ChapterProps) {
         </p>
         <p>Each tank drops off when empty, so every tank is its own rocket-equation step: Δv = Isp × 9.81 × ln(start ÷ end), added up.</p>
       </Chalkboard>
-      <section className="grid gap-4 rounded-2xl bg-[#f6ead8] p-4 md:grid-cols-[1fr_auto]" aria-label="Design the rocket">
+      <section className="grid gap-4 rounded-2xl bg-[#1e2557] p-4 md:grid-cols-[1fr_auto]" aria-label="Design the rocket">
         <div>
           <p className="text-sm font-bold">Engine</p>
           <div className="mt-1 flex flex-wrap gap-2" role="group" aria-label="Engine">
@@ -225,11 +225,11 @@ export function ChLantern({ onSolved }: ChapterProps) {
                 </tr>
                 <tr>
                   <th className="pr-3 text-left">TWR = {e.thrust.toLocaleString('en-US')} kN ÷ ({fmt(result.wetMassKg / 1000, 1)} t × 9.81)</th>
-                  <td className={`tabular font-bold ${twr >= MIN_TWR ? 'text-leaf' : 'text-[#a3203a]'}`}>{fmt(twr, 2)}</td>
+                  <td className={`tabular font-bold ${twr >= MIN_TWR ? 'text-leaf' : 'text-[#ff8f86]'}`}>{fmt(twr, 2)}</td>
                 </tr>
                 <tr>
                   <th className="pr-3 text-left">Δv (all stages added)</th>
-                  <td className={`tabular font-bold ${dv >= need ? 'text-leaf' : 'text-[#a3203a]'}`}>{fmt(dv, 1)} km/s</td>
+                  <td className={`tabular font-bold ${dv >= need ? 'text-leaf' : 'text-[#ff8f86]'}`}>{fmt(dv, 1)} km/s</td>
                 </tr>
               </tbody>
             </table>
@@ -243,7 +243,7 @@ export function ChLantern({ onSolved }: ChapterProps) {
         </div>
       </section>
 
-      <section className="rounded-2xl border-[3px] border-dashed border-[#c2307f]/50 bg-[#fff1f8] p-4" aria-label="Prediction and launch">
+      <section className="rounded-2xl border-[3px] border-dashed border-[#f06aa8]/50 bg-[#2b1d4f] p-4" aria-label="Prediction and launch">
         <p className="font-display text-xl font-black">Your prediction</p>
         <p className="text-sm">Engineers predict before they launch. Will this rocket get there and back?</p>
         <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Prediction">

@@ -20,6 +20,7 @@ import { MAX_CREW, canLaunch, crewMultiplier, type Category, type Difficulty } f
 import { Diorama, Layer } from '../paper/Diorama';
 import { FUEL_NAME } from '../paper/kid';
 import { PartCard, PartIcon } from '../paper/PartCard';
+import { Pixelate } from '../pixel/Pixelate';
 import { gauges, pipTip, type Gauge } from '../paper/readiness';
 import { RocketSprite, rocketAspect } from '../paper/RocketSprite';
 import { StarWall } from '../paper/scenery';
@@ -36,9 +37,9 @@ interface Tab {
   show: (d: Difficulty) => boolean;
 }
 const TABS: Tab[] = [
-  { cat: 'payload', label: 'Cabin', hint: 'Who or what rides on top.', show: () => true },
+  { cat: 'payload', label: 'Cabin', hint: 'Payload module: crew or instruments.', show: () => true },
   { cat: 'engine', label: 'Engine', hint: 'Lifts you off Earth and the planet.', show: () => true },
-  { cat: 'tank', label: 'Fuel', hint: 'Up to 3 tanks. Match your engine’s fuel colour!', show: () => true },
+  { cat: 'tank', label: 'Fuel', hint: 'Up to 3 drop tanks; the bottom tank burns first. Propellant must match the engine.', show: () => true },
   { cat: 'drive', label: 'Warp', hint: 'Crosses the light-years between stars. Pretend tech.', show: () => true },
   { cat: 'comms', label: 'Radio', hint: 'Talks to Mission Control.', show: () => true },
   { cat: 'protection', label: 'Shield', hint: 'Protects from heat and radiation.', show: (d) => d !== 'easy' },
@@ -86,8 +87,8 @@ function RocketDrop({ children, active }: { children: React.ReactNode; active: b
     >
       {children}
       {active && (
-        <p className="pointer-events-none absolute inset-x-0 top-3 text-center font-display text-lg font-extrabold text-butter drop-shadow-[0_2px_0_rgba(0,0,0,.5)]">
-          Drop it on the rocket!
+        <p className="pointer-events-none absolute inset-x-0 top-3 text-center font-display text-lg font-extrabold text-butter">
+          Release to fit
         </p>
       )}
     </div>
@@ -95,10 +96,10 @@ function RocketDrop({ children, active }: { children: React.ReactNode; active: b
 }
 
 function Bunting() {
-  const colors = ['#ff7cc6', '#ffe07a', '#74e0c0', '#8fd3ff', '#b8a1ff', '#ffb48f'];
+  const colors = ['#c13b8a', '#ffc94a', '#1c8a9e', '#7b46b5', '#f28c28', '#4a5378'];
   return (
     <svg viewBox="0 0 300 40" className="sprite" style={{ width: '100%', height: 'auto' }} aria-hidden="true">
-      <path d="M0 4 Q150 22 300 4" stroke="#fff8ef" strokeWidth="2" fill="none" />
+      <path d="M0 4 Q150 22 300 4" stroke="#8a94b8" strokeWidth="2" fill="none" />
       {Array.from({ length: 12 }, (_, i) => {
         const x = 8 + i * 24;
         const y = 4 + Math.sin((x / 300) * Math.PI) * 16;
@@ -112,20 +113,20 @@ function Crate() {
   return (
     <svg viewBox="0 0 60 50" className="sprite" style={{ width: '100%', height: 'auto' }} aria-hidden="true">
       <g filter="url(#pp-edge)">
-        <rect x="4" y="10" width="52" height="38" rx="3" fill="#ffb48f" />
-        <rect x="2" y="4" width="56" height="10" rx="3" fill="#e98a63" />
+        <rect x="4" y="10" width="52" height="38" rx="3" fill="#b88f55" />
+        <rect x="2" y="4" width="56" height="10" rx="3" fill="#a8452e" />
       </g>
-      <path d="M8 18 L52 44 M52 18 L8 44" stroke="#e98a63" strokeWidth="3" />
-      <circle cx="30" cy="31" r="7" fill="#fff8ef" />
-      <path d="M27 31 L30 26 L33 31 Z" fill="#ff7cc6" />
+      <path d="M8 18 L52 44 M52 18 L8 44" stroke="#a8452e" strokeWidth="3" />
+      <circle cx="30" cy="31" r="7" fill="#ffc94a" />
+      <path d="M27 31 L30 26 L33 31 Z" fill="#a8452e" />
     </svg>
   );
 }
 
 function GaugeChip({ g }: { g: Gauge }) {
   return (
-    <li className={`flex items-center gap-2.5 rounded-2xl px-3 py-2 ${g.ok ? 'bg-[#dff7ee]' : 'bg-[#ffe1e6]'}`}>
-      <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ${g.ok ? 'bg-mint' : 'bg-tomato'} text-ink shadow-[0_0_0_3px_#fff8ef]`}>
+    <li className={`flex items-center gap-2.5 rounded-2xl px-3 py-2 ${g.ok ? 'bg-[#0d2f5a]' : 'bg-[#4a1a2c]'}`}>
+      <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ${g.ok ? 'bg-mint' : 'bg-tomato'} text-ink shadow-[0_0_0_3px_#05060f]`}>
         <Icon name={g.ok ? 'check' : 'cross'} size={18} label={g.ok ? 'OK' : 'Not yet'} />
       </span>
       <div className="min-w-0 flex-1">
@@ -259,7 +260,7 @@ export function BuilderScreen() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="font-semibold text-[#e6dcff]">Destination</p>
-            <h1 className="text-3xl font-black text-paper drop-shadow-[0_3px_0_rgba(0,0,0,.35)] sm:text-4xl">{planet.name}</h1>
+            <h1 className="text-3xl font-black text-cream sm:text-4xl">{planet.name}</h1>
           </div>
           <div className="flex gap-3">
             <button type="button" className="pbtn pbtn-paper pbtn-sm" onClick={() => go('planets')}>
@@ -284,7 +285,7 @@ export function BuilderScreen() {
 
         <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           {/* Hangar: stays in view while you scroll the parts, so drag-and-drop always has a target */}
-          <div className="sticky top-0 z-30 -mx-4 self-start rounded-b-[28px] bg-[#2b1a5e] px-3 pb-3 pt-2 shadow-[0_10px_24px_rgba(10,4,30,.45)] sm:mx-0 sm:rounded-[28px] lg:top-3 lg:bg-transparent lg:p-0 lg:shadow-none">
+          <div className="sticky top-0 z-30 -mx-4 self-start rounded-b-[28px] bg-[#0b0e2a] px-3 pb-3 pt-2 shadow-[0_10px_24px_rgba(10,4,30,.45)] sm:mx-0 sm:rounded-[28px] lg:top-3 lg:bg-transparent lg:p-0 lg:shadow-none">
             <RocketDrop active={!!dragging}>
               <Diorama className="h-[36vh] min-h-[230px] rounded-[24px] lg:h-[min(62vh,580px)] lg:min-h-[360px]" camera={{ rx: 3 }} label={`Your rocket for ${planet.name}`}>
                 <StarWall z={-600} />
@@ -298,10 +299,10 @@ export function BuilderScreen() {
                   <div className="h-[16cqh] rounded-t-[50%] bg-[#5a3a9e]" />
                 </Layer>
                 <Layer x={16} y={6} z={-200} w={8}>
-                  <div className="h-[62cqh] w-full rounded bg-[#ff9fd3]" style={{ boxShadow: '0 0 0 3px #fff8ef' }} />
+                  <div className="h-[62cqh] w-full bg-[#4a5378]" style={{ boxShadow: '0 0 0 3px #05060f', backgroundImage: 'repeating-linear-gradient(0deg,transparent 0 10px,#2b2f73 10px 12px)' }} />
                 </Layer>
                 <Layer x={84} y={6} z={-200} w={8}>
-                  <div className="h-[62cqh] w-full rounded bg-[#ff9fd3]" style={{ boxShadow: '0 0 0 3px #fff8ef' }} />
+                  <div className="h-[62cqh] w-full bg-[#4a5378]" style={{ boxShadow: '0 0 0 3px #05060f', backgroundImage: 'repeating-linear-gradient(0deg,transparent 0 10px,#2b2f73 10px 12px)' }} />
                 </Layer>
                 <Layer x={22} y={4} z={-40} w={13}>
                   <Crate />
@@ -329,7 +330,7 @@ export function BuilderScreen() {
                 >
                   <Icon name="lift" size={22} /> Launch!
                 </button>
-                {!ready && <span className="rounded-md bg-night/80 px-2 py-0.5 text-xs font-bold text-paper">Parts with a red dot first</span>}
+                {!ready && <span className="rounded-md bg-night/80 px-2 py-0.5 text-xs font-bold text-cream">Parts with a red dot first</span>}
               </div>
             </RocketDrop>
           </div>
@@ -340,7 +341,7 @@ export function BuilderScreen() {
               <div className="min-w-0 flex-1">
                 <p className="font-display text-lg font-extrabold">Astronauts</p>
                 <p className="text-sm">
-                  {seats === 0 ? 'Pick a cabin with seats to bring a crew.' : `Bring home = ×${crewMultiplier(true, crew).toFixed(1)} points. Crash = ×${crewMultiplier(false, crew).toFixed(2)}.`}
+                  {seats === 0 ? 'Select a crewed payload module to carry crew.' : `Return = ×${crewMultiplier(true, crew).toFixed(1)} score. Loss = ×${crewMultiplier(false, crew).toFixed(2)}.`}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -361,7 +362,7 @@ export function BuilderScreen() {
             </div>
             <section className="paper px-4 py-4" aria-labelledby="ready-title">
               <h2 id="ready-title" className="text-2xl font-black">
-                Ready to fly?
+                Pre-flight status
               </h2>
               <ul className="mt-3 grid gap-2 sm:grid-cols-2">
                 {gs.map((g) => (
@@ -415,7 +416,7 @@ export function BuilderScreen() {
           </div>
           <div id="parts-panel" role="tabpanel" aria-labelledby={`tab-${activeTab.cat}`} className="mt-4">
             <p className="mb-3 font-semibold text-[#e6dcff]">
-              {activeTab.hint} <span className="text-butter">Grab a card and drop it on the rocket{' '}<span className="sm:hidden">(press and hold first)</span>.</span>
+              {activeTab.hint} <span className="text-butter">Drag a card onto the vehicle{' '}<span className="sm:hidden">(press and hold first)</span>.</span>
             </p>
             <ul key={activeTab.cat} className="grid gap-5 sm:grid-cols-2">
               {ALL_COMPONENTS.filter((c) => c.category === activeTab.cat).map((c, i) => (
@@ -439,7 +440,9 @@ export function BuilderScreen() {
       <DragOverlay dropAnimation={null}>
         {dragging && COMPONENTS_BY_ID[dragging] ? (
           <div className="paper flex items-center gap-2 px-3 py-2 shadow-2xl" style={{ transform: 'rotate(-4deg)' }}>
-            <PartIcon c={COMPONENTS_BY_ID[dragging]!} />
+            <Pixelate className="w-12" px={2}>
+              <PartIcon c={COMPONENTS_BY_ID[dragging]!} />
+            </Pixelate>
             <span className="font-display font-extrabold">{COMPONENTS_BY_ID[dragging]!.name}</span>
           </div>
         ) : null}
@@ -448,7 +451,7 @@ export function BuilderScreen() {
       <PaperModal open={checkOpen} title="Pre-flight check" onClose={() => setCheckOpen(false)}>
         <PipSays mood={result.success ? 'wow' : 'think'} live={false}>
           {result.success
-            ? `Everything checks out for ${planet.name}. Let’s fly!`
+            ? `All active checks pass for ${planet.name}.`
             : 'Some checks are red. You can still launch and see what happens, or go back and fix them.'}
         </PipSays>
         <ul className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -473,7 +476,7 @@ export function BuilderScreen() {
               launch();
             }}
           >
-            3, 2, 1… Go!
+            Commit launch
           </button>
         </div>
       </PaperModal>

@@ -65,22 +65,22 @@ export function gauges(rocket: Rocket, r: MissionResult, difficulty: Difficulty,
   return list;
 }
 
-/** Pip's one piece of advice for the current build. */
+/** The flight computer's single most important note on the current build. */
 export function pipTip(rocket: Rocket, r: MissionResult, issues: BuildIssue[], planet: Planet): { mood: 'happy' | 'think' | 'wow'; text: string } {
-  if (!rocket.payload) return { mood: 'think', text: 'Start with a cabin. Grab one from the parts box and drop it on the rocket!' };
-  if (!rocket.engine) return { mood: 'think', text: 'Now drag an engine onto the rocket. Strong engines lift heavy rockets.' };
-  if (rocket.tanks.length === 0) return { mood: 'think', text: `Drag on a fuel tank with the ${FUEL_NAME[rocket.engine.propellant]} sticker to match your engine.` };
+  if (!rocket.payload) return { mood: 'think', text: 'No payload fitted. Drag a payload module onto the vehicle to begin.' };
+  if (!rocket.engine) return { mood: 'think', text: 'No launch engine. Drag one onto the vehicle: thrust sets lift-off, Isp sets Δv.' };
+  if (rocket.tanks.length === 0) return { mood: 'think', text: `No tankage. Fit a tank carrying ${FUEL_NAME[rocket.engine.propellant]} to match the engine.` };
   if (rocket.tanks.some((t) => t.propellant !== rocket.engine?.propellant))
-    return { mood: 'think', text: `Your tanks don’t match your engine! It needs the ${FUEL_NAME[rocket.engine.propellant]} sticker.` };
-  if (!rocket.drive) return { mood: 'think', text: 'Drop a warp drive on so you can cross the space between stars.' };
-  if (!rocket.comms) return { mood: 'think', text: 'Drop a radio on so Mission Control can talk to you.' };
+    return { mood: 'think', text: `Propellant mismatch: the engine burns ${FUEL_NAME[rocket.engine.propellant]}.` };
+  if (!rocket.drive) return { mood: 'think', text: 'No Deep-Space Drive fitted. Interstellar transit is impossible without one.' };
+  if (!rocket.comms) return { mood: 'think', text: 'No comms system fitted.' };
   const block = issues.find((i) => i.severity === 'block');
   if (block) return { mood: 'think', text: block.message };
   const fail = r.checks.find((c) => c.status === 'fail' && c.id !== 'budget');
   if (fail) {
     const k = kidFailure(fail, planet);
-    return { mood: 'think', text: `Hmm… ${k.oops} ${k.tip}` };
+    return { mood: 'think', text: `Predicted failure: ${k.oops} ${k.tip}` };
   }
-  if (r.checks.find((c) => c.id === 'budget')?.status === 'fail') return { mood: 'think', text: 'It should fly, but you’re over budget, so you lose the money points. Try cheaper parts!' };
-  return { mood: 'wow', text: 'Looks ready to fly! Add astronauts for bonus points, then press Launch.' };
+  if (r.checks.find((c) => c.id === 'budget')?.status === 'fail') return { mood: 'think', text: 'Flight profile is viable but over budget: budget score will be zero.' };
+  return { mood: 'wow', text: 'All active checks nominal. Crew adds a score multiplier and risk. Ready for launch.' };
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useReducedMotion } from '../components/useReducedMotion';
-import { PipSprite, SpeechTail, type Mood } from './sprites';
+import { PipSprite, type Mood } from './sprites';
 import { isMuted, subscribeMuted } from './sfx';
 
 export function RealStamp({ label = 'Real NASA data' }: { label?: string }) {
@@ -37,19 +37,22 @@ export function Bars({ value, label, color = 'var(--pink)' }: { value: number; l
   );
 }
 
-/** Pip with a speech bubble. */
-export function PipSays({ mood = 'happy', children, size = 84, live = true }: { mood?: Mood; children: ReactNode; size?: number; live?: boolean }) {
+/** Flight-computer readout (the old "Pip says" bubble), styled like a FRONTIER dialog. */
+export function PipSays({ mood = 'happy', children, size = 56, live = true }: { mood?: Mood; children: ReactNode; size?: number; live?: boolean }) {
+  const accent = mood === 'sad' ? '#e04a3a' : mood === 'wow' ? '#ffc94a' : '#39d0e8';
   return (
-    <div className="flex items-end gap-2">
-      <div className="anim-bob shrink-0" style={{ width: size }}>
-        <PipSprite mood={mood} />
-      </div>
-      <div className="relative min-w-0 flex-1 pb-6">
-        <div className="paper anim-pop px-4 py-3 text-[0.98rem] font-medium leading-snug" aria-live={live ? 'polite' : undefined}>
-          {children}
+    <div className="flex items-stretch gap-0 border-[3px] bg-navy0" style={{ borderColor: accent, boxShadow: '4px 4px 0 #05060f' }}>
+      <div className="grid shrink-0 place-items-center border-r-[3px] bg-navy1 p-1.5" style={{ borderColor: accent, width: size + 12 }}>
+        <div className="w-full">
+          <PipSprite mood={mood} />
         </div>
-        <div className="absolute bottom-[0.6rem] left-3">
-          <SpeechTail />
+      </div>
+      <div className="min-w-0 flex-1 px-3 py-2">
+        <p className="font-title text-[8px] tracking-wider" style={{ color: accent }}>
+          FLIGHT COMPUTER<span className="blink">_</span>
+        </p>
+        <div className="mt-1 text-[1rem] leading-snug" aria-live={live ? 'polite' : undefined}>
+          {children}
         </div>
       </div>
     </div>
@@ -71,10 +74,12 @@ export function PaperModal({ open, title, onClose, children }: { open: boolean; 
       onClose={onClose}
       onCancel={onClose}
       aria-labelledby="pm-title"
-      className="paper m-auto max-h-[88vh] w-[min(760px,92vw)] overflow-hidden p-0 backdrop:bg-[#24164f]/75"
+      className="m-auto max-h-[88vh] w-[min(760px,92vw)] overflow-hidden border-4 border-cyan bg-navy0 p-0 text-cream backdrop:bg-[#05060f]/75"
+      style={{ boxShadow: 'inset 3px 3px 0 #1e2557, 6px 6px 0 #05060f' }}
     >
-      <div className="flex items-center gap-3 border-b-2 border-dashed border-[#e3d3bd] px-5 py-3">
-        <h2 id="pm-title" className="m-0 flex-1 text-2xl font-extrabold">
+      <div className="flex items-center gap-3 border-b-[3px] border-navy2 px-5 py-3">
+        <span className="h-3 w-3 bg-tomato blink" aria-hidden="true" />
+        <h2 id="pm-title" className="m-0 flex-1 font-title text-[12px] text-cyan">
           {title}
         </h2>
         <button type="button" className="pbtn pbtn-paper pbtn-icon" onClick={onClose} aria-label="Close">
@@ -117,7 +122,7 @@ export const useMuted = (): boolean => useSyncExternalStore(subscribeMuted, isMu
 export function Confetti({ count = 40 }: { count?: number }) {
   const { reduced } = useReducedMotion();
   if (reduced) return null;
-  const colors = ['#ff7cc6', '#ffe07a', '#74e0c0', '#8fd3ff', '#b8a1ff', '#ffb48f'];
+  const colors = ['#f06aa8', '#ffc94a', '#5fd3c8', '#39d0e8', '#a98be0', '#f28c28'];
   return (
     <div className="pointer-events-none fixed inset-0 z-[70] overflow-hidden" aria-hidden="true">
       {Array.from({ length: count }, (_, i) => {
@@ -131,7 +136,7 @@ export function Confetti({ count = 40 }: { count?: number }) {
             style={{
               left: `${left}%`,
               background: colors[i % colors.length],
-              boxShadow: '0 0 0 1.5px #fff8ef',
+              boxShadow: '0 0 0 1.5px #05060f',
               animation: `confetti ${dur}s ${delay}s cubic-bezier(.3,.6,.6,1) both`,
               ['--dx' as string]: `${((i * 53) % 120) - 60}px`,
               ['--rot' as string]: `${360 + ((i * 97) % 540)}deg`,

@@ -34,9 +34,9 @@ function Hub({ open }: { open: (i: number) => void }) {
   const doneCount = FILES.filter((f) => story.done.includes(f.id)).length;
   return (
     <div className="gutter mx-auto max-w-4xl pt-6">
-      <section className="relative rounded-[28px] bg-[#f3d9a4] px-5 pb-6 pt-12 shadow-[0_0_0_5px_#fff8ef,0_10px_0_5px_rgba(20,8,50,.3)]" style={{ backgroundImage: 'var(--grain)', backgroundBlendMode: 'multiply' }} aria-labelledby="story-title">
-        <div className="absolute -top-5 left-8 h-10 w-44 rounded-t-2xl bg-[#f3d9a4]" aria-hidden="true" />
-        <span className="stamp anim-stamp absolute right-6 top-5 border-[3px] text-lg text-[#c0263f]" style={{ background: 'rgba(255,93,115,.12)' }}>
+      <section className="relative rounded-[28px] bg-[#141a3f] px-5 pb-6 pt-12 shadow-[0_0_0_5px_#05060f,0_10px_0_5px_rgba(20,8,50,.3)]" style={{ backgroundImage: 'var(--grain)', backgroundBlendMode: 'multiply' }} aria-labelledby="story-title">
+        <div className="absolute -top-5 left-8 h-10 w-44 rounded-t-2xl bg-[#141a3f]" aria-hidden="true" />
+        <span className="stamp anim-stamp absolute right-6 top-5 border-[3px] text-lg text-[#ff7a6b]" style={{ background: 'rgba(255,93,115,.12)' }}>
           Top secret
         </span>
         <p className="text-sm font-extrabold uppercase tracking-[0.25em] text-ink/60">Secret Project</p>
@@ -72,7 +72,7 @@ function Hub({ open }: { open: (i: number) => void }) {
                     <span className="block text-xs font-extrabold uppercase tracking-wider text-ink/60">File {i + 1}</span>
                     <span className="block font-display text-lg font-extrabold leading-tight">{f.title}</span>
                     <span className="block text-sm">{unlocked ? f.teaser : 'Locked: finish the file before'}</span>
-                    {unlocked && <span className="mt-1 block text-xs font-bold text-[#c2307f]">{f.topic}</span>}
+                    {unlocked && <span className="mt-1 block text-xs font-bold text-[#f06aa8]">{f.topic}</span>}
                   </span>
                 </button>
               </li>
@@ -126,10 +126,10 @@ export function StoryScreen() {
           <button type="button" className="pbtn pbtn-paper pbtn-sm" onClick={() => setOpenIdx(null)}>
             <Icon name="back" size={16} /> All files
           </button>
-          <span className="stamp text-[#c0263f]">Top secret · File {openIdx + 1}</span>
+          <span className="stamp text-[#ff7a6b]">Top secret · File {openIdx + 1}</span>
         </div>
         <header>
-          <p className="text-sm font-bold text-[#c2307f]">{f.topic}</p>
+          <p className="text-sm font-bold text-[#f06aa8]">{f.topic}</p>
           <h1 id="file-title" className="text-4xl font-black">
             {f.title}
           </h1>
@@ -141,12 +141,12 @@ export function StoryScreen() {
           }}
         />
         {f.id !== 'lantern' && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed border-[#e3d3bd] pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed border-[#4a5378] pt-4">
             <span className="flex items-center gap-2 text-sm font-bold">
               <span className="w-9">
                 <PipSprite mood={done ? 'wow' : 'think'} />
               </span>
-              {done ? 'File complete!' : 'Solve the puzzle to unlock the next file.'}
+              {done ? 'File complete.' : 'Solve the puzzle to unlock the next file.'}
             </span>
             {next && (
               <button

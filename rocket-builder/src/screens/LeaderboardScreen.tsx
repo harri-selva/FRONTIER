@@ -41,7 +41,7 @@ export function LeaderboardScreen() {
 
   return (
     <div className="gutter mx-auto max-w-3xl pt-6">
-      <h1 className="text-center text-4xl font-black text-paper drop-shadow-[0_3px_0_rgba(0,0,0,.35)] sm:text-5xl">High scores</h1>
+      <h1 className="text-center text-4xl font-black text-cream sm:text-5xl">High scores</h1>
       <div role="tablist" aria-label="Rank" className="mt-5 flex justify-center gap-3" onKeyDown={onKey}>
         {DIFFICULTIES.map((d) => (
           <button
@@ -63,7 +63,7 @@ export function LeaderboardScreen() {
         ))}
       </div>
       <section id="lb-panel" role="tabpanel" aria-labelledby={`lb-${tab}`} className="paper tape relative mt-6 px-5 pb-5 pt-7">
-        {error && <p className="font-bold text-[#a3203a]">{error}</p>}
+        {error && <p className="font-bold text-[#ff8f86]">{error}</p>}
         {!rows && !error && <p className="font-semibold">Loading…</p>}
         {rows && rows.length === 0 && (
           <PipSays mood="think" live={false}>
@@ -75,17 +75,17 @@ export function LeaderboardScreen() {
             {rows.map((r, i) => (
               <li
                 key={`${r.name}-${r.createdAt}`}
-                className="anim-rise flex items-center gap-3 rounded-2xl bg-[#f6ead8] px-3 py-2"
+                className="anim-rise flex items-center gap-3 rounded-2xl bg-[#1e2557] px-3 py-2"
                 style={{ animationDelay: `${i * 0.04}s` }}
               >
                 <span
                   className="grid h-10 w-10 shrink-0 place-items-center rounded-full font-display text-lg font-black"
-                  style={{ background: RIBBON[i] ?? '#fff8ef', boxShadow: '0 0 0 3px #fff8ef, 0 3px 0 3px rgba(42,23,71,.2)' }}
+                  style={{ background: RIBBON[i] ?? '#fff8ef', boxShadow: '0 0 0 3px #05060f, 0 3px 0 3px rgba(42,23,71,.2)' }}
                 >
                   {i + 1}
                 </span>
                 <span className="min-w-0 flex-1 truncate font-display text-xl font-extrabold">{r.name}</span>
-                <span className="tabular font-display text-2xl font-black text-[#c2307f]">{Math.round(r.average)}</span>
+                <span className="tabular font-display text-2xl font-black text-[#f06aa8]">{Math.round(r.average)}</span>
               </li>
             ))}
           </ol>

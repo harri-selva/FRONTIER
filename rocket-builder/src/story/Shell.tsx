@@ -35,8 +35,8 @@ export function Dialogue({ lines }: { lines: Line[] }) {
           <span className="w-14 shrink-0">
             <Speaker who={l.who} mood={l.mood} />
           </span>
-          <div className={`min-w-0 flex-1 rounded-2xl px-4 py-2.5 font-medium shadow-[0_3px_0_rgba(42,23,71,.15)] ${l.who === 'pip' ? 'bg-[#efe8ff]' : 'bg-[#fff3d6]'}`}>
-            <p className="text-xs font-extrabold uppercase tracking-wider text-ink/60">{l.who === 'pip' ? 'Pip' : 'Director Okafor'}</p>
+          <div className={`min-w-0 flex-1 rounded-2xl px-4 py-2.5 font-medium shadow-[0_3px_0_rgba(42,23,71,.15)] ${l.who === 'pip' ? 'bg-[#2b2f73]' : 'bg-[#3d2a7a]'}`}>
+            <p className="text-xs font-extrabold uppercase tracking-wider text-ink/60">{l.who === 'pip' ? 'Flight computer' : 'Director Okafor'}</p>
             <div>{l.text}</div>
           </div>
         </li>
@@ -48,17 +48,17 @@ export function Dialogue({ lines }: { lines: Line[] }) {
 /** The maths on a chalkboard card. */
 export function Chalkboard({ formula, children }: { formula: ReactNode; children: ReactNode }) {
   return (
-    <section className="rounded-2xl bg-[#2f2160] p-4 text-paper shadow-[0_0_0_4px_#fff8ef,0_6px_0_4px_rgba(42,23,71,.25)]" aria-label="The maths">
+    <section className="rounded-2xl bg-[#0b0e2a] p-4 text-cream shadow-[0_0_0_4px_#05060f,0_6px_0_4px_rgba(42,23,71,.25)]" aria-label="The maths">
       <p className="text-xs font-extrabold uppercase tracking-widest text-butter">The maths</p>
       <p className="mt-1 font-display text-[clamp(1.3rem,3.4vw,2rem)] font-black text-butter">{formula}</p>
-      <div className="mt-2 space-y-1.5 text-[0.98rem] text-[#efe8ff]">{children}</div>
+      <div className="mt-2 space-y-1.5 text-[0.98rem] text-[#2b2f73]">{children}</div>
     </section>
   );
 }
 
 export function RealNote({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-start gap-2 rounded-2xl bg-[#e3f8f0] p-3 text-[0.95rem]">
+    <div className="flex flex-wrap items-start gap-2 rounded-2xl bg-[#0d2f5a] p-3 text-[0.95rem]">
       <RealStamp label="Real data" />
       <div className="min-w-0 flex-1">{children}</div>
     </div>
@@ -67,7 +67,7 @@ export function RealNote({ children }: { children: ReactNode }) {
 
 export function Widget({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-2xl bg-[#f6ead8] p-4" aria-label={title}>
+    <section className="rounded-2xl bg-[#1e2557] p-4" aria-label={title}>
       <p className="text-xs font-extrabold uppercase tracking-widest text-ink/60">Try it</p>
       <h3 className="font-display text-xl font-black">{title}</h3>
       <div className="mt-2">{children}</div>
@@ -82,7 +82,7 @@ export function Slider({ id, label, min, max, step, value, onChange, display }: 
         <label htmlFor={id} className="text-sm font-bold">
           {label}
         </label>
-        <span className="tabular font-display text-lg font-black text-[#c2307f]">{display}</span>
+        <span className="tabular font-display text-lg font-black text-[#f06aa8]">{display}</span>
       </div>
       <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} className="w-full" aria-valuetext={display} />
     </div>

@@ -12,7 +12,7 @@ import { DATA_RETRIEVED, DATA_SOURCE_URL } from '../data/planets';
 import { PretendStamp, RealStamp } from './ui';
 
 function F({ children }: { children: string }) {
-  return <p className="my-1.5 overflow-x-auto rounded-lg bg-[#f1e4d0] px-3 py-1.5 font-mono text-sm text-ink">{children}</p>;
+  return <p className="my-1.5 overflow-x-auto rounded-lg bg-[#0b0e2a] px-3 py-1.5 font-mono text-sm text-ink">{children}</p>;
 }
 
 function Sec({ title, children }: { title: string; children: React.ReactNode }) {

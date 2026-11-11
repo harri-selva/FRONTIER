@@ -31,11 +31,11 @@ const TICKETS = ['Lift-off', 'Space', 'Approach', 'Land/Orbit', 'Home', 'Done'] 
 const SIGN: Partial<Record<CheckId, string>> = {
   driveRange: 'OUT OF RANGE',
   comms: 'SIGNAL LOST',
-  radiation: 'RADIATION!',
+  radiation: 'RADIATION LIMIT',
   dvOrbit: 'OUT OF FUEL',
-  heatPlanet: 'TOO HOT!',
+  heatPlanet: 'THERMAL FAILURE',
   dvReturn: 'OUT OF FUEL',
-  heatReentry: 'TOO HOT!',
+  heatReentry: 'THERMAL FAILURE',
 };
 const CAUSE: Partial<Record<CheckId, SceneProps['cause']>> = {
   driveRange: 'fuel',
@@ -98,7 +98,7 @@ function PressureDial({ load, label }: { load: number | null; label: string }) {
       </svg>
       <div className="text-xs leading-tight">
         <p className="font-display text-sm font-extrabold">Tank pump</p>
-        <p className={over ? 'font-bold text-[#a3203a]' : ''}>{label}</p>
+        <p className={over ? 'font-bold text-[#ff8f86]' : ''}>{label}</p>
       </div>
     </div>
   );
@@ -231,13 +231,13 @@ export function LaunchScreen() {
 
   const narration: Record<SceneName, string> = {
     countdown: count > 0 ? `${count}…` : 'Lift-off!',
-    liftoff: 'Lift-off! Engines at full power!',
-    explode: 'Uh oh…',
-    space: failingNow && elapsed > 2000 ? said?.oops ?? '' : `Warp drive on! Heading to ${planet.name}.`,
+    liftoff: 'T+0: lift-off. Engines at full thrust.',
+    explode: 'Anomaly on the pad.',
+    space: failingNow && elapsed > 2000 ? said?.oops ?? '' : `Deep-Space Drive engaged. Course: ${planet.name}.`,
     arrive: failingNow && elapsed > 3200 ? said?.oops ?? '' : planet.missionType === 'landing' ? `Landing on ${planet.name}…` : `Going into orbit around ${planet.name}…`,
-    home: failingNow && elapsed > 2000 ? said?.oops ?? '' : 'Heading home to Earth!',
-    splash: 'Parachutes out… splashdown!',
-    done: result.success ? 'Mission complete! You made it there and back!' : said?.oops ?? 'Mission over.',
+    home: failingNow && elapsed > 2000 ? said?.oops ?? '' : 'Return leg: course for Earth.',
+    splash: 'Re-entry complete. Parachutes deployed.',
+    done: result.success ? 'Mission complete: vehicle recovered.' : said?.oops ?? 'Mission over.',
   };
 
   const engine = build.engine ? COMPONENTS_BY_ID[build.engine] : undefined;
@@ -280,9 +280,9 @@ export function LaunchScreen() {
                 key={t}
                 aria-current={now ? 'step' : undefined}
                 className={`rounded-md px-2.5 py-1 font-display text-xs font-extrabold transition-all sm:text-sm ${
-                  failedHere ? 'bg-tomato text-ink' : now ? 'scale-110 bg-butter text-ink' : done ? 'bg-mint text-ink' : 'bg-paper/25 text-paper'
+                  failedHere ? 'bg-tomato text-ink' : now ? 'scale-110 bg-butter text-ink' : done ? 'bg-mint text-ink' : 'bg-paper/25 text-cream'
                 }`}
-                style={{ boxShadow: '0 0 0 2.5px #fff8ef', transform: `rotate(${(i % 2 ? 1 : -1) * 2}deg)` }}
+                style={{ boxShadow: '0 0 0 2.5px #05060f', transform: `rotate(${(i % 2 ? 1 : -1) * 2}deg)` }}
               >
                 {failedHere ? '✖ ' : done ? '✔ ' : ''}
                 {t}
@@ -298,8 +298,8 @@ export function LaunchScreen() {
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
             <div key={count} className="anim-flip">
               <div
-                className="grid h-[min(34vw,200px)] w-[min(34vw,200px)] place-items-center rounded-[28px] bg-butter font-display text-[min(22vw,140px)] font-black leading-none text-ink"
-                style={{ boxShadow: '0 0 0 8px #fff8ef, 0 14px 0 8px rgba(20,8,50,.35)', backgroundImage: 'var(--grain)', backgroundBlendMode: 'multiply' }}
+                className="grid h-[min(34vw,200px)] w-[min(34vw,200px)] place-items-center border-4 border-gold bg-navy0 font-title text-[min(16vw,110px)] leading-none text-gold"
+                style={{ boxShadow: 'inset 4px 4px 0 #1e2557, 8px 8px 0 #05060f', textShadow: '6px 6px 0 #c13b8a' }}
                 aria-hidden="true"
               >
                 {count}
@@ -316,10 +316,10 @@ export function LaunchScreen() {
                 <PipSprite mood={result.success ? 'wow' : 'sad'} />
               </div>
               <div className="min-w-0 flex-1">
-              <p className="font-display text-2xl font-black leading-tight">{result.success ? 'You did it!' : said?.oops}</p>
+              <p className="font-display text-2xl font-black leading-tight">{result.success ? 'Mission complete.' : said?.oops}</p>
               {!result.success && said && <p className="mt-1 font-medium">Tip: {said.tip}</p>}
               <button type="button" className="pbtn mt-3" onClick={() => go('outcome')} autoFocus>
-                See my score
+                Mission report
               </button>
               </div>
             </div>

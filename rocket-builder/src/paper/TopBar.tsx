@@ -6,8 +6,8 @@ import { setReducedMotionPref, useReducedMotion } from '../components/useReduced
 import { GrownUps } from './GrownUps';
 import { LEVEL } from './kid';
 import { setMuted, sfx } from './sfx';
-import { Icon, PipSprite } from './sprites';
 import { PaperModal, useMuted } from './ui';
+import { setCrt, useCrt } from '../pixel/crt';
 
 /** Optional permitted logo: public/branding/logo.svg or .png replaces the Pip badge. */
 function useBrandLogo(): string | null {
@@ -46,59 +46,66 @@ export function TopBar() {
   const run = difficulty ? runs[difficulty] : null;
   const showRun = !!run && !['title', 'briefing', 'difficulty', 'leaderboard', 'story'].includes(screen);
 
+  const crumbs: Record<string, string> = {
+    briefing: 'BRIEFING', difficulty: 'SELECT RANK', planets: 'TARGET SELECT', mission: 'TARGET SELECT', builder: 'VEHICLE ASSEMBLY',
+    review: 'VEHICLE ASSEMBLY', outcome: 'MISSION REPORT', summary: 'RUN SUMMARY', leaderboard: 'HIGH SCORES', story: 'SECRET PROJECT',
+  };
+  const crt = useCrt();
   return (
-    <header className="gutter relative z-20 pt-3">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3">
+    <header className="sticky top-0 z-40 border-b-[3px] border-slate bg-navy0" style={{ boxShadow: '0 3px 0 #05060f' }}>
+      <div className="gutter mx-auto flex min-h-[48px] max-w-7xl flex-wrap items-center gap-x-3 gap-y-1 py-1.5">
         <button
           type="button"
           onClick={() => {
             sfx.click();
             go('title');
           }}
-          className="paper paper-tilt-l flex items-center gap-2 px-3 py-1.5"
+          className="flex items-center gap-2"
           aria-label="Exoplanet Rocket Builder: home"
         >
-          <span className="block w-8 sm:w-9">{logo ? <img src={logo} alt="" className="w-9" /> : <PipSprite />}</span>
-          <span className="hidden text-left font-display text-lg font-extrabold leading-tight sm:block">
-            Exoplanet
-            <br />
-            <span className="text-[#c2307f]">Rocket Builder</span>
+          {logo ? <img src={logo} alt="" className="w-7" /> : null}
+          <span className="font-title text-[11px] leading-tight text-gold sm:text-[13px]" style={{ textShadow: '2px 2px 0 #c13b8a' }}>
+            EXOPLANET<span className="hidden sm:inline"> ROCKET BUILDER</span>
           </span>
         </button>
-
+        {crumbs[screen] && (
+          <span className="hidden font-title text-[9px] text-cyan md:inline">
+            <span className="mx-1 text-slate">›</span>
+            {crumbs[screen]}
+          </span>
+        )}
         {showRun && run && difficulty && (
-          <div className="paper paper-tilt-r flex items-center gap-2 px-3 py-1.5 max-sm:order-last max-sm:w-full max-sm:justify-between" aria-label={`${LEVEL[difficulty].name} run: ${run.attempts.length} of ${ATTEMPTS_PER_RUN} tries used`}>
-            <span className="font-display text-sm font-extrabold">{LEVEL[difficulty].name}</span>
-            <span className="tabular text-sm font-semibold sm:hidden" aria-hidden="true">
-              {run.attempts.length}/{ATTEMPTS_PER_RUN} tries
-            </span>
-            <ol className="hidden gap-0.5 sm:flex" aria-hidden="true">
+          <span
+            className="border-2 border-slate bg-navy1 px-2 py-0.5 font-mono text-lg leading-none text-cream"
+            aria-label={`${LEVEL[difficulty].name} run: ${run.attempts.length} of ${ATTEMPTS_PER_RUN} attempts used, average ${runAverage(run.attempts.map((x) => x.score)).toFixed(0)}`}
+          >
+            <span className="font-title text-[8px] text-gold">{LEVEL[difficulty].name.toUpperCase()}</span>{' '}
+            <span aria-hidden="true">
               {Array.from({ length: ATTEMPTS_PER_RUN }, (_, i) => {
                 const a = run.attempts[i];
-                const color = !a ? 'rgba(42,23,71,.18)' : a.success ? '#e2a400' : '#ff5d73';
                 return (
-                  <li key={i} style={{ color }}>
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                      <path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill={a ? color : 'none'} stroke={color} strokeWidth="2" />
-                    </svg>
-                  </li>
+                  <span key={i} style={{ color: !a ? '#4a5378' : a.success ? '#ffc94a' : '#e04a3a' }}>
+                    {a ? '■' : '□'}
+                  </span>
                 );
               })}
-            </ol>
-            <span className="tabular text-sm font-semibold">avg {runAverage(run.attempts.map((x) => x.score)).toFixed(0)}</span>
-          </div>
+            </span>{' '}
+            AVG {runAverage(run.attempts.map((x) => x.score)).toFixed(0)}
+          </span>
         )}
-
-        <nav className="ml-auto flex items-center gap-2 sm:gap-2.5" aria-label="Game menu">
-          <button type="button" className="pbtn pbtn-butter pbtn-sm" onClick={() => setHowOpen(true)}>
-            <Icon name="book" size={20} /> <span className="hidden sm:inline">How it works</span>
+        <nav className="ml-auto flex flex-wrap items-center gap-1.5" aria-label="Game menu">
+          <button type="button" className="pbtn pbtn-sky pbtn-sm" onClick={() => setHowOpen(true)}>
+            How it works
           </button>
-          <button type="button" className="pbtn pbtn-sky pbtn-icon" onClick={() => go('leaderboard')} aria-label="High scores">
-            <Icon name="trophy" />
+          <button type="button" className="pbtn pbtn-paper pbtn-sm" onClick={() => go('leaderboard')}>
+            Scores
+          </button>
+          <button type="button" className={`pbtn pbtn-sm ${crt ? '' : 'pbtn-paper'}`} aria-pressed={crt} onClick={() => setCrt(!crt)} title="CRT scanlines">
+            CRT
           </button>
           <button
             type="button"
-            className="pbtn pbtn-paper pbtn-icon"
+            className={`pbtn pbtn-sm ${muted ? 'pbtn-paper' : ''}`}
             onClick={() => {
               setMuted(!muted);
               if (muted) sfx.pop();
@@ -106,18 +113,16 @@ export function TopBar() {
             aria-pressed={!muted}
             aria-label={muted ? 'Sound off. Turn sound on' : 'Sound on. Turn sound off'}
           >
-            <Icon name={muted ? 'mute' : 'sound'} />
+            {muted ? '♪ OFF' : '♪ ON'}
           </button>
           <button
             type="button"
-            className="pbtn pbtn-paper pbtn-icon"
+            className={`pbtn pbtn-sm ${reduced ? '' : 'pbtn-paper'}`}
             onClick={() => setReducedMotionPref(reduced ? 'off' : 'on')}
             aria-pressed={reduced}
-            aria-label={reduced ? 'Calm motion on. Turn full animation on' : 'Full animation on. Switch to calm motion'}
-            title={reduced ? 'Calm motion' : 'Full animation'}
+            title="Reduce motion"
           >
-            <Icon name="motion" />
-            {reduced && <span className="absolute h-[3px] w-7 rotate-45 rounded bg-ink" aria-hidden="true" />}
+            {reduced ? 'Calm' : 'Motion'}
           </button>
         </nav>
       </div>

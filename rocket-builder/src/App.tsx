@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useReducedMotion } from './components/useReducedMotion';
 import { DATA_RETRIEVED, DATA_SOURCE_URL } from './data/planets';
 import { PaperDefs } from './paper/Diorama';
-import { PaperSky } from './paper/PaperSky';
+import { PixelSky } from './pixel/PixelSky';
+import { useCrt } from './pixel/crt';
 import { TopBar } from './paper/TopBar';
 import { useGame, type Screen } from './store/gameStore';
 import { TitleScreen } from './screens/TitleScreen';
@@ -34,7 +35,7 @@ const SCREENS: Record<Screen, () => JSX.Element> = {
 
 const TITLES: Record<Screen, string> = {
   title: 'Home',
-  briefing: 'Meet Pip',
+  briefing: 'Briefing',
   difficulty: 'Pick your rank',
   planets: 'Pick a planet',
   mission: 'Pick a planet',
@@ -50,6 +51,7 @@ const TITLES: Record<Screen, string> = {
 export function App() {
   useReducedMotion();
   const screen = useGame((s) => s.screen);
+  const crt = useCrt();
   const mainRef = useRef<HTMLElement>(null);
   const Current = SCREENS[screen];
   const fullBleed = screen === 'launch';
@@ -63,7 +65,8 @@ export function App() {
   return (
     <div className="relative flex min-h-full flex-col">
       <PaperDefs />
-      {!fullBleed && <PaperSky />}
+      {!fullBleed && <PixelSky />}
+      {crt && <div className="crt-fx" aria-hidden="true" />}
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[90] focus:rounded-lg focus:bg-butter focus:px-3 focus:py-2 focus:font-bold"
@@ -83,7 +86,7 @@ export function App() {
           <a href={DATA_SOURCE_URL} target="_blank" rel="noreferrer" className="underline">
             NASA Exoplanet Archive
           </a>
-          , retrieved {DATA_RETRIEVED}. A fan-made learning game, not made by NASA.
+          , retrieved {DATA_RETRIEVED}. A fan-made game. Not affiliated with or endorsed by NASA.
         </footer>
       )}
     </div>

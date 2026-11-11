@@ -4,6 +4,8 @@
  */
 import type { CSSProperties } from 'react';
 import type { Planet } from '../engine';
+import { PixelPlanet } from '../pixel/PixelPlanet';
+import { pixelated } from '../pixel/Pixelate';
 
 interface SpriteProps {
   className?: string;
@@ -20,7 +22,7 @@ const svgProps = (vb: string, p: SpriteProps) => ({
   'aria-hidden': p.title ? undefined : true,
 });
 
-export function StarSprite({ color = '#ffe07a', ...p }: SpriteProps & { color?: string }) {
+function StarSpriteSvg({ color = '#ffe07a', ...p }: SpriteProps & { color?: string }) {
   return (
     <svg {...svgProps('0 0 100 100', p)}>
       <path
@@ -29,13 +31,11 @@ export function StarSprite({ color = '#ffe07a', ...p }: SpriteProps & { color?: 
         d="M50 6 L62 37 L95 38 L69 58 L79 91 L50 72 L21 91 L31 58 L5 38 L38 37 Z"
         strokeLinejoin="round"
       />
-      <circle cx="42" cy="44" r="4" fill="#2a1747" opacity=".75" />
-      <circle cx="58" cy="44" r="4" fill="#2a1747" opacity=".75" />
     </svg>
   );
 }
 
-export function TinyStar({ color = '#fff8ef', ...p }: SpriteProps & { color?: string }) {
+function TinyStarSvg({ color = '#fff8ef', ...p }: SpriteProps & { color?: string }) {
   return (
     <svg {...svgProps('0 0 20 20', p)} className={`sprite sprite-flat ${p.className ?? ''}`}>
       <path fill={color} d="M10 0 L12.5 7.5 L20 10 L12.5 12.5 L10 20 L7.5 12.5 L0 10 L7.5 7.5 Z" />
@@ -43,7 +43,7 @@ export function TinyStar({ color = '#fff8ef', ...p }: SpriteProps & { color?: st
   );
 }
 
-export function CloudSprite({ color = '#fff8ef', ...p }: SpriteProps & { color?: string }) {
+function CloudSpriteSvg({ color = '#8a94b8', ...p }: SpriteProps & { color?: string }) {
   return (
     <svg {...svgProps('0 0 200 90', p)}>
       <g filter="url(#pp-edge)" fill={color}>
@@ -52,12 +52,12 @@ export function CloudSprite({ color = '#fff8ef', ...p }: SpriteProps & { color?:
         <circle cx="145" cy="55" r="28" />
         <rect x="35" y="55" width="135" height="30" rx="15" />
       </g>
-      <path d="M50 75 Q100 85 160 74" stroke="#e6d6f7" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <path d="M50 75 Q100 85 160 74" stroke="#4a5378" strokeWidth="5" fill="none" strokeLinecap="round" />
     </svg>
   );
 }
 
-export function HillSprite({ color = '#74e0c0', dark = '#3cae8e', ...p }: SpriteProps & { color?: string; dark?: string }) {
+function HillSpriteSvg({ color = '#74e0c0', dark = '#3cae8e', ...p }: SpriteProps & { color?: string; dark?: string }) {
   return (
     <svg {...svgProps('0 0 400 120', p)}>
       <g filter="url(#pp-edge)">
@@ -69,15 +69,15 @@ export function HillSprite({ color = '#74e0c0', dark = '#3cae8e', ...p }: Sprite
 }
 
 /** Vaporwave sun made of paper strips. */
-export function SunSprite(p: SpriteProps) {
+function SunSpriteSvg(p: SpriteProps) {
   return (
     <svg {...svgProps('0 0 200 200', p)}>
       <g filter="url(#pp-edge)">
-        <circle cx="100" cy="100" r="90" fill="#ff7cc6" />
-        <path d="M10 100 A90 90 0 0 1 190 100 Z" fill="#ffe07a" />
+        <circle cx="100" cy="100" r="90" fill="#c13b8a" />
+        <path d="M10 100 A90 90 0 0 1 190 100 Z" fill="#f28c28" />
         <path d="M22 60 A90 90 0 0 1 178 60 Z" fill="#ffb48f" opacity=".0" />
       </g>
-      <g fill="#24164f">
+      <g fill="#0b0e2a">
         <rect x="0" y="112" width="200" height="6" />
         <rect x="0" y="132" width="200" height="9" />
         <rect x="0" y="155" width="200" height="12" />
@@ -86,11 +86,6 @@ export function SunSprite(p: SpriteProps) {
   );
 }
 
-const hash = (s: string): number => {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
-  return Math.abs(h);
-};
 
 export function planetColors(eqTempK: number): { base: string; band: string; spot: string } {
   if (eqTempK < 250) return { base: '#8fd3ff', band: '#cfeeff', spot: '#5fa8e8' };
@@ -100,173 +95,14 @@ export function planetColors(eqTempK: number): { base: string; band: string; spo
   return { base: '#ff7cc6', band: '#ffe07a', spot: '#e2459f' };
 }
 
-/** Seeded random numbers so each planet always looks the same. */
-function rng(seed: number): () => number {
-  let s = seed || 1;
-  return () => {
-    s = (Math.imul(s ^ (s >>> 15), 2246822507) + 0x6d2b79f5) | 0;
-    s = Math.imul(s ^ (s >>> 13), 3266489909);
-    return ((s ^= s >>> 16) >>> 0) / 4294967296;
-  };
-}
 
-/** A wobbly closed blob around (cx, cy). */
-function blobPath(r: () => number, cx: number, cy: number, rad: number, points = 9): string {
-  const pts = Array.from({ length: points }, (_, i) => {
-    const a = (i / points) * Math.PI * 2;
-    const d = rad * (0.65 + r() * 0.55);
-    return [cx + Math.cos(a) * d, cy + Math.sin(a) * d] as const;
-  });
-  const mid = (i: number) => {
-    const a = pts[i % points]!;
-    const b = pts[(i + 1) % points]!;
-    return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] as const;
-  };
-  let d = `M${mid(0)[0].toFixed(1)} ${mid(0)[1].toFixed(1)}`;
-  for (let i = 1; i <= points; i++) {
-    const c = pts[i % points]!;
-    const m = mid(i);
-    d += ` Q${c[0].toFixed(1)} ${c[1].toFixed(1)} ${m[0].toFixed(1)} ${m[1].toFixed(1)}`;
-  }
-  return d + 'Z';
-}
 
 /**
  * Cut-paper planet. Colours follow the real equilibrium temperature; surface
  * details are an artist's idea (no one has photographed these surfaces).
  * Circle of radius 70 centred in a 200×200 box.
  */
-export function PlanetSprite({ planet, ...p }: SpriteProps & { planet: Pick<Planet, 'name' | 'eqTempK' | 'planetClass'> }) {
-  const c = planetColors(planet.eqTempK);
-  const h = hash(planet.name);
-  const r = rng(h);
-  const giant = planet.planetClass === 'giant';
-  const T = planet.eqTempK;
-  const id = `pl${h}`;
-  const tilt = (h % 30) - 15;
-
-  const craters = giant ? [] : Array.from({ length: 6 }, () => ({ x: 50 + r() * 100, y: 50 + r() * 100, s: 5 + r() * 11 }));
-  const plains = giant ? [] : Array.from({ length: 3 }, () => blobPath(r, 55 + r() * 90, 55 + r() * 90, 16 + r() * 18));
-  const bands = giant
-    ? Array.from({ length: 8 }, (_, i) => {
-        const y = 38 + i * 17 + (r() - 0.5) * 6;
-        const amp = 2 + r() * 4;
-        const th = 6 + r() * 8;
-        const f = 0.04 + r() * 0.04;
-        let top = `M20 ${y}`;
-        let bot = '';
-        for (let x = 20; x <= 180; x += 10) top += ` L${x} ${(y + Math.sin(x * f + i) * amp).toFixed(1)}`;
-        for (let x = 180; x >= 20; x -= 10) bot += ` L${x} ${(y + th + Math.sin(x * f * 1.3 + i * 2) * amp).toFixed(1)}`;
-        return { d: `${top}${bot}Z`, color: i % 3 === 0 ? c.band : i % 3 === 1 ? c.spot : c.base, op: i % 3 === 2 ? 0.5 : 0.75 };
-      })
-    : [];
-  const storm = giant ? { x: 70 + r() * 60, y: 85 + r() * 40, w: 14 + r() * 8 } : null;
-  const cracks =
-    !giant && T > 900
-      ? Array.from({ length: 5 }, () => {
-          let x = 40 + r() * 120;
-          let y = 40 + r() * 120;
-          let d = `M${x.toFixed(1)} ${y.toFixed(1)}`;
-          for (let j = 0; j < 4; j++) {
-            x += (r() - 0.5) * 34;
-            y += (r() - 0.5) * 34;
-            d += ` L${x.toFixed(1)} ${y.toFixed(1)}`;
-          }
-          return d;
-        })
-      : [];
-  const caps = !giant && T < 290;
-  const clouds = !giant && T >= 230 && T < 420;
-
-  return (
-    <svg {...svgProps('0 0 200 200', p)}>
-      <defs>
-        <clipPath id={`${id}-c`}>
-          <circle cx="100" cy="100" r="70" />
-        </clipPath>
-        <mask id={`${id}-m`}>
-          <rect width="200" height="200" fill="#fff" />
-          <circle cx="84" cy="84" r="72" fill="#000" />
-        </mask>
-      </defs>
-      {/* atmosphere glow */}
-      <circle cx="100" cy="100" r="78" fill={c.band} opacity=".22" />
-      <g filter="url(#pp-edge)">
-        <circle cx="100" cy="100" r="70" fill={c.base} />
-      </g>
-      <g clipPath={`url(#${id}-c)`}>
-        <g transform={`rotate(${tilt} 100 100)`}>
-          {bands.map((b, i) => (
-            <path key={i} d={b.d} fill={b.color} opacity={b.op} />
-          ))}
-          {storm && (
-            <g>
-              <ellipse cx={storm.x} cy={storm.y} rx={storm.w} ry={storm.w * 0.55} fill={c.spot} />
-              <ellipse cx={storm.x} cy={storm.y} rx={storm.w * 0.62} ry={storm.w * 0.32} fill={c.band} />
-              <path d={`M${storm.x - storm.w * 0.4} ${storm.y} q${storm.w * 0.4} ${-storm.w * 0.25} ${storm.w * 0.7} 0`} stroke={c.spot} strokeWidth="2" fill="none" />
-            </g>
-          )}
-        </g>
-        {plains.map((d, i) => (
-          <path key={i} d={d} fill={i === 1 ? c.band : c.spot} opacity={i === 1 ? 0.55 : 0.45} />
-        ))}
-        {cracks.map((d, i) => (
-          <g key={i}>
-            <path d={d} stroke="#5a1e3a" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity=".6" />
-            <path d={d} stroke="#ffe07a" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          </g>
-        ))}
-        {craters.map((k, i) => (
-          <g key={i}>
-            <circle cx={k.x} cy={k.y} r={k.s} fill={c.spot} opacity=".55" />
-            <circle cx={k.x + k.s * 0.18} cy={k.y + k.s * 0.18} r={k.s * 0.72} fill="#2a1747" opacity=".14" />
-            <path d={`M${k.x - k.s} ${k.y} A${k.s} ${k.s} 0 0 1 ${k.x} ${k.y - k.s}`} stroke="#fff8ef" strokeWidth="1.6" fill="none" opacity=".6" />
-          </g>
-        ))}
-        {caps && (
-          <>
-            <ellipse cx="100" cy="34" rx="46" ry="14" fill="#fff8ef" opacity=".9" />
-            <ellipse cx="100" cy="168" rx="34" ry="10" fill="#fff8ef" opacity=".8" />
-          </>
-        )}
-        {clouds && (
-          <g stroke="#fff8ef" strokeWidth="5" fill="none" strokeLinecap="round" opacity=".55">
-            <path d={`M${40 + (h % 20)} 80 q24 -10 48 0 t40 -4`} />
-            <path d={`M${70 + (h % 25)} 128 q20 -8 40 0`} />
-          </g>
-        )}
-        {giant && T > 1500 && <circle cx="72" cy="78" r="48" fill="#ffe07a" opacity=".22" />}
-        {/* lit side and shadow side */}
-        <circle cx="72" cy="70" r="26" fill="#fff" opacity=".2" />
-        <circle cx="64" cy="62" r="8" fill="#fff" opacity=".35" />
-        <circle cx="100" cy="100" r="70" fill="#2a1747" opacity=".22" mask={`url(#${id}-m)`} />
-      </g>
-      <circle cx="100" cy="100" r="68.5" fill="none" stroke="#fff8ef" strokeWidth="1.5" opacity=".35" />
-    </svg>
-  );
-}
-
-export function EarthSprite(p: SpriteProps) {
-  return (
-    <svg {...svgProps('0 0 200 200', p)}>
-      <g filter="url(#pp-edge)">
-        <circle cx="100" cy="100" r="80" fill="#5fa8e8" />
-      </g>
-      <clipPath id="earth-clip">
-        <circle cx="100" cy="100" r="80" />
-      </clipPath>
-      <g clipPath="url(#earth-clip)" fill="#74e0c0">
-        <path d="M40 60 Q70 40 95 62 Q90 90 60 95 Q40 85 40 60Z" />
-        <path d="M110 110 Q150 95 165 125 Q150 160 120 150 Q100 135 110 110Z" />
-        <path d="M120 40 Q140 35 150 50 Q138 60 122 55Z" />
-        <rect x="20" y="168" width="160" height="20" fill="#fff8ef" />
-        <rect x="20" y="16" width="160" height="14" fill="#fff8ef" />
-      </g>
-    </svg>
-  );
-}
-
-export function TowerSprite(p: SpriteProps) {
+function TowerSpriteSvg(p: SpriteProps) {
   return (
     <svg {...svgProps('0 0 60 220', p)}>
       <g filter="url(#pp-edge)">
@@ -284,7 +120,7 @@ export function TowerSprite(p: SpriteProps) {
   );
 }
 
-export function PadSprite(p: SpriteProps) {
+function PadSpriteSvg(p: SpriteProps) {
   return (
     <svg {...svgProps('0 0 200 40', p)}>
       <g filter="url(#pp-edge)">
@@ -305,7 +141,7 @@ export function PadSprite(p: SpriteProps) {
 export type Mood = 'happy' | 'wow' | 'sad' | 'think';
 
 /** Pip: the paper robot guide. Original character. */
-export function PipSprite({ mood = 'happy', ...p }: SpriteProps & { mood?: Mood }) {
+function PipSpriteSvg({ mood = 'happy', ...p }: SpriteProps & { mood?: Mood }) {
   const mouth =
     mood === 'happy' ? 'M40 66 Q50 76 60 66' : mood === 'wow' ? '' : mood === 'sad' ? 'M40 72 Q50 64 60 72' : 'M42 70 L58 68';
   return (
@@ -342,7 +178,7 @@ export function PipSprite({ mood = 'happy', ...p }: SpriteProps & { mood?: Mood 
   );
 }
 
-export function AstronautSprite({ color = '#fff8ef', visor = '#8fd3ff', ...p }: SpriteProps & { color?: string; visor?: string }) {
+function AstronautSpriteSvg({ color = '#fff8ef', visor = '#8fd3ff', ...p }: SpriteProps & { color?: string; visor?: string }) {
   return (
     <svg {...svgProps('0 0 60 80', p)}>
       <g filter="url(#pp-edge-thin)">
@@ -356,7 +192,7 @@ export function AstronautSprite({ color = '#fff8ef', visor = '#8fd3ff', ...p }: 
   );
 }
 
-export function FlameSprite(p: SpriteProps) {
+function FlameSpriteSvg(p: SpriteProps) {
   return (
     <svg {...svgProps('0 0 60 120', p)} className={`sprite sprite-flat ${p.className ?? ''}`}>
       <g className="anim-flicker">
@@ -368,7 +204,7 @@ export function FlameSprite(p: SpriteProps) {
   );
 }
 
-export function PuffSprite({ color = '#fff8ef', ...p }: SpriteProps & { color?: string }) {
+function PuffSpriteSvg({ color = '#fff8ef', ...p }: SpriteProps & { color?: string }) {
   return (
     <svg {...svgProps('0 0 100 80', p)}>
       <g filter="url(#pp-edge-thin)" fill={color}>
@@ -380,7 +216,7 @@ export function PuffSprite({ color = '#fff8ef', ...p }: SpriteProps & { color?: 
   );
 }
 
-export function WaveSprite({ color = '#5fa8e8', ...p }: SpriteProps & { color?: string }) {
+function WaveSpriteSvg({ color = '#5fa8e8', ...p }: SpriteProps & { color?: string }) {
   return (
     <svg {...svgProps('0 0 400 60', p)} preserveAspectRatio="none">
       <g filter="url(#pp-edge)">
@@ -393,7 +229,7 @@ export function WaveSprite({ color = '#5fa8e8', ...p }: SpriteProps & { color?: 
   );
 }
 
-export function ParachuteSprite(p: SpriteProps) {
+function ParachuteSpriteSvg(p: SpriteProps) {
   return (
     <svg {...svgProps('0 0 120 110', p)}>
       <g filter="url(#pp-edge)">
@@ -474,4 +310,29 @@ export function Icon({ name, size = 22, color = 'currentColor', label }: { name:
     case 'clock':
       return <svg {...common}><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg>;
   }
+}
+
+/* ---------- 16-bit exports: every vector sprite is rendered as palette-snapped pixel art ---------- */
+export const StarSprite = pixelated(StarSpriteSvg);
+export const TinyStar = pixelated(TinyStarSvg, 2);
+export const CloudSprite = pixelated(CloudSpriteSvg);
+export const HillSprite = pixelated(HillSpriteSvg, 4);
+export const SunSprite = pixelated(SunSpriteSvg, 4);
+export const TowerSprite = pixelated(TowerSpriteSvg);
+export const PadSprite = pixelated(PadSpriteSvg);
+export const PipSprite = pixelated(PipSpriteSvg);
+export const AstronautSprite = pixelated(AstronautSpriteSvg, 2);
+const FlamePixels = pixelated(FlameSpriteSvg, 3);
+export const FlameSprite = (p: SpriteProps) => <FlamePixels {...p} className={`anim-flicker origin-top ${p.className ?? ''}`} />;
+export const PuffSprite = pixelated(PuffSpriteSvg);
+export const WaveSprite = pixelated(WaveSpriteSvg, 4);
+export const ParachuteSprite = pixelated(ParachuteSpriteSvg);
+
+/** FRONTIER-style pixel planet (dithered, shaded, slowly rotating). Look is an artist's impression. */
+export function PlanetSprite({ planet, className, style, title }: SpriteProps & { planet: Pick<Planet, 'name' | 'eqTempK' | 'planetClass'> }) {
+  return <PixelPlanet planet={planet} className={className} style={style} title={title} />;
+}
+
+export function EarthSprite({ className, style, title }: SpriteProps) {
+  return <PixelPlanet planet={{ name: 'Earth', eqTempK: 255, planetClass: 'rocky' }} kind="oceanGreen" className={className} style={style} title={title} />;
 }

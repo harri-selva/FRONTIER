@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Pixelate } from '../pixel/Pixelate';
 import type { PropellantType, Rocket } from '../engine';
 
 export const FUEL_COLOR: Record<PropellantType, string> = {
@@ -65,7 +66,7 @@ function Shade({ y, h, x = BL, w = BW }: { y: number; h: number; x?: number; w?:
 }
 
 /** Draws a detailed paper rocket from whatever parts are fitted. */
-export function RocketSprite({ rocket, crew = 0, ghosts = false, glow = null, lastAdded = null, className = '', title }: Props) {
+function RocketSpriteSvg({ rocket, crew = 0, ghosts = false, glow = null, lastAdded = null, className = '', title }: Props) {
   const back: ReactNode[] = [];
   const parts: ReactNode[] = [];
   const front: ReactNode[] = [];
@@ -247,7 +248,6 @@ export function RocketSprite({ rocket, crew = 0, ghosts = false, glow = null, la
     const color = FUEL_COLOR[t.propellant];
     const dark = FUEL_DARK[t.propellant];
     const ty = y;
-    const stage = rocket.tanks.length - i;
     parts.push(
       <g key={`tank-${i}-${rocket.tanks.length}`} className={i === 0 && lastAdded === t.id ? 'anim-drop' : undefined}>
         <rect x={BL} y={ty} width={BW} height={TANK_H} rx="4" fill={color} filter="url(#pp-edge)" />
@@ -263,9 +263,6 @@ export function RocketSprite({ rocket, crew = 0, ghosts = false, glow = null, la
         <rect x={BR - 12} y={ty + 16} width="4" height="8" rx="2" fill={dark} />
         {/* stage number decal */}
         <circle cx={BL + 14} cy={ty + 18} r="5.5" fill="#fff8ef" />
-        <text x={BL + 14} y={ty + 20.6} textAnchor="middle" fontSize="7.5" fontWeight="800" fontFamily="Grandstander, system-ui" fill="#2a1747">
-          {stage}
-        </text>
         <Shade y={ty} h={TANK_H} />
       </g>,
     );
@@ -353,4 +350,13 @@ function Ghost({ d }: { d: string }) {
 export function rocketAspect(rocket: Rocket): number {
   const h = 8 + CAP_H + (rocket.protection ? SHIELD_H : 0) + DRIVE_H + Math.max(1, rocket.tanks.length) * TANK_H + ENG_H + 16 + 4;
   return h / W;
+}
+
+/** The rocket as 16-bit pixel art. A part being added replays a short drop-in. */
+export function RocketSprite(props: Props) {
+  return (
+    <Pixelate key={props.lastAdded ?? 'r'} className={`${props.lastAdded ? 'anim-pop' : ''} ${props.className ?? ''}`} label={props.title}>
+      <RocketSpriteSvg {...props} className="" title={undefined} />
+    </Pixelate>
+  );
 }

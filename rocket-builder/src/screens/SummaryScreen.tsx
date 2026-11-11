@@ -64,12 +64,12 @@ export function SummaryScreen() {
           <PipSprite mood={wins >= 5 ? 'wow' : 'happy'} />
         </div>
         <h1 id="sum-title" className="mt-2 text-4xl font-black">
-          {LEVEL[difficulty].name} {complete ? 'run complete!' : 'run so far'}
+          {LEVEL[difficulty].name} {complete ? 'run complete' : 'run in progress'}
         </h1>
         <p className="mt-1 text-lg">
           {wins} of {run.attempts.length} rockets made it home
         </p>
-        <p className="mt-3 font-display text-7xl font-black text-[#c2307f]">
+        <p className="mt-3 font-display text-7xl font-black text-[#f06aa8]">
           <CountUp to={Math.round(avg)} />
         </p>
         <p className="font-semibold">average score</p>
@@ -100,7 +100,7 @@ export function SummaryScreen() {
                 maxLength={MAX_NAME_LENGTH}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="nickname"
-                className="min-w-0 flex-1 rounded-2xl border-0 bg-[#f6ead8] px-4 py-3 font-display text-xl font-bold shadow-[inset_0_3px_0_rgba(42,23,71,.15)]"
+                className="min-w-0 flex-1 rounded-2xl border-0 bg-[#1e2557] px-4 py-3 font-display text-xl font-bold shadow-[inset_0_3px_0_rgba(42,23,71,.15)]"
                 aria-describedby="name-help name-error"
                 autoFocus
               />
@@ -111,12 +111,12 @@ export function SummaryScreen() {
             <p id="name-help" className="mt-1 text-sm text-ink/75">
               Up to {MAX_NAME_LENGTH} letters or numbers. Use a nickname, not your full name.
             </p>
-            <p id="name-error" className="mt-1 font-bold text-[#a3203a]" role="alert">
+            <p id="name-error" className="mt-1 font-bold text-[#ff8f86]" role="alert">
               {error}
             </p>
           </form>
         )}
-        {run.submitted && <p className="mt-5 font-bold text-leaf">Score saved!</p>}
+        {run.submitted && <p className="mt-5 font-bold text-leaf">Score saved.</p>}
 
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {!complete && (

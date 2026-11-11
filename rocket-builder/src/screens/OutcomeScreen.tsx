@@ -8,7 +8,7 @@ import { Icon, PlanetSprite, StarSprite } from '../paper/sprites';
 import { Confetti, CountUp, PipSays } from '../paper/ui';
 import { useGame } from '../store/gameStore';
 
-const PHASE_NAME = { launch: 'Lift-off', transit: 'Space trip', planet: 'At the planet', return: 'Trip home' } as const;
+const PHASE_NAME = { launch: 'Ascent', transit: 'Transit', planet: 'Target ops', return: 'Return' } as const;
 
 function ScoreStrip({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
   return (
@@ -71,10 +71,10 @@ export function OutcomeScreen() {
       <div className="grid gap-6 md:grid-cols-[1.1fr_1fr]">
         <section className="paper paper-tilt-l tape relative px-6 pb-6 pt-8 text-center" aria-labelledby="report-title">
           <p className="font-semibold text-ink/75">
-            Try {n} of {ATTEMPTS_PER_RUN} · {planet.name}
+            Attempt {n}/{ATTEMPTS_PER_RUN} · {planet.name}
           </p>
           <h1 id="report-title" className="mt-1 text-4xl font-black sm:text-5xl">
-            {result.success ? 'Mission complete!' : said?.oops}
+            {result.success ? 'Mission complete' : said?.oops}
           </h1>
           <div className="mx-auto mt-4 flex max-w-xs justify-center gap-2" role="img" aria-label={`${stars} out of 3 stars`}>
             {[1, 2, 3].map((i) => (
@@ -83,14 +83,14 @@ export function OutcomeScreen() {
               </span>
             ))}
           </div>
-          <p className="mt-3 font-display text-6xl font-black text-[#c2307f]">
+          <p className="mt-3 font-display text-6xl font-black text-[#f06aa8]">
             <CountUp to={s.total} />
           </p>
           <p className="font-semibold">points{s.multiplier !== 1 ? ` (crew bonus ×${s.multiplier.toFixed(2)})` : ''}</p>
           <div className="mt-4 text-left">
             {result.success ? (
               <PipSays mood="wow" size={64}>
-                You flew to {planet.name} and back! Try a cheaper or lighter rocket to earn even more points.
+                Round trip to {planet.name} confirmed. A cheaper or tighter-margin design scores higher.
               </PipSays>
             ) : (
               <PipSays mood="think" size={64}>
@@ -103,14 +103,14 @@ export function OutcomeScreen() {
         <div className="flex flex-col gap-5">
           <section className="paper paper-tilt-r px-5 py-4" aria-labelledby="pts-title">
             <h2 id="pts-title" className="text-2xl font-black">
-              Where your points came from
+              Score breakdown
             </h2>
             <ul className="mt-3 space-y-2.5">
-              <ScoreStrip label="How far you got" value={s.mission} max={400} color="#ff7cc6" />
-              <ScoreStrip label="Smart fuel and thrust" value={s.performance} max={200} color="#8fd3ff" />
-              <ScoreStrip label="Money saved" value={s.budget} max={200} color="#ffe07a" />
-              <ScoreStrip label="Good part choices" value={s.suitability} max={100} color="#74e0c0" />
-              <ScoreStrip label="Fuel balance" value={s.resources} max={100} color="#b8a1ff" />
+              <ScoreStrip label="Mission progress" value={s.mission} max={400} color="#f06aa8" />
+              <ScoreStrip label="Propulsion efficiency" value={s.performance} max={200} color="#39d0e8" />
+              <ScoreStrip label="Budget margin" value={s.budget} max={200} color="#ffc94a" />
+              <ScoreStrip label="Component suitability" value={s.suitability} max={100} color="#5fd3c8" />
+              <ScoreStrip label="Propellant margin" value={s.resources} max={100} color="#a98be0" />
             </ul>
           </section>
 
@@ -127,12 +127,12 @@ export function OutcomeScreen() {
               })}
             </ol>
             <button type="button" className="mt-3 text-sm font-bold underline decoration-2 underline-offset-4" aria-expanded={science} onClick={() => setScience(!science)}>
-              {science ? 'Hide the science' : 'See the science (all the numbers)'}
+              {science ? 'Hide telemetry' : 'Full telemetry'}
             </button>
             {science && (
               <ul className="mt-2 space-y-1.5 text-sm">
                 {result.checks.map((c) => (
-                  <li key={c.id} className={`rounded-lg px-2 py-1.5 ${c.status === 'fail' ? 'bg-[#ffe1e6]' : c.status === 'auto' ? 'bg-ink/5' : 'bg-[#dff7ee]'}`}>
+                  <li key={c.id} className={`rounded-lg px-2 py-1.5 ${c.status === 'fail' ? 'bg-[#4a1a2c]' : c.status === 'auto' ? 'bg-ink/5' : 'bg-[#0d2f5a]'}`}>
                     <p className="font-bold">
                       {c.status === 'pass' ? '✔' : c.status === 'fail' ? '✖' : '○'} {c.label}: <span className="tabular">{c.actual}</span>{' '}
                       <span className="font-normal">({c.required})</span>
@@ -157,7 +157,7 @@ export function OutcomeScreen() {
                   go('builder');
                 }}
               >
-                Fix my rocket
+                Revise vehicle
               </button>
             )}
             <button
@@ -169,10 +169,10 @@ export function OutcomeScreen() {
               }}
               autoFocus
             >
-              {done ? 'See my results' : 'Next try'}
+              {done ? 'Run summary' : 'Next attempt'}
             </button>
           </div>
-          {!done && <p className="text-right text-xs text-[#e6dcff]">Both use your next try when you launch. Your rocket is kept.</p>}
+          {!done && <p className="text-right text-xs text-slatelight">Either option uses the next attempt on launch. The current design is retained.</p>}
         </div>
       </div>
     </div>

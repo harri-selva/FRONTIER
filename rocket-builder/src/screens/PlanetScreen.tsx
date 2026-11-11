@@ -14,8 +14,8 @@ const fmt = (n: number, dp = 1) => n.toLocaleString('en-US', { maximumFractionDi
 
 function Fact({ icon, big, small, badge }: { icon: Parameters<typeof Icon>[0]['name']; big: string; small: string; badge?: React.ReactNode }) {
   return (
-    <div className="flex min-w-0 items-start gap-3 rounded-2xl bg-[#f6ead8] p-3">
-      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-butter shadow-[0_0_0_3px_#fff8ef,0_4px_0_3px_rgba(42,23,71,.2)]">
+    <div className="flex min-w-0 items-start gap-3 rounded-2xl bg-[#1e2557] p-3">
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-butter shadow-[0_0_0_3px_#05060f,0_4px_0_3px_rgba(42,23,71,.2)]">
         <Icon name={icon} size={22} />
       </span>
       <div className="min-w-0">
@@ -27,7 +27,7 @@ function Fact({ icon, big, small, badge }: { icon: Parameters<typeof Icon>[0]['n
   );
 }
 
-/** Pip's AI mass guess: only for planets whose radius was measured (they transit), so the guess isn't circular. */
+/** The ML model's mass estimate: only for planets whose radius was measured (they transit), so the guess isn't circular. */
 function aiRow(p: Planet): [string, string][] {
   const sys = SYSTEMS[p.host];
   const sp = sys?.planets.find((x) => x.name === p.name);
@@ -59,7 +59,7 @@ function MoreFacts({ p }: { p: Planet }) {
     ['Air', atm ? `${atm.note} (${atm.source})` : 'Not measured yet'],
   ];
   return (
-    <div className="mt-3 rounded-2xl border-2 border-dashed border-[#e3d3bd] p-3">
+    <div className="mt-3 rounded-2xl border-2 border-dashed border-[#4a5378] p-3">
       <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
         {rows.map(([k, v]) => (
           <div key={k} className="contents">
@@ -115,7 +115,7 @@ export function PlanetScreen() {
   return (
     <div className="gutter mx-auto max-w-6xl pt-4">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <h1 className="text-4xl font-black text-paper drop-shadow-[0_3px_0_rgba(0,0,0,.35)]">Pick a planet</h1>
+        <h1 className="text-4xl font-black text-cream">Pick a planet</h1>
         <p className="font-semibold text-[#e6dcff]">
           {LEVEL[difficulty].name} planets · {idx + 1} of {n}
         </p>
@@ -136,7 +136,7 @@ export function PlanetScreen() {
               onClick={() => goTo(i)}
               aria-pressed={i === idx}
               className={`flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-sm font-bold transition ${i === idx ? 'bg-butter text-ink' : 'bg-paper/85 text-ink hover:bg-paper'}`}
-              style={{ boxShadow: '0 0 0 2.5px #fff8ef, 0 4px 0 2.5px rgba(20,8,50,.3)' }}
+              style={{ boxShadow: '0 0 0 2.5px #05060f, 0 4px 0 2.5px rgba(20,8,50,.3)' }}
             >
               <span className="w-7"><PlanetSprite planet={pl} /></span>
               {pl.name}

@@ -46,16 +46,17 @@ function useCamera(from: Camera, to: Camera, delayMs = 60): Camera {
   return cam;
 }
 
-function Sign({ text, color = '#ff7cc6', style }: { text: string; color?: string; style?: CSSProperties }) {
+/** Status banner during the launch film, in the FRONTIER dialog style. */
+function Sign({ text, color = '#f06aa8', style }: { text: string; color?: string; style?: CSSProperties }) {
   return (
-    <div className="pointer-events-none absolute left-1/2 top-[18%] z-10 -translate-x-1/2" style={style}>
+    <div className="pointer-events-none absolute left-1/2 top-[16%] z-10 -translate-x-1/2" style={style}>
       <div className="anim-stamp">
-      <div
-        className="rounded-[18px] px-6 py-3 text-center font-display text-[clamp(1.6rem,6vw,3.4rem)] font-black leading-none text-ink"
-        style={{ background: color, boxShadow: '0 0 0 6px #fff8ef, 0 10px 0 6px rgba(20,8,50,.35)', backgroundImage: 'var(--grain)', backgroundBlendMode: 'multiply' }}
-      >
-        {text}
-      </div>
+        <div
+          className="border-4 bg-navy0 px-5 py-3 text-center font-title text-[clamp(14px,3vw,26px)] leading-snug"
+          style={{ borderColor: color, color, boxShadow: 'inset 3px 3px 0 #1e2557, 6px 6px 0 #05060f', textShadow: '3px 3px 0 #05060f' }}
+        >
+          {text}
+        </div>
       </div>
     </div>
   );
@@ -110,7 +111,7 @@ export function PadScene({ rocket, crew, reduced, phase }: SceneProps & { phase:
         [25, 205, 80, 34],
       ].map(([x, y, z, w], i) => (
         <Layer key={i} x={x!} y={y!} z={z} w={w!}>
-          <CloudSprite color={i % 2 ? '#ffe0f1' : '#fff8ef'} />
+          <CloudSprite color={i % 2 ? '#4a5378' : '#8a94b8'} />
         </Layer>
       ))}
       <Layer x={50} y={6} z={-20} w={32}>
@@ -151,7 +152,7 @@ export function PadScene({ rocket, crew, reduced, phase }: SceneProps & { phase:
                   height: `${3 + (i % 2) * 2}cqmin`,
                   background: c,
                   clipPath: 'polygon(50% 0, 100% 100%, 0 80%)',
-                  boxShadow: '0 0 0 2px #fff8ef',
+                  boxShadow: '0 0 0 2px #05060f',
                   animation: reduced ? undefined : `shard 1.4s cubic-bezier(.2,.8,.4,1) forwards`,
                   ['--dx' as string]: `${Math.cos((i / shards.length) * Math.PI * 2) * (18 + (i % 4) * 6)}cqmin`,
                   ['--dy' as string]: `${Math.sin((i / shards.length) * Math.PI * 2) * (14 + (i % 3) * 6) - 10}cqmin`,
@@ -175,7 +176,7 @@ export function PadScene({ rocket, crew, reduced, phase }: SceneProps & { phase:
         </Layer>
       )}
       <style>{`@keyframes lift-off { from { transform: translateY(0); } to { transform: translateY(-150cqh); } }`}</style>
-      {burst && <Sign text="KA-BOOM!" color="#ffb48f" />}
+      {burst && <Sign text="VEHICLE LOST" color="#e04a3a" />}
     </Diorama>
   );
 }
@@ -254,8 +255,8 @@ export function SpaceScene({ rocket, crew, planet, reduced, failing, cause, sign
       {stalled && cause === 'signal' && <div className="static-veil absolute inset-0" aria-hidden="true" />}
       {stalled && (
         <Sign
-          text={sign ?? (cause === 'signal' ? 'SIGNAL LOST' : cause === 'radiation' ? 'RADIATION!' : cause === 'heat' ? 'TOO HOT!' : 'OUT OF FUEL')}
-          color={cause === 'signal' ? '#8fd3ff' : '#ffb48f'}
+          text={sign ?? (cause === 'signal' ? 'SIGNAL LOST' : cause === 'radiation' ? 'RADIATION!' : cause === 'heat' ? 'THERMAL FAILURE' : 'OUT OF FUEL')}
+          color={cause === 'signal' ? '#39d0e8' : '#f28c28'}
         />
       )}
       <style>{`
@@ -294,7 +295,7 @@ export function ArriveScene({ rocket, crew, planet, reduced, failing, cause, sig
           {/* the planet as a curved horizon */}
           <Layer x={50} y={0} z={-80} w={200}>
             {/* shift down so only the top of the planet shows, as a horizon at ~26% height */}
-            <div style={{ transform: 'translateY(calc(170cqmin - 26cqh))' }}>
+            <div style={{ transform: 'translateY(calc(200cqmin - 26cqh))' }}>
               <PlanetSprite planet={planet} />
             </div>
           </Layer>
@@ -336,11 +337,11 @@ export function ArriveScene({ rocket, crew, planet, reduced, failing, cause, sig
       )}
       {stage === 'fail' && (
         <Sign
-          text={sign ?? (cause === 'heat' ? 'TOO HOT!' : landing ? 'STUCK!' : 'OUT OF FUEL')}
-          color={cause === 'heat' ? '#ff7c7c' : '#ffb48f'}
+          text={sign ?? (cause === 'heat' ? 'THERMAL FAILURE' : landing ? 'ASCENT ABORTED' : 'OUT OF FUEL')}
+          color={cause === 'heat' ? '#e04a3a' : '#f28c28'}
         />
       )}
-      {stage === 'done' && !failing && <Sign text={landing ? 'TOUCHDOWN!' : 'IN ORBIT!'} color="#74e0c0" />}
+      {stage === 'done' && !failing && <Sign text={landing ? 'TOUCHDOWN' : 'ORBIT ACHIEVED'} color="#5fd3c8" />}
       <style>{`
         @keyframes land { from { transform: translateY(-80cqh); } to { transform: translateY(0); } }
         @keyframes orbit {
@@ -367,7 +368,7 @@ export function SplashScene({ rocket, crew, reduced }: SceneProps) {
   const capsuleOnly = { ...rocket, engine: null, drive: null, tanks: [], pressure: null };
   return (
     <Diorama className="h-full w-full" camera={{ rx: 4 }} parallax={false}>
-      <div className="layer inset-0" style={{ transform: 'translateZ(-800px) scale(1.8)', background: 'linear-gradient(#ffb48f, #ff9fd3 45%, #b8a1ff)' }} />
+      <div className="layer inset-0" style={{ transform: 'translateZ(-800px) scale(1.8)', background: 'linear-gradient(#f28c28, #c13b8a 45%, #3d2a7a)' }} />
       <HillsAndSun />
       <Layer x={50} y={30} z={0} w={13}>
         <div style={{ animation: reduced ? undefined : 'chute 3.2s cubic-bezier(.3,.7,.4,1) forwards' }}>
@@ -395,7 +396,7 @@ export function SplashScene({ rocket, crew, reduced }: SceneProps) {
           </div>
         </Layer>
       ))}
-      {splashed && <Sign text="WELCOME HOME!" color="#74e0c0" />}
+      {splashed && <Sign text="WELCOME HOME!" color="#5fd3c8" />}
       <style>{`
         @keyframes chute { from { transform: translateY(-90cqh); } to { transform: translateY(0); } }
         @keyframes wave { from { transform: translateX(-3%); } to { transform: translateX(3%); } }

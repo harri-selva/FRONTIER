@@ -65,7 +65,7 @@ export function ChParallax({ solved, onSolved }: ChapterProps) {
         <ParallaxDiagram p={p} />
         <Slider id="plx" label="Parallax" min={0.05} max={1} step={0.001} value={p} onChange={setP} display={`${fmt(p, 3)} arcseconds`} />
         <p className="mt-2 text-lg font-bold">
-          Distance = 1 ÷ {fmt(p, 3)} = <span className="text-[#c2307f]">{fmt(d, 2)} parsecs</span> = {fmt(d * 3.2616, 1)} light-years
+          Distance = 1 ÷ {fmt(p, 3)} = <span className="text-[#f06aa8]">{fmt(d, 2)} parsecs</span> = {fmt(d * 3.2616, 1)} light-years
         </p>
       </Widget>
       <RealNote>
@@ -140,7 +140,7 @@ export function ChLightYears({ solved, onSolved }: ChapterProps) {
         </div>
         <p className="mt-3 text-lg font-bold">
           {fmt(t.distanceLy, 2)} ly × 9.46 trillion km ÷ {v.kms < 1 ? `${fmt(v.kms * 3600, 0)} km/h` : `${fmt0(v.kms)} km/s`} ≈{' '}
-          <span className="text-[#c2307f]">{years < 100 ? fmt(years, 1) : fmt0(years)} years</span>
+          <span className="text-[#f06aa8]">{years < 100 ? fmt(years, 1) : fmt0(years)} years</span>
         </p>
       </Widget>
       <Quiz
@@ -198,7 +198,7 @@ export function ChTransit({ solved, onSolved }: ChapterProps) {
         <LightCurve depth={depth} />
         <Slider id="tr" label="Planet size (Earth = 1)" min={0.3} max={10} step={0.01} value={r} onChange={setR} display={`${fmt(r, 2)} × Earth`} />
         <p className="mt-2 text-lg font-bold">
-          ({fmt(r, 2)} ÷ {fmt(starRe, 1)})² = <span className="text-[#c2307f]">{fmt(depth * 100, 2)}% dimmer</span>
+          ({fmt(r, 2)} ÷ {fmt(starRe, 1)})² = <span className="text-[#f06aa8]">{fmt(depth * 100, 2)}% dimmer</span>
         </p>
         <p className="text-sm">Star: TRAPPIST-1, {fmt(starRe, 1)} × Earth’s size (a small red dwarf).</p>
       </Widget>
@@ -250,7 +250,7 @@ export function ChKepler({ solved, onSolved }: ChapterProps) {
         <Slider id="kp" label="The planet’s year" min={0.5} max={400} step={0.01} value={P} onChange={setP} display={`${fmt(P, 2)} days`} />
         <Slider id="km" label="Star mass" min={0.08} max={2} step={0.001} value={M} onChange={setM} display={`${fmt(M, 3)} Suns`} />
         <p className="mt-2 text-lg font-bold">
-          distance = ∛({fmt(M, 3)} × ({fmt(P, 2)} ÷ 365.25)²) = <span className="text-[#c2307f]">{fmt(a, 4)} AU</span>
+          distance = ∛({fmt(M, 3)} × ({fmt(P, 2)} ÷ 365.25)²) = <span className="text-[#f06aa8]">{fmt(a, 4)} AU</span>
         </p>
         <p className="text-sm">That’s {fmt(a * 149.6, 2)} million km. Mercury orbits the Sun at 0.39 AU.</p>
       </Widget>
@@ -313,12 +313,12 @@ export function ChGravity({ solved, onSolved }: ChapterProps) {
             <PlanetSprite planet={p} />
           </span>
           <p className="font-bold">
-            {fmt(p.massMe, 2)} ÷ {fmt(p.radiusRe, 2)}² = <span className="text-[#c2307f]">{fmt(g, 2)} × Earth gravity</span>
+            {fmt(p.massMe, 2)} ÷ {fmt(p.radiusRe, 2)}² = <span className="text-[#f06aa8]">{fmt(g, 2)} × Earth gravity</span>
           </p>
         </div>
         <Slider id="gk" label="Your weight on Earth" min={10} max={100} step={1} value={kg} onChange={setKg} display={`${kg} kg`} />
         <p className="mt-1 text-lg font-bold">
-          On {p.name} you would feel like <span className="text-[#c2307f]">{fmt0(kg * g)} kg</span>. Orbit speed: {fmt(surfaceOrbitalVelocityKms(p.massMe, p.radiusRe), 1)} km/s.
+          On {p.name} you would feel like <span className="text-[#f06aa8]">{fmt0(kg * g)} kg</span>. Orbit speed: {fmt(surfaceOrbitalVelocityKms(p.massMe, p.radiusRe), 1)} km/s.
         </p>
       </Widget>
       <Quiz
@@ -366,7 +366,7 @@ export function ChRocketEquation({ solved, onSolved }: ChapterProps) {
         <Slider id="rf" label="Full rocket" min={20} max={350} step={1} value={full} onChange={setFull} display={`${full} t`} />
         <Slider id="re" label="Empty rocket (no fuel)" min={5} max={200} step={1} value={empty} onChange={setEmpty} display={`${emptyT} t`} />
         <p className="mt-2 text-lg font-bold">
-          {fmt0(isp)} × 9.81 × ln({full} ÷ {emptyT}) = <span className="text-[#c2307f]">{fmt(dv, 1)} km/s</span>
+          {fmt0(isp)} × 9.81 × ln({full} ÷ {emptyT}) = <span className="text-[#f06aa8]">{fmt(dv, 1)} km/s</span>
         </p>
         <div className="mt-2 h-4 rounded-full bg-ink/10" aria-hidden="true">
           <span className="block h-full rounded-full" style={{ width: `${Math.min(100, (dv / need) * 100)}%`, background: dv >= need ? '#3cae8e' : '#ff7cc6' }} />
@@ -414,7 +414,7 @@ export function ChLiftOff({ solved, onSolved }: ChapterProps) {
         <Slider id="lt" label="Engine thrust" min={500} max={8000} step={50} value={thrust} onChange={setThrust} display={`${fmt0(thrust)} kN`} />
         <Slider id="lm" label="Rocket mass" min={20} max={450} step={5} value={mass} onChange={setMass} display={`${mass} t`} />
         <p className="mt-2 text-lg font-bold">
-          {fmt0(thrust * 1000)} ÷ ({fmt0(mass * 1000)} × 9.81) = <span className={flies ? 'text-leaf' : 'text-[#a3203a]'}>TWR {fmt(twr, 2)}</span>{' '}
+          {fmt0(thrust * 1000)} ÷ ({fmt0(mass * 1000)} × 9.81) = <span className={flies ? 'text-leaf' : 'text-[#ff8f86]'}>TWR {fmt(twr, 2)}</span>{' '}
           {flies ? '✔ Lift-off!' : '✖ Stuck on the pad'}
         </p>
       </Widget>

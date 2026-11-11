@@ -46,13 +46,13 @@ export function HillsAndSun({ sun = true }: { sun?: boolean }) {
         </Layer>
       )}
       <Layer x={50} y={-3} z={-380} w={220}>
-        <HillSprite color="#b8a1ff" dark="#7c5fd6" />
+        <HillSprite color="#2b2f73" dark="#141a3f" />
       </Layer>
       <Layer x={30} y={-6} z={-200} w={170}>
-        <HillSprite color="#ff9fd3" dark="#e2459f" />
+        <HillSprite color="#3d2a7a" dark="#0b0e2a" />
       </Layer>
       <Layer x={75} y={-9} z={-60} w={170}>
-        <HillSprite color="#74e0c0" dark="#2f9e6e" />
+        <HillSprite color="#1e2557" dark="#05060f" />
       </Layer>
     </>
   );
@@ -68,7 +68,7 @@ export function DriftingClouds({ z = -300 }: { z?: number }) {
       </Layer>
       <Layer x={86} y={70} z={z - 80} w={18}>
         <div className="anim-bob" style={{ animationDuration: '7.5s', animationDelay: '1s' }}>
-          <CloudSprite color="#ffe0f1" />
+          <CloudSprite color="#4a5378" />
         </div>
       </Layer>
     </>

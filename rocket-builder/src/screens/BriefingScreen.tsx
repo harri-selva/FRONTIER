@@ -9,11 +9,11 @@ import { RocketSprite } from '../paper/RocketSprite';
 import { useGame } from '../store/gameStore';
 
 const LINES: { mood: Mood; text: string }[] = [
-  { mood: 'happy', text: 'Hi! I’m Pip, your mission robot. Welcome to NASA’s rocket team!' },
-  { mood: 'wow', text: 'Every planet here is REAL. Astronomers found them around other stars.' },
-  { mood: 'think', text: 'They’re very far away. Real rockets would take thousands of years, so we use a pretend warp drive.' },
-  { mood: 'happy', text: 'Your job: build a rocket that can lift off, reach the planet, and get home safely.' },
-  { mood: 'wow', text: 'You get 10 tries. Brave astronauts make your score bigger. Ready?' },
+  { mood: 'happy', text: 'Flight computer online. You have been assigned to vehicle design for the exoplanet programme.' },
+  { mood: 'wow', text: 'Every destination is a confirmed exoplanet from the NASA Exoplanet Archive. Distances, sizes and temperatures are measured values.' },
+  { mood: 'think', text: 'No real propulsion reaches another star: at Voyager 1’s speed the nearest is ~75,000 years away. A fictional Deep-Space Drive covers the light-years; it is labelled wherever it appears.' },
+  { mood: 'happy', text: 'Everything else is real physics: thrust-to-weight at lift-off, the Tsiolkovsky rocket equation for Δv, landing and ascent costs from the planet’s mass and radius.' },
+  { mood: 'wow', text: 'Each rank is a run of ten attempts, averaged for the leaderboard. Crew multiplies the score on success and cuts it on failure.' },
 ];
 
 export function BriefingScreen() {
@@ -45,7 +45,7 @@ export function BriefingScreen() {
 
   return (
     <div className="gutter mx-auto max-w-4xl pt-4">
-      <h1 className="sr-only">Meet Pip</h1>
+      <h1 className="sr-only">Mission briefing</h1>
       <Diorama className="h-[min(46vh,400px)] min-h-[280px] rounded-[28px]" camera={{ rx: 3 }}>
         <StarWall />
         <Layer x={78} y={45} z={-300} w={24}>
@@ -74,7 +74,7 @@ export function BriefingScreen() {
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <ol className="flex gap-1.5" aria-label={`Step ${i + 1} of ${LINES.length}`}>
             {LINES.map((_, n) => (
-              <li key={n} className="h-2.5 w-6 rounded-full" style={{ background: n <= i ? '#ff7cc6' : 'rgba(42,23,71,.15)' }} />
+              <li key={n} className="h-2.5 w-6 rounded-full" style={{ background: n <= i ? '#f06aa8' : '#1e2557' }} />
             ))}
           </ol>
           <div className="flex gap-3">
@@ -82,7 +82,7 @@ export function BriefingScreen() {
               Skip
             </button>
             <button type="button" className="pbtn" onClick={next} autoFocus>
-              {!typed && !reduced ? 'Show all' : last ? 'Let’s go!' : 'Next'}
+              {!typed && !reduced ? 'Show all' : last ? 'Proceed' : 'Next'}
             </button>
           </div>
         </div>

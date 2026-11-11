@@ -6,18 +6,15 @@ launch it, and get a scored explanation of why it succeeded or failed. Every mis
 Earth → exoplanet → Earth. Each difficulty is a run of 10 attempts; the average goes on that difficulty's
 leaderboard.
 
-Style: a papercraft diorama. Each scene is a real 3D stage (CSS 3D perspective) filled with flat cut-paper
-sprites: white paper edges, cast shadows, paper grain, string-hung parts that sway. The palette is
-construction paper in space purples, bubblegum pink and pastels. All artwork is original and drawn in code
-(SVG); the guide is Pip, an original paper robot. The look is a general papercraft style, not a copy of any
-existing game's characters, art or UI.
+Style: 16-bit pixel art in the FRONTIER look, aimed at an older audience. It uses FRONTIER's 32-colour
+palette, its fonts (Press Start 2P, Pixelify Sans, VT323; self-hosted woff2, SIL OFL), Bayer-dithered sky and
+procedural pixel planets, framed panels, and an optional CRT scanline filter. Scenes are still 3D stages
+(CSS 3D perspective), but every sprite is rasterised at low resolution, snapped to the palette, given a hard
+alpha edge and a 1-px outline, then scaled up with nearest-neighbour sampling (`src/pixel/Pixelate.tsx`).
+Copy uses a mission-control tone; every number stays visible under "Full telemetry". Real data is stamped
+"Real NASA data" and invented parts "Pretend tech". All artwork is original and drawn in code.
 
-Made for kids: each planet shows 3 big facts (distance, temperature in °C, gravity) with the rest behind
-"More facts"; parts show icon bars and colour-matched fuel stickers instead of raw numbers; Pip gives one
-plain-language tip at a time; results use 0–3 stars, and every number stays one tap away under "See the
-science". Real data is stamped "Real NASA data" and invented parts "Pretend tech".
-
-The previous vaporwave-arcade version is in git history at commit `ad076d5`.
+The papercraft version is in git history at commit `eee0c57`. The previous vaporwave-arcade version is in git history at commit `ad076d5`.
 
 ## Run it
 
@@ -342,7 +339,7 @@ a hackathon demo; a real deployment would need server-side verification.
 
 - Rockets are built only by drag-and-drop: drag a part card anywhere onto the rocket with a mouse, by touch (press and hold ~140 ms, then drag), or with the keyboard (focus the card's hand button, Space to pick up, any arrow key jumps it onto the rocket, Space to drop, Esc to cancel), with screen-reader announcements. The hangar stays pinned in view (also on phones) so there is always a drop target. Fitted parts can be removed with a button.
 - Visible focus rings, focus moves to each new screen, skip link, ARIA tabs, meters and live regions
-- Text is dark ink on paper-white cards (≈ 14:1) and light text on the purple night (≈ 10:1); the pink used for numbers on paper is ≈ 5:1
+- Text is cream (#fff4c2) on navy panels (#141a3f, ≈ 15:1); dark ink is used on gold, mint and cyan buttons
 - `prefers-reduced-motion` respected, plus an in-game motion toggle; swaying cards hold still when hovered or focused; "Skip" is always available
 - Sound effects are synthesized with Web Audio (no audio files), only start after a tap, and have a mute button
 - Responsive from phone (no horizontal scroll at 390 px) to desktop
@@ -352,7 +349,7 @@ a hackathon demo; a real deployment would need server-side verification.
 - NASA Exoplanet Archive, Planetary Systems Composite Parameters (`pscomppars`): https://exoplanetarchive.ipac.caltech.edu/
 - NASA's exoplanet site, including "Strange New Worlds", as general reference: https://science.nasa.gov/exoplanets/
 - Atmosphere notes: the papers cited in `src/data/atmosphere-notes.json`
-- Fonts: Grandstander and Lexend from Google Fonts (SIL Open Font License); offline, the game falls back to rounded system fonts
+- Fonts: Press Start 2P, Pixelify Sans and VT323 (SIL Open Font License), self-hosted from `src/fonts/`
 
 This is a fan-made educational game. It is not affiliated with or endorsed by NASA.
 

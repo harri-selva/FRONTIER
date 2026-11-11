@@ -31,8 +31,8 @@ export function Quiz({ spec, onCorrect, solved }: { spec: QuizSpec; onCorrect: (
   };
 
   return (
-    <section className="rounded-2xl border-[3px] border-dashed border-[#c2307f]/50 bg-[#fff1f8] p-4" aria-labelledby={`${id}-q`}>
-      <h3 id={`${id}-q`} className="flex items-center gap-2 font-display text-xl font-black text-[#c2307f]">
+    <section className="rounded-2xl border-[3px] border-dashed border-[#f06aa8]/50 bg-[#2b1d4f] p-4" aria-labelledby={`${id}-q`}>
+      <h3 id={`${id}-q`} className="flex items-center gap-2 font-display text-xl font-black text-[#f06aa8]">
         <Icon name="star" /> Your turn, Agent
       </h3>
       <div className="mt-1 text-[1.02rem] font-medium">{spec.question}</div>
@@ -73,7 +73,7 @@ export function Quiz({ spec, onCorrect, solved }: { spec: QuizSpec; onCorrect: (
       )}
       <p className="mt-2 min-h-[1.5em] font-bold" role="status">
         {state === 'right' && <span className="text-leaf">Correct! File unlocked.</span>}
-        {state === 'wrong' && <span className="text-[#a3203a]">Not quite. Try again, or peek at the working.</span>}
+        {state === 'wrong' && <span className="text-[#ff8f86]">Not quite. Try again, or peek at the working.</span>}
       </p>
       <button type="button" className="text-sm font-bold underline decoration-2 underline-offset-4" aria-expanded={showWork} onClick={() => setShowWork(!showWork)}>
         {showWork ? 'Hide the working' : 'Show me how'}
